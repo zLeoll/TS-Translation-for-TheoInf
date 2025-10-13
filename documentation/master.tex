@@ -1,0 +1,48 @@
+\documentclass[a4paper, titlepage, 12pt, ngerman]{article}
+\input{config.tex}
+\addbibresource{references.bib}
+
+\begin{document}
+\onehalfspacing
+\input{titlepage.tex}
+
+\pagenumbering{Roman}
+\input{remark.tex}
+\newpage
+\input{abstract.tex}
+\newpage
+\tableofcontents
+\newpage
+\section*{Abkürzungsverzeichnis}
+\addcontentsline{toc}{section}{Abkürzungsverzeichnis}
+\input{acronyms.tex}
+\newpage
+
+
+\listoffigures
+\addcontentsline{toc}{section}{Abbildungsverzeichnis}
+\newpage
+
+
+\newcounter{RomanPage}
+\setcounter{RomanPage}{\value
+	{page}}
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+
+\section{Einleitung}
+Dies ist die Einleitung der Arbeit.
+\subsection{Unterkapitel}
+Dies ist ein Unterkapitel.\\
+So lässt sich eine Akronym verwenden: \ac{DHBW}.\\
+So lässt sich ein Zitat einfügen: \cite{logic-repository}.
+\newpage
+
+\pagenumbering{Roman}
+\setcounter{page}{\value{RomanPage}}
+\printbibliography[heading=bibintoc,title={Literaturverzeichnis}]
+
+
+
+\end{document}
