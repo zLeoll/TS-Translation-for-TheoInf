@@ -12,3 +12,4 @@ In this repository, you can find the translated scripts by our professor Karl St
 6. jupyter nbclassic
 7. npm install fraction.js
 8. npm install mathjs
+9. npm install @hpcc-js/wasm
