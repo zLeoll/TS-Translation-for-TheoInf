@@ -1,8 +1,3 @@
-export type Student = [string, number];
-
-export function countingSort(A: Student[]): Student[];
-export function countingSort<T>(A: [T, number][]): [T, number][];
-
 export function countingSort<T>(A: [T, number][], maxKey = 255): [T, number][] {
     const Counts = new Array<number>(maxKey + 1).fill(0);
     const Index = new Array<number>(maxKey + 1).fill(0);
