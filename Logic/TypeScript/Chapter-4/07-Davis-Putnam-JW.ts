@@ -116,7 +116,7 @@ export function saturate(Clauses: Set<Clause>): Set<Clause> {
     let Units = new Set([...S].filter(c => c.size === 1));
     let Used = new Set<Clause>();
     while (Units.size > 0) {
-        const unit = Units.values().next().value;
+        const unit = Units.values().next().value as Clause;
         Units.delete(unit);
         Used.add(unit);
         const l = arb(unit);
