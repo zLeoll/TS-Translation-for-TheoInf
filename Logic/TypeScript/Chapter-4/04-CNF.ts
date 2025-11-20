@@ -1,5 +1,5 @@
 export type Variable = string;
-export type Literal = Variable | [string, Variable];
+export type Literal = Variable | ['¬', Variable];
 export type Clause = Set<Literal>;
 export type CNF = Set<Clause>;
 export type Formula = Variable | Formula[];
