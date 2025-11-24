@@ -5,19 +5,23 @@ type Clause = Set<Literal>;
 /**
  * Compute the complement of a literal
  */
-export function complement(l: Literal): Literal | null {
-    if (Array.isArray(l) && l[0] === '¬') return l[1];
-    if (typeof l === 'string') return ['¬', l];
-    return null;
+export function complement(l: Literal): Literal {
+    if (Array.isArray(l)) {
+        return l[1];
+    } else {
+        return ['¬', l];
+    }
 }
 
 /**
  * Extract the variable from a literal
  */
 export function extractVariable(l: Literal): Variable | null {
-    if (Array.isArray(l) && l[0] === '¬') return l[1];
-    if (typeof l === 'string') return l;
-    return null;
+    if (Array.isArray(l)) {
+        return l[1];
+    } else {
+        return l;
+    }
 }
 
 /**
@@ -58,7 +62,11 @@ export function normalizeClause(clause: Clause): Clause {
     for (const lit of clause) {
         map.set(literalKey(lit), lit);
     }
-    return new Set(map.values());
+    const normalizedLits: Literal[] = [...map.entries()]
+        .sort(([k1], [k2]) => (k1 < k2 ? -1 : k1 > k2 ? 1 : 0))
+        .map(([, lit]) => lit);
+
+    return new Set<Literal>(normalizedLits);
 }
 
 /**
@@ -66,8 +74,14 @@ export function normalizeClause(clause: Clause): Clause {
  */
 export function equalClauses(c1: Clause, c2: Clause): boolean {
     if (c1.size !== c2.size) return false;
-    for (const lit of c1) {
-        if (![...c2].some(l => literalKey(l) === literalKey(lit))) return false;
+
+    const keys1 = [...c1].map(literalKey).sort();
+    const keys2 = [...c2].map(literalKey).sort();
+
+    for (let i = 0; i < keys1.length; i++) {
+        if (keys1[i] !== keys2[i]) {
+            return false;
+        }
     }
     return true;
 }
