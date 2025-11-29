@@ -2,17 +2,9 @@ export type Formula = string | [string, ...Formula[]];
 
 export function tokenize(s: string): string[] {
     const lexSpec = /([ \t]+)|([A-Za-z][A-Za-z0-9<>,]*)|([⊤⊥∧∨¬→↔⊕()])/g;
-    const tokenList = Array.from(s.matchAll(lexSpec));
-    const result: string[] = [];
-    for (const match of tokenList) {
-        const ws = match[1];
-        const identifier = match[2];
-        const operator = match[3];
-        if (ws) continue;
-        if (identifier) result.push(identifier);
-        if (operator) result.push(operator);
-    }
-    return result;
+    return Array.from(s.matchAll(lexSpec))
+        .map(([_, ws, identifier, operator]) => identifier || operator)
+        .filter((token): token is string => !!token);
 }
 
 export function isPropVar(s: string): boolean {
@@ -31,7 +23,7 @@ export class LogicParser implements ILogicParser {
     private _input: string;
 
     constructor(s: string) {
-        this._tokens = [...tokenize(s)].reverse();
+        this._tokens = tokenize(s).reverse();
         this._operators = [];
         this._arguments = [];
         this._input = s;
