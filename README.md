@@ -15,4 +15,4 @@ In this repository, you can find the translated scripts by our professor Karl St
 9. npm install @hpcc-js/wasm
 10. npm install pngjs
 11. npm install heap-js
-12. npm install z3-solver
+12. npm install logic-solver
