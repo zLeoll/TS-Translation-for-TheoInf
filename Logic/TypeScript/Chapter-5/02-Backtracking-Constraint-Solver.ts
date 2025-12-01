@@ -8,7 +8,7 @@ export type AnnotatedCSP = [Variable[], Value[], Array<[Formula, Set<Variable>]>
 
 export function collectVariables(expr: string): Set<string> {
     const identifierRegex = /[a-zA-Z_][a-zA-Z0-9_]*/g;
-    const builtIns = new Set(['true', 'false']);
+    const builtIns = new Set(['abs', 'Math']);
     const variables = new Set<string>();
     let match: RegExpExecArray | null;
 
