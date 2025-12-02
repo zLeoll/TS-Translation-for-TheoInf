@@ -13,6 +13,15 @@ function hashString(str: string): number {
 // Universelle Compare Funktion
 function compare(a: any, b: any): number {
     if (a === b) return 0;
+
+    if (Array.isArray(a) && Array.isArray(b)) {
+        if (a.length !== b.length) return a.length - b.length;
+        for (let i = 0; i < a.length; i++) {
+            const diff = compare(a[i], b[i]); // Rekursiv
+            if (diff !== 0) return diff;
+        }
+        return 0; // Inhaltlich gleich
+    }
     
     const isSetA = a instanceof RecursiveSet;
     const isSetB = b instanceof RecursiveSet;
