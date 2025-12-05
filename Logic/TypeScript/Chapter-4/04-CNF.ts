@@ -1,6 +1,6 @@
 /**
  * cnf.ts
- * 
+ *
  * A module to convert propositional logic formulas into Conjunctive Normal Form (CNF).
  * Compatible with the Davis-Putnam solver using RecursiveSet.
  */
@@ -17,7 +17,8 @@ export type Variable = string;
 export type Formula = string | [string, ...Formula[]];
 
 // The structure used by the Davis-Putnam solver
-export type Literal = string; 
+// Literal is now a union: either a raw Variable "p" or a tuple ["¬", "p"]
+export type Literal = Variable | ['¬', Variable];
 export type Clause = RecursiveSet<Literal>;
 export type CNF = RecursiveSet<Clause>;
 
@@ -29,13 +30,15 @@ export function parse(s: string): Formula {
     return parser.parse() as Formula;
 }
 
-// --- Helper for Literals (String Manipulation) ---
+// --- Helper for Literals ---
 
 function getComplement(l: Literal): Literal {
-    if (l.startsWith('¬')) {
-        return l.substring(1);
+    if (Array.isArray(l)) {
+        // l is ['¬', 'p'] -> complement is 'p'
+        return l[1];
     } else {
-        return '¬' + l;
+        // l is 'p' -> complement is ['¬', 'p']
+        return ['¬', l];
     }
 }
 
@@ -80,8 +83,8 @@ export function eliminateBiconditional(f: Formula): Formula | null {
  * (g → h) => (¬g ∨ h)
  */
 export function eliminateConditional(f: Formula): Formula | null {
-    if (typeof f === 'string') { 
-        return f; 
+    if (typeof f === 'string') {
+        return f;
     }
     if (Array.isArray(f)) {
         const [op, ...args] = f;
@@ -141,7 +144,7 @@ export function nnf(f: Formula): Formula | null {
  */
 function neg(f: Formula): Formula | null {
     if (typeof f === 'string') {
-        // ¬Variable
+        // ¬Variable -> ['¬', 'p']
         return ['¬', f];
     }
     if (Array.isArray(f)) {
@@ -173,11 +176,11 @@ function neg(f: Formula): Formula | null {
 
 /**
  * Compute Conjunctive Normal Form (CNF).
- * Converts Formula tree to RecursiveSet<Clause> (set of sets of string literals).
+ * Converts Formula tree to RecursiveSet<Clause> (set of sets of Literals).
  */
 export function cnf(f: Formula): CNF | null {
     // Case: Variable "p" -> {{ "p" }}
-    if (typeof f === 'string') { 
+    if (typeof f === 'string') {
         const lit = f as Literal;
         const clause = new RecursiveSet<Literal>(lit);
         return new RecursiveSet<Clause>(clause);
@@ -185,21 +188,21 @@ export function cnf(f: Formula): CNF | null {
 
     if (Array.isArray(f)) {
         const [op, ...args] = f;
-        
+
         switch (op) {
             case '⊤':
                 // True -> Empty set of clauses {}
                 return new RecursiveSet<Clause>();
-                
+
             case '⊥':
                 // False -> Set containing empty clause {{}}
                 const emptyClause = new RecursiveSet<Literal>();
                 return new RecursiveSet<Clause>(emptyClause);
 
             case '¬': {
-                // Negative Literal: ['¬', 'p'] -> {{ "¬p" }}
+                // Negative Literal: ['¬', 'p'] -> {{ ['¬', 'p'] }}
                 const [p] = args as [string];
-                const lit = '¬' + p; 
+                const lit: Literal = ['¬', p];
                 const clause = new RecursiveSet<Literal>(lit);
                 return new RecursiveSet<Clause>(clause);
             }
@@ -217,9 +220,9 @@ export function cnf(f: Formula): CNF | null {
                 // Distributive: { C1 ∪ C2 | C1 ∈ CNF(g), C2 ∈ CNF(h) }
                 const left = cnf(g)!;
                 const right = cnf(h)!;
-                
+
                 const result = new RecursiveSet<Clause>();
-                
+
                 for (const c1 of left) {
                     for (const c2 of right) {
                         const unionClause = (c1 as Clause).union(c2 as Clause);
@@ -241,7 +244,7 @@ export function cnf(f: Formula): CNF | null {
 export function isTrivial(clause: Clause): boolean {
     for (const lit of clause) {
         const comp = getComplement(lit as Literal);
-        // RecursiveSet checks value equality (works for strings)
+        // RecursiveSet checks value equality (works for tuples/arrays deeply)
         if (clause.has(comp)) {
             return true;
         }
@@ -256,7 +259,7 @@ export function isTrivial(clause: Clause): boolean {
 export function simplify(clauses: CNF): CNF {
     const result = new RecursiveSet<Clause>();
     for (const C of clauses) {
-        const clause = C as Clause; 
+        const clause = C as Clause;
         if (!isTrivial(clause)) {
             result.add(clause);
         }
@@ -271,14 +274,16 @@ export function simplify(clauses: CNF): CNF {
  */
 export function normalize(f: Formula | string): CNF {
     let formula: Formula;
-    if (typeof f === 'string' && !f.startsWith('(') && !f.includes(' ')) {
-         // Assume simple variable
-         formula = f;
-    } else if (typeof f === 'string') {
-         // Use parser if input is a raw string
-         formula = parse(f);
+    if (typeof f === 'string') {
+        // Check if it looks like a complex formula string that needs parsing
+        if (f.includes(' ') || f.includes('(') || f.includes('→') || f.includes('↔') || f.includes('∧') || f.includes('∨') || (f.startsWith('¬') && f.length > 2)) {
+             formula = parse(f);
+        } else {
+             // Assume simple variable
+             formula = f;
+        }
     } else {
-         formula = f;
+        formula = f;
     }
 
     const n1 = eliminateBiconditional(formula);
@@ -291,7 +296,19 @@ export function normalize(f: Formula | string): CNF {
 // --- Formatting ---
 
 export function prettify(M: CNF): string {
-    return M.toString();
+    const res: string[] = [];
+    for (const C of M) {
+        const parts: string[] = [];
+        for (const l of (C as Clause)) {
+            if (Array.isArray(l)) {
+                parts.push(`¬${l[1]}`);
+            } else {
+                parts.push(l);
+            }
+        }
+        res.push(`{${parts.join(', ')}}`);
+    }
+    return `{${res.join(', ')}}`;
 }
 
 /**

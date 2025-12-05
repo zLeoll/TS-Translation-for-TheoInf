@@ -14,15 +14,15 @@ function hashString(str: string): number {
 function compare(a: any, b: any): number {
     if (a === b) return 0;
 
-    if (Array.isArray(a) && Array.isArray(b)) {
-        if (a.length !== b.length) return a.length - b.length;
-        for (let i = 0; i < a.length; i++) {
-            const diff = compare(a[i], b[i]); // Rekursiv
-            if (diff !== 0) return diff;
+        if (Array.isArray(a) && Array.isArray(b)) {
+            if (a.length !== b.length) return a.length - b.length;
+            for (let i = 0; i < a.length; i++) {
+                const diff = compare(a[i], b[i]); // Rekursiv
+                if (diff !== 0) return diff;
+            }
+            return 0; // Inhaltlich gleich
         }
-        return 0; // Inhaltlich gleich
-    }
-    
+        
     const isSetA = a instanceof RecursiveSet;
     const isSetB = b instanceof RecursiveSet;
 
@@ -58,7 +58,7 @@ export class RecursiveSet<T> {
         if (this._elements.length < 2) return;
         let writeIdx = 1;
         for (let readIdx = 1; readIdx < this._elements.length; readIdx++) {
-            if (compare(this._elements[readIdx], this._elements[readIdx - 1]) !== 0) {
+            if (compare(    this._elements[readIdx], this._elements[readIdx - 1]) !== 0) {
                 this._elements[writeIdx++] = this._elements[readIdx];
             }
         }
@@ -210,9 +210,19 @@ export class RecursiveSet<T> {
 
     toString(): string {
         if (this.isEmpty()) return "∅";
-        // Optimierung: Weniger String-Objekte erzeugen
-        return `{${this._elements.join(', ')}}`;
+        
+        const elementsStr = this._elements.map(el => {
+            if (Array.isArray(el)) {
+                // Formatiert Arrays wie ['¬', 'a'] zu "['¬', 'a']"
+                // oder noch schöner/kompakter:
+                return `[${el.map(x => typeof x === 'string' ? `'${x}'` : x).join(', ')}]`;
+            }
+            return String(el);
+        });
+
+        return `{${elementsStr.join(', ')}}`;
     }
+
     
     [Symbol.for('nodejs.util.inspect.custom')](): string { return this.toString(); }
 }

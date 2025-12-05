@@ -20,7 +20,7 @@ export class LogicParser implements ILogicParser {
     private _tokens: string[];
     private _operators: string[];
     private _arguments: Formula[];
-    private _input: string;
+        private _input: string;
 
     constructor(s: string) {
         this._tokens = tokenize(s).reverse();
