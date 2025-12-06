@@ -1,21 +1,21 @@
-export class Stack {
-    mStackElements: any[];
+export class Stack<T> {
+    mStackElements: T[];
     constructor() {
         this.mStackElements = [];
     }
 
-    push(e: any): void {
+    push(e: T): void {
         this.mStackElements.push(e);
     }
 
-    pop(): any {
+    pop(): T {
         if (this.mStackElements.length === 0) {
             throw new Error("popping empty stack");
-        }
-        this.mStackElements.pop();
+        } 
+        return this.mStackElements.pop()!;
     }
 
-    top(): any {
+    top(): T {
         if (this.mStackElements.length === 0) {
             throw new Error("top of empty stack");
         }
@@ -26,8 +26,8 @@ export class Stack {
         return this.mStackElements.length === 0;
     }
 
-    copy(): Stack {
-        const C = new Stack();
+    copy(): Stack<T> {
+        const C = new Stack<T>();
         C.mStackElements = [...this.mStackElements];
         return C;
     }
@@ -49,8 +49,8 @@ export class Stack {
     }
 }
 
-export function createStack(L: any[]): Stack {
-    const S = new Stack();
+export function createStack<T>(L: T[]): Stack<T> {
+    const S = new Stack<T>();
     for (const x of L) {
         S.push(x);
         console.log(S.toString());
