@@ -79,7 +79,7 @@ export class MapIterator<K extends string | number, T>
 
     next(): IteratorResult<[K, T]> {
         if (this.mPtr === null) {
-            return { done: true, value: undefined as any };
+            return { done: true, value: undefined };
         }
         const key = this.mPtr.mKey;
         const value = this.mPtr.mValue;
