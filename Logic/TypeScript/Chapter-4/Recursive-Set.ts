@@ -35,7 +35,7 @@ function compare(a: unknown, b: unknown): number {
 
     // Primitive Strings (Standard für Literale)
     // String Vergleich ist in JS optimiert, aber Hash-Checks in Sets sparen Vergleiche.
-    return (a as string | number) < (b as string | number )? -1 : 1;
+    return (a as string | number) < (b as string | number ) ? -1 : 1;
 }
 
 export class RecursiveSet<T> {

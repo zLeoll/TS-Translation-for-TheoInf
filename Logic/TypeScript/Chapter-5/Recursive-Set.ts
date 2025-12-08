@@ -11,7 +11,7 @@ function hashString(str: string): number {
 }
 
 // Universelle Compare Funktion
-function compare(a: any, b: any): number {
+function compare(a: unknown, b: unknown): number {
     if (a === b) return 0;
 
     if (Array.isArray(a) && Array.isArray(b)) {
@@ -22,7 +22,7 @@ function compare(a: any, b: any): number {
         }
         return 0; // Inhaltlich gleich
     }
-    
+        
     const isSetA = a instanceof RecursiveSet;
     const isSetB = b instanceof RecursiveSet;
 
@@ -35,7 +35,7 @@ function compare(a: any, b: any): number {
 
     // Primitive Strings (Standard für Literale)
     // String Vergleich ist in JS optimiert, aber Hash-Checks in Sets sparen Vergleiche.
-    return a < b ? -1 : 1;
+    return (a as string | number) < (b as string | number ) ? -1 : 1;
 }
 
 export class RecursiveSet<T> {
