@@ -46,11 +46,11 @@ export function parse(s: string): Formula {
 // --- Substitution & Variables ---
 export function apply(t: LogicalExpression, σ: Substitution): LogicalExpression {
     if (t instanceof RecursiveSet) {
-        const newElements: any[] = [];
+        const newElements: LogicalExpression[] = [];
         for (const element of t) {
-            newElements.push(apply(element as LogicalExpression, σ));
+            newElements.push(apply(element, σ));
         }
-        return new RecursiveSet(...newElements);
+        return new RecursiveSet(...newElements) as LogicalExpression;
     }
     if (typeof t === 'string') {
         return Object.prototype.hasOwnProperty.call(σ, t) ? σ[t] : t;
