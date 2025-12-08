@@ -29,7 +29,7 @@ export function isSubset<T>(subset: Set<T>, superset: Set<T>): boolean {
     return true;
 }
 
-export function evaluateExpression(expression: string, context: Record<string, any>): any {
+export function evaluateExpression(expression: string, context: Record<string, unknown>): unknown {
     const argNames = Object.keys(context);
     const argValues = Object.values(context);
     const dynamicFunc = new Function(...argNames, `return (${expression});`);
