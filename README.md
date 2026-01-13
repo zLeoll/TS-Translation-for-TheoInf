@@ -1,22 +1,30 @@
 # TS-Translation-for-TheoInf
-In this repository, you can find the translated scripts by our professor Karl Stroetmann, converted from Python to TypeScript.
+In this repository, you can find the Jupyter Notebooks by Professor Karl Stroetmann from the courses Algorithms and Logic, translated from Python to TypeScript.
 
+## Setup
+To setup your environment, execute the following commands in your anaconda terminal:
 
-# To setup the framework, follow these steps:
+```bash
+conda activate base
+conda install nodejs
+conda install -c conda-forge nbclassic
+tslab install
+npm install -g tslab
+npm install fraction.js
+npm install mathjs
+npm install @hpcc-js/wasm
+npm install pngjs
+npm install heap-js
+npm install logic-solver
+npm install z3-solver
+```
 
-1. conda activate base
-2. conda install nodejs
-3. conda install -c conda-forge nbclassic
-4. tslab install
-5. npm install -g tslab
-6. npm install fraction.js
-7. npm install mathjs
-8. npm install @hpcc-js/wasm
-9. npm install pngjs
-10. npm install heap-js
-11. npm install logic-solver
-12. npm install z3-solver
+## Verifying installation
 
-# After installing all the libraries, we want to ensure that they were installed properly
+To verify that all libraries have been installed successfully, execute the following command in your anaconda terminal: 
 
-To test the framework, type the following command: **jupyter nbclassic** and then go to "Algorithms/TypeScript/Chapter-02/Test-Library.ipynb"
+```bash
+jupyter nbclassic
+```
+
+Then open and execute the cells in the notebook **Test-Libraries.ipynb**, which you can find in **Algorithms/TypeScript/Chapter-02/**.
