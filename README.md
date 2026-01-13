@@ -2,18 +2,21 @@
 In this repository, you can find the translated scripts by our professor Karl Stroetmann, converted from Python to TypeScript.
 
 
-# To setup the framework, please ... following steps:
+# To setup the framework, follow these steps:
 
 1. conda activate base
 2. conda install nodejs
-3. npm install -g tslab
+3. conda install -c conda-forge nbclassic
 4. tslab install
-5. conda install nbclassic
-6. jupyter nbclassic
-7. npm install fraction.js
-8. npm install mathjs
-9. npm install @hpcc-js/wasm
-10. npm install pngjs
-11. npm install heap-js
-12. npm install logic-solver
-13. npm install z3-solver
+5. npm install -g tslab
+6. npm install fraction.js
+7. npm install mathjs
+8. npm install @hpcc-js/wasm
+9. npm install pngjs
+10. npm install heap-js
+11. npm install logic-solver
+12. npm install z3-solver
+
+# After installing all the libraries, we want to ensure that they were installed properly
+
+To test the framework, type the following command: **jupyter nbclassic** and then go to "Algorithms/TypeScript/Chapter-02/Test-Library.ipynb"
