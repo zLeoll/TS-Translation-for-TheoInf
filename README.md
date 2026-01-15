@@ -10,6 +10,7 @@ conda install nodejs
 conda install -c conda-forge nbclassic
 tslab install
 npm install -g tslab
+npm install typescript
 npm install fraction.js
 npm install mathjs
 npm install @hpcc-js/wasm
