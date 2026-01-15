@@ -32,11 +32,21 @@
 
 
 
-\section{Motivation}
+\section{Einleitung}
 Dies ist die Einleitung der Arbeit.
 
 
-\subsection{Type Checking}
+\subsection{Problemstellung}
+Mangelnde Typsicherheit in Data Science Education\\
+Type Checking
+
+
+\subsection{Zielsetzung}
+Was wurde uns als Ziel gesetzt, was haben wir uns als Ziel gesetzt und was ist unsere Vorgehensweise?
+
+
+
+\subsection{Sonstiges}
 Dies ist ein Unterkapitel.\\
 So lässt sich eine Akronym verwenden: \ac{DHBW}.\\
 So lässt sich ein Zitat einfügen: \cite{logic-repository}.
@@ -62,19 +72,23 @@ Im folgenden wird auf die Grundlagen eingegangen.
 Hier wird auf das Framework Anaconda genauer eingegangen
 
 
-\subsection{Jupyter Notebook}
-Was ist Jupyter Notebook, wozu wird es genutzt, ...
+\subsection{Interaktive Programmierung mit Jupyter}
+Was ist Jupyter Notebook, wozu wird es genutzt; Architektur (Kernel, Frontend, JSON-Struktur der .ipynb Dateien).
 
 
-\subsection{Vergleich Python vs. TypeScript}
-Allgemeiner Syntaxvergleich; Python mypy und TypeSkript Typechecker (Unterschied dynamisch statisch getypt, Tupel vs. Umsetzung von Tupeln in TypeScript, Dictionaries vs. dynamische Objekte)
+\subsection{TypeScript als Sprache}
+Allgemeiner Syntaxvergleich; Python mypy und TypeSkript Typechecker (Unterschied dynamisch statisch getypt, Tupel vs. Umsetzung von Tupeln in TypeScript, Dictionaries vs. dynamische Objekte)\\
+Vergleiche z.B. any und unknown.
 
 
-\subsection{Introduction}
-Hier wollen wir einen ersten Eindruck zu TypeScript übergeben. Die zusätzlichen Libraries werden hier auch erwähnt.
+\subsection{TypeScript im Data-Science-Kontext}
+Hier wollen wir einen ersten Eindruck zu TypeScript übergeben. Die zusätzlichen Libraries werden hier auch erwähnt. \\
+Herausforderung: Fehlende Standard-Bibliotheken (NumPy/Pandas Äquivalente).\\
+Vorstellung genutzter Bibliotheken (z.B. stdlib, Plotly.js, etc.).
 
 
-\subsection{README}
+
+\subsection{Setup und Toolchain}
 Hier soll auf die Installation der Umgebung + die README.md eingegangen werden.
 
 
@@ -83,19 +97,28 @@ Hier soll auf die Installation der Umgebung + die README.md eingegangen werden.
 \section{Methodische Vorgehensweise}
 In diesem Kapitel soll gezeigt werden, wie die Übersetzung der Notebooks erfolgt sind. Von dem zuerst grundlegenden Verständnis über die einzelnen Funktionen hin zu der unterstützenden Übersetzung mithilfe von \ac{KI} bis hin zum vollständig funktionierenden Notebook
 
+\subsection{Auswahl der Lehrmaterialien}
+Welche Kriterien es gab...
 
-\subsection{Unterstützung durch KI}
-Welche KIs wurden verwendet (Vergleich)
+
+\subsection{Der Übersetzungs-Workflow}
+Wann manuell, wann automatisiert
 
 
-\subsection{CNF}
-In diesem Teil wollen wir etwas genauer auf das Notebook 04-CNF eingehen und die Umsetzung des Notebooks und dessen Funktionen genauer unter die Lupe nehmen.
+\subsection{Einsatz von KI-gestützten Tools}
+Verwendete Modelle (GPT-4, Claude, Copilot etc.)\\
+Prompt-Engineering-Strategien für Code-Übersetzung. (hier würde ich gerne unseren Promt erwähnen und erläutern, vielleicht machen wir hierfür nochmal ein Unterkapitel)\\
+Grenzen der KI (Halluzinationen bei seltenen TS-Libraries).
 
 
 
 \newpage
 \section{Case Studies}
 Im folgenden haben wir uns Fälle aus Notebooks herausgesucht, welche wir genauer aufzeigen möchten.
+
+
+\subsection{CNF}
+In diesem Teil wollen wir etwas genauer auf das Notebook 04-CNF eingehen und die Umsetzung des Notebooks und dessen Funktionen genauer unter die Lupe nehmen.
 
 
 \subsection{Graphviz}
@@ -112,7 +135,7 @@ Erläuterung und Nutzen
 
 
 \newpage
-\section{Resultat}
+\section{Evaluierung und Ergebnisse}
 In diesem Kapitel werden wir auf den Erfolg der Übersetzung vergleichen.
 
 
@@ -129,7 +152,7 @@ In diesem Kapitel werden wir auf den Erfolg der Übersetzung vergleichen.
 
 
 \newpage
-\section{Fazit}
+\section{Fazit und Ausblick}
 
 
 
