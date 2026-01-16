@@ -1,4 +1,4 @@
-import { RecursiveSet } from './Recursive-Set';
+import { RecursiveSet, Value } from 'recursive-set';
 
 export type Variable = string;
 export type Literal = Variable | ['¬', Variable];
@@ -27,11 +27,11 @@ function sameLiteral(a: Literal, b: Literal): boolean {
   return !Array.isArray(a) && !Array.isArray(b) && a === b;
 }
 
-export function arb<T>(S: RecursiveSet<T>): T | RecursiveSet<T> | null {
-  for (const x of S) {
-    return x;
-  }
-  return null;
+function arb<T extends Value>(S: RecursiveSet<T>): T | null {
+    if (S.isEmpty()) {
+        return null;
+    }
+    return S.raw[0];
 }
 
 export function selectLiteral(

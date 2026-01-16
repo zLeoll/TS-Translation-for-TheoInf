@@ -1,7 +1,8 @@
-export type Formula = string | [string, ...Formula[]];
+export type Variable = string
+export type Formula  = Variable | ['⊤' | '⊥'] | ['¬', Formula] | ['↔' | '→' | '∧' | '∨', Formula, Formula];
 
 export function tokenize(s: string): string[] {
-    const lexSpec = /([ \t]+)|([A-Za-z][A-Za-z0-9<>,]*)|([⊤⊥∧∨¬→↔⊕()])/g;
+    const lexSpec = /([ \t]+)|([A-Za-z][A-Za-z0-9<>,]*)|([⊤⊥∧∨¬→↔()])/g;
     return Array.from(s.matchAll(lexSpec))
         .map(([_, ws, identifier, operator]) => identifier || operator)
         .filter((token): token is string => !!token);
@@ -11,16 +12,24 @@ export function isPropVar(s: string): boolean {
     return /^[A-Za-z][A-Za-z0-9<>,]*$/.test(s);
 }
 
+function popOrThrow<T>(stack: T[], errorMsg: string): T {
+    const val = stack.pop();
+    if (val === undefined) {
+        throw new Error(errorMsg);
+    }
+    return val;
+}
+
 export interface ILogicParser {
-    parse(): Formula;
+    parse():    Formula;
     toString(): string;
 }
 
 export class LogicParser implements ILogicParser {
-    private _tokens: string[];
+    private _tokens:    string[];
     private _operators: string[];
     private _arguments: Formula[];
-        private _input: string;
+    private _input:    string;
 
     constructor(s: string) {
         this._tokens = tokenize(s).reverse();
@@ -31,7 +40,7 @@ export class LogicParser implements ILogicParser {
 
     parse(): Formula {
         while (this._tokens.length !== 0) {
-            const next_op = this._tokens.pop()!;
+            const next_op = popOrThrow(this._tokens, "Unexpected end of input"); 
             if (isPropVar(next_op)) {
                 this._arguments.push(next_op);
                 continue;
@@ -60,19 +69,19 @@ export class LogicParser implements ILogicParser {
         if (this._arguments.length !== 1) {
             throw new Error(`could not parse ${this._input}`);
         }
-        return this._arguments.pop()!;
+        return popOrThrow(this._arguments, "Unexpected end of input");
     }
 
     private _eval_before(stack_op: string, next_op: string): boolean {
         if (stack_op === '(') return false;
         const precedences: { [key: string]: number } = {
-            '↔': 1, '→': 2, '⊕': 3, '∨': 4, '∧': 5, '¬': 6, '⊤': 7, '⊥': 7
+            '↔': 1, '→': 2, '∨': 4, '∧': 5, '¬': 6, '⊤': 7, '⊥': 7
         };
         if (precedences[stack_op] > precedences[next_op]) {
             return true;
         } else if (precedences[stack_op] === precedences[next_op]) {
             if (stack_op === next_op) {
-                return stack_op === '∧' || stack_op === '∨' || stack_op === '⊕';
+                return stack_op === '∧' || stack_op === '∨';
             }
             return true;
         }
@@ -80,19 +89,21 @@ export class LogicParser implements ILogicParser {
     }
 
     private _pop_and_evaluate(): void {
-        const op = this._operators.pop()!;
+        const op = popOrThrow(this._operators, "Unexpected end of input");
         if (op === '⊤' || op === '⊥') {
             this._arguments.push([op]);
             return;
         }
         if (op === '¬') {
-            const arg = this._arguments.pop()!;
+            const arg = popOrThrow(this._arguments, "Unexpected end of input");
             this._arguments.push(['¬', arg]);
             return;
         }
-        const rhs = this._arguments.pop()!;
-        const lhs = this._arguments.pop()!;
-        this._arguments.push([op, lhs, rhs]);
+        if (op == '↔' || op == '→' || op == '∧' || op == '∨') {
+                const rhs = popOrThrow(this._arguments, "Unexpected end of input");
+                const lhs = popOrThrow(this._arguments, "Unexpected end of input");
+                this._arguments.push([op, lhs, rhs]);
+        }
     }
 
     toString(): string {

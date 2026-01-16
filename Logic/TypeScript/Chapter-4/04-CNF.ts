@@ -6,7 +6,7 @@
  */
 
 import { LogicParser } from './PropositionalLogicParser';
-import { RecursiveSet } from './Recursive-Set';
+import { RecursiveSet } from 'recursive-set';
 
 // --- Type Definitions ---
 
@@ -14,7 +14,7 @@ export type Variable = string;
 
 // The structure returned by the LogicParser (syntax tree)
 // Defined explicitly to allow tuple recursion
-export type Formula = string | [string, ...Formula[]];
+export type Formula  = Variable | ['⊤' | '⊥'] | ['¬', Formula] | ['↔' | '→' | '∧' | '∨', Formula, Formula];
 
 // The structure used by the Davis-Putnam solver
 // Literal is now a union: either a raw Variable "p" or a tuple ["¬", "p"]
@@ -27,7 +27,7 @@ export type CNF = RecursiveSet<Clause>;
 export function parse(s: string): Formula {
     // LogicParser is assumed to return a compatible structure
     const parser = new LogicParser(s);
-    return parser.parse() as Formula;
+    return parser.parse();
 }
 
 // --- Helper for Literals ---
@@ -48,192 +48,172 @@ function getComplement(l: Literal): Literal {
  * Eliminate '↔' (biconditional) from the formula.
  * (g ↔ h) => (g → h) ∧ (h → g)
  */
-export function eliminateBiconditional(f: Formula): Formula | null {
+export type Formula1  = Variable | ['⊤' | '⊥'] | ['¬', Formula1] | ['→' | '∧' | '∨', Formula1, Formula1];
+export function eliminateBiconditional(f: Formula): Formula1 {
+    'Eliminate the logical operator "↔" from f.'
     if (typeof f === 'string') {
         return f;
     }
-    if (Array.isArray(f)) {
-        const [op, ...args] = f;
-        switch (op) {
-            case '↔': {
-                const [g, h] = args as [Formula, Formula];
-                // Recursively eliminate in the transformed structure
-                return eliminateBiconditional(['∧', ['→', g, h], ['→', h, g]]);
-            }
-            case '⊤':
-            case '⊥':
-                return f;
-            case '¬': {
-                const [g] = args as [Formula];
-                return ['¬', eliminateBiconditional(g)!];
-            }
-            case '→':
-            case '∧':
-            case '∨': {
-                const [g, h] = args as [Formula, Formula];
-                return [op, eliminateBiconditional(g)!, eliminateBiconditional(h)!];
-            }
+    const [op] = f;
+    switch (op) {
+        case '↔': {
+            const [, g, h] = f;
+            return eliminateBiconditional(['∧', ['→', g, h], ['→', h, g]]);
+        }
+        case '⊤':
+            return ['⊤'];
+        case '⊥':
+            return ['⊥'];
+        
+        case '¬': {
+            const [, g] = f;
+            return ['¬', eliminateBiconditional(g)];
+        }
+        case '→':
+        case '∧':
+        case '∨': {
+            const [, g, h] = f;
+            return [op, eliminateBiconditional(g), eliminateBiconditional(h)];
         }
     }
-    return null;
 }
 
+export type Formula2 = Variable | ['⊤' | '⊥'] | ['¬', Formula2] | ['∧' | '∨', Formula2, Formula2];
 /**
  * Eliminate '→' (conditional) from the formula.
  * (g → h) => (¬g ∨ h)
  */
-export function eliminateConditional(f: Formula): Formula | null {
-    if (typeof f === 'string') {
-        return f;
+export function eliminateConditional(f: Formula1): Formula2 {
+    'Eliminate the logical operator "→" from f.'
+    // variables.
+    if (typeof f === 'string') { 
+        return f; 
     }
-    if (Array.isArray(f)) {
-        const [op, ...args] = f;
-        switch (op) {
-            case '⊤':
-            case '⊥':
-                return f;
-            case '→': {
-                const [g, h] = args as [Formula, Formula];
-                // Transform and recurse
-                return eliminateConditional(['∨', ['¬', g], h]);
-            }
-            case '¬': {
-                const [g] = args as [Formula];
-                return ['¬', eliminateConditional(g)!];
-            }
-            case '∧':
-            case '∨': {
-                const [g, h] = args as [Formula, Formula];
-                return [op, eliminateConditional(g)!, eliminateConditional(h)!];
-            }
+    const [op] = f;
+    switch (op) {
+        case '⊤':
+        case '⊥':
+            return f;
+        case '→': {
+            const [, g, h] = f;
+            return eliminateConditional(['∨', ['¬', g], h]);
+        }
+        case '¬': {
+            const [, g] = f;
+            return ['¬', eliminateConditional(g)];
+        }
+        case '∧':
+        case '∨': {
+            const [, g, h] = f;
+            return [op, eliminateConditional(g), eliminateConditional(h)];
         }
     }
-    return null;
+    
 }
 
+type NNF = Variable | ['⊤'] | ['⊥'] | ['¬', Variable] | ['∧' | '∨', NNF, NNF];
 /**
  * Compute Negation Normal Form (NNF).
  * Pushes negations inwards using De Morgan's laws.
  */
-export function nnf(f: Formula): Formula | null {
+export function nnf(f: Formula2): NNF {
+    "Compute the negation normal form of f."
     if (typeof f === 'string') {
         return f;
     }
-    if (Array.isArray(f)) {
-        const [op, ...args] = f;
-        switch (op) {
-            case '⊤':
-            case '⊥':
-                return f;
-            case '¬': {
-                const [g] = args as [Formula];
-                return neg(g);
-            }
-            case '∧':
-            case '∨': {
-                const [g, h] = args as [Formula, Formula];
-                return [op, nnf(g)!, nnf(h)!];
-            }
+    const [op] = f;
+    switch (op) {
+        case '⊤':
+            return ['⊤']
+        case '⊥':
+            return ['⊥'];
+        case '¬': {
+            const [, g] = f;
+            return neg(g);
+        }
+        case '∧':
+        case '∨': {
+            const [, g, h] = f;
+            return [op, nnf(g), nnf(h)];
         }
     }
-    return null;
+
 }
 
 /**
  * Helper for NNF: Compute NNF of ¬f.
  */
-function neg(f: Formula): Formula | null {
+export function neg(f: Formula2): NNF {
+    "Compute the negation normal form of ¬f."
     if (typeof f === 'string') {
-        // ¬Variable -> ['¬', 'p']
         return ['¬', f];
     }
-    if (Array.isArray(f)) {
-        const [op, ...args] = f;
-        switch (op) {
-            case '⊤':
-                return ['⊥'];
-            case '⊥':
-                return ['⊤'];
-            case '¬': {
-                const [g] = args as [Formula];
-                // Double negation: ¬(¬g) => g
-                return nnf(g);
-            }
-            case '∧': {
-                const [g, h] = args as [Formula, Formula];
-                // De Morgan: ¬(g ∧ h) => ¬g ∨ ¬h
-                return ['∨', neg(g)!, neg(h)!];
-            }
-            case '∨': {
-                const [g, h] = args as [Formula, Formula];
-                // De Morgan: ¬(g ∨ h) => ¬g ∧ ¬h
-                return ['∧', neg(g)!, neg(h)!];
-            }
+    
+    const [op] = f;
+    switch (op) {
+        case '⊤':
+            return ['⊥'];
+        case '⊥':
+            return ['⊤'];
+        case '¬': {
+            const [, g] = f;
+            return nnf(g);
+        }
+        case '∧': {
+            const [, g, h] = f;
+            return ['∨', neg(g), neg(h)];
+        }
+        
+        case '∨': {
+            const [, g, h] = f;
+            return ['∧', neg(g), neg(h)];
         }
     }
-    return null;
+    
 }
 
 /**
  * Compute Conjunctive Normal Form (CNF).
  * Converts Formula tree to RecursiveSet<Clause> (set of sets of Literals).
  */
-export function cnf(f: Formula): CNF | null {
-    // Case: Variable "p" -> {{ "p" }}
-    if (typeof f === 'string') {
-        const lit = f as Literal;
-        const clause = new RecursiveSet<Literal>(lit);
+export function cnf(f: NNF): CNF {
+    // f is a variable
+    if (typeof f === 'string') { 
+        const clause = new RecursiveSet<Literal>(f);
         return new RecursiveSet<Clause>(clause);
     }
-
-    if (Array.isArray(f)) {
-        const [op, ...args] = f;
-
-        switch (op) {
-            case '⊤':
-                // True -> Empty set of clauses {}
-                return new RecursiveSet<Clause>();
-
-            case '⊥':
-                // False -> Set containing empty clause {{}}
-                const emptyClause = new RecursiveSet<Literal>();
-                return new RecursiveSet<Clause>(emptyClause);
-
-            case '¬': {
-                // Negative Literal: ['¬', 'p'] -> {{ ['¬', 'p'] }}
-                const [p] = args as [string];
-                const lit: Literal = ['¬', p];
-                const clause = new RecursiveSet<Literal>(lit);
-                return new RecursiveSet<Clause>(clause);
-            }
-
-            case '∧': {
-                const [g, h] = args as [Formula, Formula];
-                // Intersection (Union of clause sets): CNF(g) ∪ CNF(h)
-                const left = cnf(g)!;
-                const right = cnf(h)!;
-                return left.union(right);
-            }
-
-            case '∨': {
-                const [g, h] = args as [Formula, Formula];
-                // Distributive: { C1 ∪ C2 | C1 ∈ CNF(g), C2 ∈ CNF(h) }
-                const left = cnf(g)!;
-                const right = cnf(h)!;
-
-                const result = new RecursiveSet<Clause>();
-
-                for (const c1 of left) {
-                    for (const c2 of right) {
-                        const unionClause = (c1 as Clause).union(c2 as Clause);
-                        result.add(unionClause);
-                    }
+    switch (f[0]) {
+        case '⊤':
+            return new RecursiveSet<Clause>();     
+        case '⊥':
+            const emptyClause = new RecursiveSet<Literal>();
+            return new RecursiveSet<Clause>(emptyClause);
+        case '¬': {
+            const [, p] = f; 
+            const clause = new RecursiveSet<Literal>(['¬', p]);
+            return new RecursiveSet<Clause>(clause);
+        }            
+        case '∧': {
+            const [, g, h] = f; 
+            const left   = cnf(g);
+            const right  = cnf(h);
+            return left.union(right);
+        }
+        case '∨': {
+            const [, g, h] = f; 
+            const left   = cnf(g);
+            const right  = cnf(h);
+            const result = new RecursiveSet<Clause>();
+            for (const c1 of left) {
+                for (const c2 of right) {
+                    const unionClause = c1.union(c2);
+                    result.add(unionClause);
                 }
-                return result;
             }
+            return result;
         }
     }
-    return null;
+    
 }
 
 // --- Simplification ---
@@ -243,7 +223,7 @@ export function cnf(f: Formula): CNF | null {
  */
 export function isTrivial(clause: Clause): boolean {
     for (const lit of clause) {
-        const comp = getComplement(lit as Literal);
+        const comp = getComplement(lit);
         // RecursiveSet checks value equality (works for tuples/arrays deeply)
         if (clause.has(comp)) {
             return true;
@@ -259,7 +239,7 @@ export function isTrivial(clause: Clause): boolean {
 export function simplify(clauses: CNF): CNF {
     const result = new RecursiveSet<Clause>();
     for (const C of clauses) {
-        const clause = C as Clause;
+        const clause = C;
         if (!isTrivial(clause)) {
             result.add(clause);
         }
@@ -272,43 +252,30 @@ export function simplify(clauses: CNF): CNF {
 /**
  * Normalize a formula string or tree into optimized CNF.
  */
-export function normalize(f: Formula | string): CNF {
-    let formula: Formula;
-    if (typeof f === 'string') {
-        // Check if it looks like a complex formula string that needs parsing
-        if (f.includes(' ') || f.includes('(') || f.includes('→') || f.includes('↔') || f.includes('∧') || f.includes('∨') || (f.startsWith('¬') && f.length > 2)) {
-             formula = parse(f);
-        } else {
-             // Assume simple variable
-             formula = f;
-        }
-    } else {
-        formula = f;
-    }
-
-    const n1 = eliminateBiconditional(formula);
-    const n2 = eliminateConditional(n1!);
-    const n3 = nnf(n2!);
-    const n4 = cnf(n3!);
-    return simplify(n4!);
+export function normalize(f: Formula): CNF {
+    const n1 = eliminateBiconditional(f);
+    const n2 = eliminateConditional(n1);
+    const n3 = nnf(n2);
+    const n4 = cnf(n3);
+    return simplify(n4);
 }
 
 // --- Formatting ---
 
 export function prettify(M: CNF): string {
-    const res: string[] = [];
-    for (const C of M) {
-        const parts: string[] = [];
-        for (const l of (C as Clause)) {
-            if (Array.isArray(l)) {
-                parts.push(`¬${l[1]}`);
+    const clauseStrings: string[] = [];
+    for (const clause of M) {
+        const literalStrings: string[] = [];
+        for (const lit of clause) {
+            if (Array.isArray(lit)) {
+                literalStrings.push(`${lit[0]}${lit[1]}`);
             } else {
-                parts.push(l);
+                literalStrings.push(lit);
             }
         }
-        res.push(`{${parts.join(', ')}}`);
+        clauseStrings.push(`{${literalStrings.join(', ')}}`);
     }
-    return `{${res.join(', ')}}`;
+    return `{${clauseStrings.join(', ')}}`;
 }
 
 /**

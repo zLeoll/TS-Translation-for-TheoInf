@@ -5,7 +5,7 @@
  * Based on the provided notebook content.
  */
 
-import { RecursiveSet } from './Recursive-Set';
+import { RecursiveSet, Value } from 'recursive-set';
 
 // --- Type Definitions ---
 
@@ -44,13 +44,12 @@ export function extractVariable(l: Literal): Variable {
 /**
  * Returns an arbitrary element from the set S.
  */
-export function arb<T>(S: RecursiveSet<T>): T | RecursiveSet<T> | null {
-  for (const x of S) {
-    return x;
-  }
-  return null;
+function arb<T extends Value>(S: RecursiveSet<T>): T | null {
+    if (S.isEmpty()) {
+        return null;
+    }
+    return S.raw[0];
 }
-
 /**
  * Selects an arbitrary variable from the set Variables that does not occur in the set UsedVars.
  */
