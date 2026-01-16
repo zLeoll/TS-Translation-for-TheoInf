@@ -18,6 +18,7 @@ npm install pngjs
 npm install heap-js
 npm install logic-solver
 npm install z3-solver
+npm install recursive-set
 ```
 
 ## Verifying installation
