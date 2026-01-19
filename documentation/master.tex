@@ -61,27 +61,37 @@ Zusätzlich zur qualitativen Bewertung soll anhand der übersetzten Notebooks ei
 
 \newpage
 \section{Grundlagen}
-Im folgenden wird auf die Grundlagen eingegangen.
+Dieses Kapitel erläutert die technologischen Grundlagen und Werkzeuge, die für die Durchführung dieser Studienarbeit relevant sind. Zunächst wird die Distributionsplattform Anaconda vorgestellt, gefolgt von einer detaillierten Betrachtung der interaktiven Entwicklungsumgebung Jupyter. Anschließend erfolgt eine Einführung in die Zielsprache TypeScript sowie der Vergleich mit Python. Den Abschluss bildet die Beschreibung der spezifischen Setup- und Toolchain-Konfiguration.
 
 
 \subsection{Anaconda}
-Hier wird auf das Framework Anaconda genauer eingegangen
+Anaconda ist eine weit verbreitete Open-Source-Distribution für die Programmiersprachen Python und R, die speziell für Aufgaben in den Bereichen Data Science, maschinelles Lernen und wissenschaftliches Rechnen entwickelt wurde. Sie vereinfacht das Paketmanagement und die Bereitstellung von Softwareumgebungen erheblich, was insbesondere in komplexen wissenschaftlichen Projekten von Vorteil ist. Kernkomponente der Distribution ist der Paketmanager \colorbox{gray!20}{conda}. Dieser ermöglicht es, Softwarepakete und deren Abhängigkeiten plattformübergreifend zu installieren, zu aktualisieren und zu verwalten. Ein wesentliches Merkmal von Anaconda ist die Fähigkeit, isolierte Umgebungen (Environments) zu erstellen . Diese Isolation verhindert Konflikte zwischen verschiedenen Versionen von Bibliotheken, die für unterschiedliche Projekte benötigt werden könnten.\\ \\
+Für die vorliegende Arbeit dient Anaconda als primäre Basisinfrastruktur. Obwohl das Ziel der Portierung auf TypeScript liegt, wird Anaconda ebenfalls verwendet, um die ursprünglichen Python-Notebooks auszuführen und zu validieren. Darüber hinaus fungiert das Anaconda Prompt (bzw. das Terminal) als Schnittstelle für systemweite Befehle. Hierüber erfolgen auch die notwendigen Installationen für das TypeScript-Ökosystem, wie beispielsweise die Ausführung von \colorbox{gray!20}{npm install}, um Node.js-Pakete global oder lokal verfügbar zu machen. Die Verwaltung der Node.js-Laufzeitumgebung kann ebenfalls in die bestehende Infrastruktur integriert werden, was Anaconda zu einem vielseitigen Werkzeug macht.
 
 
 \subsection{Interaktive Programmierung mit Jupyter}
-Was ist Jupyter Notebook, wozu wird es genutzt; Architektur (Kernel, Frontend, JSON-Struktur der .ipynb Dateien).
+Das Jupyter Notebook ist eine webbasierte, interaktive Entwicklungsumgebung, die es ermöglicht, Dokumente zu erstellen, die sowohl ausführbaren Code als auch formatierten Text, mathematische Formeln und Visualisierungen enthalten. Der Name \enquote{Jupyter} ist ein Akronym, das sich ursprünglich aus den Kernsprachen Julia, Python und R ableitete, mittlerweile aber eine Vielzahl weiterer Programmiersprachen unterstützt.\\ \\
+Die Architektur von Jupyter basiert auf einem Client-Server-Modell, das die Trennung zwischen der Benutzeroberfläche und der Code-Ausführung ermöglicht.
+\begin{itemize}
+	\item Das Frontend (Client): Der Benutzer interagiert über einen Webbrowser mit dem Notebook. Die Oberfläche erlaubt die Eingabe von Code in Zellen sowie die Gestaltung von Textbereichen mittels Markdown.
+	\item Der Notebook-Server: Dieser Server verwaltet die Dateien und vermittelt die Kommunikation zwischen dem Frontend und dem ausführenden Kernel.
+	\item Das Dateiformat (.ipynb): Jupyter Notebooks werden als JSON-Dateien (JavaScript Object Notation) mit der Endung \colorbox{gray!20}{.ipynb} gespeichert. Diese strukturierte Textdatei enthält den gesamten Inhalt des Notebooks, Code, Markdown-Text, Metadaten sowie die Ausgabeartefakte (z. B. Grafiken oder Konsolenausgaben), in einem standardisierten Format. Dies erleichtert die Versionierung und den Austausch von wissenschaftlichen Ergebnissen.
+\end{itemize}
+Ein zentrales Element der Jupyter-Architektur ist der Kernel. Der Kernel ist ein separater Prozess, der für die Ausführung des Codes zuständig ist, den der Benutzer im Notebook eingibt. Wenn eine Code-Zelle ausgeführt wird, sendet das Frontend den Code an den Kernel. Dieser führt die Anweisungen aus und sendet das Ergebnis (z. B. Berechnungswerte oder Grafiken) zurück an das Frontend zur Darstellung.
+Für diese Studienarbeit ist das Kernel-Konzept von entscheidender Bedeutung:\\
+Während die ursprünglichen Vorlesungsunterlagen einen Python-Kernel verwenden (ich glaube ipykernel), erfordert die Portierung auf TypeScript den Einsatz eines spezialisierten TypeScript-Kernels (ich glaube IJavascript). Dieses Design erlaubt es, innerhalb derselben Benutzeroberfläche (Jupyter Lab oder Notebook) nahtlos zwischen verschiedenen Programmiersprachen zu wechseln, indem lediglich der zugrundeliegende Kernel ausgewählt wird. Die spezifische Einrichtung des TypeScript-Kernels und dessen Integration in die Jupyter-Umgebung wird detailliert im Abschnitt 2.5 (Setup und Toolchain) behandelt.\\
 
-
-\subsection{TypeScript als Sprache}
-Allgemeiner Syntaxvergleich; Python mypy und TypeSkript Typechecker (Unterschied dynamisch statisch getypt, Tupel vs. Umsetzung von Tupeln in TypeScript, Dictionaries vs. dynamische Objekte)\\
+\subsection{Einführung in TypeScript}
+Das Notbook Introduction wird hier übernommen.\\
+Hierbei halten wir uns and das Notebook \href{https://github.com/zLeoll/TS-Translation-for-TheoInf/blob/main/Algorithms/TypeScript/Chapter-02/Introduction.ipynb}{Introduction.ipynb}
 Vergleiche z.B. any und unknown.
 
 
 \subsection{TypeScript im Data-Science-Kontext}
 Hier wollen wir einen ersten Eindruck zu TypeScript übergeben. Die zusätzlichen Libraries werden hier auch erwähnt. \\
 Herausforderung: Fehlende Standard-Bibliotheken (NumPy/Pandas Äquivalente).\\
-Vorstellung genutzter Bibliotheken (z.B. stdlib, Plotly.js, etc.).
-
+Vorstellung genutzter Bibliotheken (z.B. stdlib, Plotly.js, etc.).\\
+Allgemeiner Syntaxvergleich; Python mypy und TypeSkript Typechecker (Unterschied dynamisch statisch getypt, Tupel vs. Umsetzung von Tupeln in TypeScript, Dictionaries vs. dynamische Objekte)
 
 
 \subsection{Setup und Toolchain}
