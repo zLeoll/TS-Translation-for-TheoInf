@@ -1,212 +1,241 @@
-/**
- * davis-putnam.ts
- * 
- * Implements the Davis-Putnam algorithm for solving propositional logic formulas in CNF.
- * Based on the provided notebook content.
- */
+import { RecursiveSet, Value } from './recursive-set';
+import { Variable, LogicParser } from './Propositional-Logic-Parser';
+import { NNFNegation, Literal, Clause, CNF, normalize } from './04-CNF'; 
 
-import { RecursiveSet, Value } from 'recursive-set';
-
-// --- Type Definitions ---
-
-export type Variable = string;
-export type Literal = Variable | ['¬', Variable];
-export type Clause = RecursiveSet<Literal>;
-
-// --- Helper Functions ---
+// ============================================================================
+// 1. Helper Functions (Strict Typing)
+// ============================================================================
 
 /**
- * Computes the complement of a literal l.
- * complement(p) = ['¬', p]
- * complement(['¬', p]) = p
+ * Computes the complement of a literal.
+ * Uses strict type narrowing instead of casting.
  */
-export function complement(l: Literal): Literal {
-  if (Array.isArray(l)) {
-    return l[1];
+function complement(l: Literal): Literal {
+  if (l instanceof NNFNegation) {
+    // Type Narrowing: TS knows 'l' is NNFNegation here.
+    // 'l.phi' returns Variable (string) safely.
+    return l.phi; 
   } else {
-    return ['¬', l];
+    // TS knows 'l' is Variable (string) here.
+    return new NNFNegation(l);
   }
 }
 
 /**
- * Extracts the variable from the literal l.
- * extractVariable(p) = p
- * extractVariable(['¬', p]) = p
+ * Extracts the variable from a literal.
  */
-export function extractVariable(l: Literal): Variable {
-  if (Array.isArray(l)) {
-    return l[1];
-  } else {
-    return l;
-  }
+function extractVariable(l: Literal): Variable {
+  return (l instanceof NNFNegation) ? l.phi : l;
 }
 
 /**
  * Returns an arbitrary element from the set S.
+ * Uses O(1) random access from the Hash Map implementation.
  */
 function arb<T extends Value>(S: RecursiveSet<T>): T | null {
-    if (S.isEmpty()) {
-        return null;
-    }
-    return S.raw[0];
+  // pickRandom() returns T | undefined, we normalize to T | null
+  return S.pickRandom() ?? null;
 }
+
 /**
- * Selects an arbitrary variable from the set Variables that does not occur in the set UsedVars.
+ * Creates a CNF containing a single unit clause {{l}}.
  */
-export function selectVariable(
+function unit(l: Literal): CNF {
+    // 1. Create Clause {l} (Explicit Generic for clarity)
+    const c = new RecursiveSet<Literal>(l);
+    
+    // 2. Create CNF {{l}}
+    // RecursiveSet expects 'Clause' elements. 'c' matches 'Clause'.
+    return new RecursiveSet<Clause>(c);
+}
+
+/**
+ * Selects a variable to branch on using a heuristic.
+ */
+function selectVariable(
   Variables: RecursiveSet<Variable>,
   UsedVars: RecursiveSet<Variable>
 ): Variable | null {
-  for (const x of Variables) {
-    if (!UsedVars.has(x)) {
-      return x;
-    }
+  // 1. Heuristic: Fast Random Guessing (O(1))
+  for (let i = 0; i < 10; i++) {
+      const candidate = Variables.pickRandom();
+      if (candidate && !UsedVars.has(candidate)) {
+          return candidate;
+      }
   }
+
+  // 2. Fallback: Linear Scan (O(N))
+  for (const candidate of Variables) {
+      if (!UsedVars.has(candidate)) {
+          return candidate;
+      }
+  }    
   return null;
 }
 
-// --- Core Logic ---
+// ============================================================================
+// 2. DPLL Logic (Reduction & Saturation)
+// ============================================================================
 
 /**
- * Performs unit cuts and unit subsumptions using unit clause {l}.
+ * Reduces the set of clauses by applying the Unit Rule for literal `l`.
+ * 1. Remove clauses containing `l` (Subsumption).
+ * 2. Remove `¬l` from clauses (Unit Cut).
+ * 3. Add `{l}` back to preserve the unit decision.
  */
-export function reduce(Clauses: RecursiveSet<Clause>, l: Literal): RecursiveSet<Clause> {
+function reduce(Clauses: CNF, l: Literal): CNF {
   const lBar = complement(l);
   const result = new RecursiveSet<Clause>();
+  
   for (const clause of Clauses) {
+    if (clause.has(l)) {
+      // Rule 1: Subsumption (Clause is satisfied) -> Skip it.
+      continue; 
+    }
+    
     if (clause.has(lBar)) {
-      const newClause = clause.clone().remove(lBar);
+      // Rule 2: Unit Cut (Remove ¬l from clause)
+      // clone() returns RecursiveSet<Literal> which IS 'Clause'. No Cast needed.
+      const newClause = clause.clone();
+      newClause.remove(lBar);
       result.add(newClause);
-    } else if (!clause.has(l)) {
+    } else {
+      // Keep untouched clause
       result.add(clause);
     }
   }
-  const unitClause = new RecursiveSet<Literal>();
-  unitClause.add(l);
+  
+  // Rule 3: Add the unit clause {l} back
+  // (We create a new set to ensure structural integrity)
+  const unitClause = new RecursiveSet<Literal>(l);
   result.add(unitClause);
-  return result;
+  
+  return result; // return type matches CNF
 }
 
 /**
- * Computes the set of clauses derived from Clauses via repeated unit cuts/subsumptions.
+ * Iteratively applies unit propagation until no new units are found.
  */
-export function saturate(Clauses: RecursiveSet<Clause>): RecursiveSet<Clause> {
+function saturate(Clauses: CNF): CNF {
   let S = Clauses;
   const Used = new RecursiveSet<Clause>();
+  
   while (true) {
+    // Identify Unit Clauses
     const Units = new RecursiveSet<Clause>();
     for (const C of S) {
-      const clause = C as Clause;
-      if (clause.size === 1 && !Used.has(clause)) {
-        Units.add(clause);
+      if (C.size === 1 && !Used.has(C)) {
+        Units.add(C);
       }
     }
-    if (Units.isEmpty()) {
-      break;
-    }
-    const unit = arb(Units) as Clause;
-    Used.add(unit);
-    const l = arb(unit) as Literal;
+    
+    if (Units.isEmpty()) break;
+    
+    // Pick one unit clause and one literal from it
+    const unitClause = arb(Units)!;
+    Used.add(unitClause);
+    
+    const l = arb(unitClause)!;
     S = reduce(S, l);
   }
   return S;
 }
 
-/**
- * Recursive helper for the Davis-Putnam algorithm.
- */
-export function solveRecursive(
-  Clauses: RecursiveSet<Clause>,
+// ============================================================================
+// 3. Solver Core (Recursive Backtracking)
+// ============================================================================
+
+function solveRecursive(
+  Clauses: CNF,
   Variables: RecursiveSet<Variable>,
   UsedVars: RecursiveSet<Variable>
-): RecursiveSet<Clause> {
+): CNF {
   const S = saturate(Clauses);
-  const EmptyClause = new RecursiveSet<Literal>();
-
-  // S is inconsistent
+  
+  // Check for Contradiction (Empty Clause {{}})
+  const EmptyClause = new RecursiveSet<Literal>(); // Logic: {}
   if (S.has(EmptyClause)) {
-    const Falsum = new RecursiveSet<Clause>();
-    Falsum.add(EmptyClause);
+    // Return Falsum: {{}}
+    const Falsum = new RecursiveSet<Clause>(EmptyClause);
     return Falsum;
   }
 
-  // S is trivial
+  // Check for Solution (All clauses are units)
   let allUnits = true;
   for (const C of S) {
-    if ((C as Clause).size !== 1) {
-      allUnits = false;
-      break;
-    }
+      if (C.size !== 1) { allUnits = false; break; }
   }
-  if (allUnits) {
-    return S;
+  if (allUnits) return S;
+
+  // Branching Step
+  const p = selectVariable(Variables, UsedVars);
+  if (!p) return S; // Should not be reached if !allUnits, but safety first
+
+  // Prepare next recursion state (Immutable updates)
+  const nextUsedVars = UsedVars.clone();
+  nextUsedVars.add(p);
+
+  // --- Branch 1: Assume p is True ---
+  // S ∪ {{p}}
+  const branch1 = S.union(unit(p));
+  const result1 = solveRecursive(branch1, Variables, nextUsedVars);
+  
+  // If result1 has NO empty clause, we found a model!
+  if (!result1.has(EmptyClause)) {
+    return result1;
   }
 
-  // select a variable p that has not been used yet
-  const p = selectVariable(Variables, UsedVars) as Variable;
-  const nextUsedVars = UsedVars.union(new RecursiveSet<Variable>(p));
-
-  // Branch 1: {p}
-  const unitP = new RecursiveSet<Clause>();
-  const cP = new RecursiveSet<Literal>();
-  cP.add(p);
-  unitP.add(cP);
-  const Result1 = solveRecursive(S.union(unitP), Variables, nextUsedVars);
-  if (!Result1.has(EmptyClause)) {
-    return Result1;
-  }
-
-  // Branch 2: {¬p}
-  const unitNotP = new RecursiveSet<Clause>();
-  const cNotP = new RecursiveSet<Literal>();
-  cNotP.add(['¬', p]);
-  unitNotP.add(cNotP);
-  return solveRecursive(S.union(unitNotP), Variables, nextUsedVars);
+  // --- Branch 2: Assume p is False ---
+  // S ∪ {{¬p}}
+  const notP = new NNFNegation(p);
+  const branch2 = S.union(unit(notP));
+  return solveRecursive(branch2, Variables, nextUsedVars);
 }
 
-/**
- * Main entry point for the Davis-Putnam solver.
- */
-export function solve(Clauses: RecursiveSet<Clause>): RecursiveSet<Clause> {
+function solve(Clauses: CNF): CNF {
+  // Collect all variables once
   const Variables = new RecursiveSet<Variable>();
   for (const clause of Clauses) {
     for (const lit of clause) {
       Variables.add(extractVariable(lit));
     }
   }
+  
   const UsedVars = new RecursiveSet<Variable>();
   return solveRecursive(Clauses, Variables, UsedVars);
 }
 
-// --- Formatting / Output ---
+// ============================================================================
+// 4. Output Formatting
+// ============================================================================
 
-export function literal_to_str(C: Clause): string {
+function literal_to_str(C: Clause): string {
   const val = arb(C);
   if (val === null) return "{}";
-  const l = val as Literal;
-
-  if (Array.isArray(l)) {
-    return `${l[1]} ↦ False`;
+  
+  // Strict typing: val is Literal
+  if (val instanceof NNFNegation) {
+    return `${val.phi} ↦ False`;
   } else {
-    return `${l} ↦ True`;
+    return `${val} ↦ True`;
   }
 }
 
-export function prettify(Clauses: RecursiveSet<Clause>): string {
-  const res: string[] = [];
-  for (const C of Clauses) res.push(C.toString());
-  return `{${res.join(', ')}}`;
-}
-
-export function toString(S: RecursiveSet<Clause>, Simplified: RecursiveSet<Clause>): string {
+function formatSolution(S: CNF, Simplified: CNF): string {
   const EmptyClause = new RecursiveSet<Literal>();
+  
   if (Simplified.has(EmptyClause)) {
-    return `${prettify(S)} is unsolvable`;
+    return `Formula is unsolvable`;
   }
 
   const parts: string[] = [];
-  for (const C of Simplified) {
-    parts.push(literal_to_str(C as Clause));
+  // Sort for deterministic output
+  const sortedClauses = Array.from(Simplified).sort((a,b) => RecursiveSet.compare(a, b));
+  
+  for (const C of sortedClauses) {
+    parts.push(literal_to_str(C));
   }
   return '{ ' + parts.join(', ') + ' }';
 }
+
+export { solve, formatSolution };
