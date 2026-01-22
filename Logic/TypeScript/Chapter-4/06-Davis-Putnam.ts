@@ -1,4 +1,4 @@
-import { RecursiveSet, Value } from './recursive-set';
+import { RecursiveSet, Value } from 'recursive-set';
 import { Variable, LogicParser } from './Propositional-Logic-Parser';
 import { NNFNegation, Literal, Clause, CNF, normalize } from './04-CNF'; 
 
@@ -230,7 +230,7 @@ function formatSolution(S: CNF, Simplified: CNF): string {
 
   const parts: string[] = [];
   // Sort for deterministic output
-  const sortedClauses = Array.from(Simplified).sort((a,b) => RecursiveSet.compare(a, b));
+  const sortedClauses = Array.from(Simplified).sort((a,b) => RecursiveSet.compareVisual(a, b));
   
   for (const C of sortedClauses) {
     parts.push(literal_to_str(C));

@@ -1,4 +1,4 @@
-import { Tuple } from "./recursive-set";
+import { Tuple } from "recursive-set";
 
 // ============================================================================
 // 1. Domain Types
