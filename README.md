@@ -15,6 +15,7 @@ npm install fraction.js
 npm install mathjs
 npm install @hpcc-js/wasm
 npm install pngjs
+npm i --save-dev @types/pngjs
 npm install heap-js
 npm install logic-solver
 npm install z3-solver
