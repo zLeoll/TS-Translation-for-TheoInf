@@ -9,10 +9,11 @@ export class Stack<T> {
     }
 
     pop(): T {
-        if (this.mStackElements.length === 0) {
+        const val = this.mStackElements.pop();
+        if (val === undefined) {
             throw new Error("popping empty stack");
-        } 
-        return this.mStackElements.pop()!;
+        }
+        return val;
     }
 
     top(): T {
