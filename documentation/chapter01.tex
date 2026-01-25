@@ -1,0 +1,27 @@
+\section{Einleitung}
+Die vorliegende Studienarbeit dokumentiert die systematische Portierung von Jupyter-Notebooks aus der Programmiersprache Python nach TypeScript. Diese Notebooks bilden die Grundlage für die Lehrveranstaltungen \enquote{Theoretische Informatik I} (Logik) und \enquote{Theoretische Informatik II} (Algorithmen und Datenstrukturen) und dienen als interaktive Vorlesungsunterlagen zur Vermittlung theoretischer Konzepte der Informatik.\\
+Die Verwendung von Jupyter-Notebooks in dem Informatikstudium hat sich in den letzten Jahren als effektive Methode etabliert, um theoretische Konzepte mit praktischen Implementierungen zu verbinden \cite{github-jupyter}. Während Python aufgrund seiner Verbreitung und einfachen Syntax häufig als erste Programmiersprache gewählt wird, stellt die dynamische Typisierung in komplexeren Projekten zunehmend eine Herausforderung dar. Diese Problematik führt zur zentralen Fragestellung dieser Arbeit: Lässt sich durch den Einsatz statischer Typisierung die Codequalität, Nachvollziehbarkeit und Effizienz in Lehrveranstaltungen verbessern, ohne dabei die didaktische Zugänglichkeit zu beeinträchtigen?
+
+\subsection{Problemstellung}
+Die aktuelle Implementierung der Vorlesungsunterlagen basiert auf 80 Jupyter-Notebooks. 
+Prof. Dr. Karl Stroetmann formulierte die Aufgabenstellung wie folgt:
+\enquote{Meine Vorlesungen Theoretische Informatik I+II \cite{logic-repository} \cite{algorithms-repository} verwenden eine Reihe von Jupyter-Notebooks, die auf der Sprache Python basieren. Die Sprache Python ist nur dynamisch getypt. Zwar gibt es für Python den Typ-Checker MyPy, aber das von MyPy unterstützte Typsystem ist wesentlich schwerfälliger als das Typsystem von TypeScript. Mein Ziel ist es daher, meine Vorlesungen von Python auf TypeScript umzustellen.} \\
+Die zentrale Problematik ergibt sich aus mehreren Aspekten: \\ \\
+\textbf{Mangelnde Typsicherheit in der informatischen Ausbildung}
+\begin{description}[style=nextline, leftmargin=1cm, labelsep=1em]
+	\item Python ist eine dynamisch typisierte Sprache, bei der Typfehler erst zur Laufzeit erkannt werden. Dies führt insbesondere in der Lehre zu Herausforderungen, da Studierende häufig erst spät, nach Ausführung des Codes, auf Typinkompatibilitäten stoßen. Während Tools wie MyPy eine nachträgliche statische Typprüfung ermöglichen, bleibt die Integration in bestehenden Python-Projekte oft komplex und das Typsystem weniger ausdrucksstark als bei nativ statisch typisierten Sprachen \cite{understanding-typescript}. Diese verzögerte Fehlerkennung kann das Verständnis für Typsysteme und deren Bedeutung in der Softwareentwicklung beeinträchtigen.
+\end{description}
+\textbf{Eingeschränkte Möglichkeiten der statischen Codeanalyse}
+\begin{description}[style=nextline, leftmargin=1cm, labelsep=1em]
+	\item TypeScript bietet als Superset von JavaScript ein robustes, strukturelles Typsystem, das bereits während der Entwicklung umfassende Fehlerprüfungen ermöglicht \cite{understanding-typescript}. Die statische Typprüfung zur Compile-Zeit erlaubt es, viele potenzielle Laufzeitfehler bereits im Vorfeld zu identifizieren und trägt somit zu einer verbesserten Code-Qualität bei. In der Lehre kann dies Studierenden ein tieferes Verständnis für Datenstrukturen und Algorithmen vermitteln, da Typen explizit deklariert und durch den Compiler überprüft werden.
+\end{description}
+\textbf{Umfang des Portierungsprojekts}
+\begin{description}[style=nextline, leftmargin=1cm, labelsep=1em]
+	\item Mit insgesamt 80 Notebooks stellt der Umfang der zu übersetzenden Materialien eine erhebliche Herausforderung dar. Diese Menge erfordert eine systematische Vorgehensweise sowie den strategischen Einsatz von \acs{KI}-gestützten Übersetzungstools, um Konsistenz und Qualität über alle Notebooks hinweg zu gewährleisten.
+\end{description}
+\subsection{Zielsetzung}
+Die vorliegende Arbeit verfolgt mehrere miteinander verbundene Zielsetzungen. Das vom Dozenten vorgegebene Hauptziel besteht in der vollständigen Übersetzung der 80 Python-basierten Jupyter-Notebooks nach TypeScript unter Verwendung von \ac{KI}-Tools wie ChatGPT, Gemini, DeepSeek oder Grok. Diese Portierung soll die Vorlesungsmaterialien auf eine Sprache mit statischer Typisierung überführen und damit die didaktischen Möglichkeiten erweitern. \\
+Ein zentrales Forschungsziel liegt in der Untersuchung, ob die in TypeScript implementierten Programme eine vergleichbare oder möglicherweise verbesserte Verständlichkeit aufweisen wie die ursprünglichen Python-Implementierungen. Diese Fragestellung ist von besonderer Relevanz für die Lehrpraxis, da die Zugänglichkeit des Codes für Studierende nicht durch die erhöhte Typsicherheit beeinträchtigt werden sollte. \\
+Zusätzlich zur qualitativen Bewertung soll anhand der übersetzten Notebooks ein quantitativer Performanzvergleich zwischen Python und TypeScript durchgeführt werden. Dieser Vergleich kann Aufschluss über die praktische Eignung beider Sprachen für rechenintensive Algorithmen und Datenstrukturen geben. Die Arbeit folgt dabei einem systematischen Ansatz, der den Einsatz von \ac{KI}-gestützten Übersetzungstools mit manueller Überprüfung und Optimierung kombiniert, wobei Best Practices für die TypeScript-Entwicklung berücksichtigt und die Übersetzungsqualität kontinuierlich überprüft werden.
+
+
