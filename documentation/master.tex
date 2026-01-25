@@ -82,12 +82,17 @@ Für diese Studienarbeit ist das Kernel-Konzept von entscheidender Bedeutung:\\
 Während die ursprünglichen Vorlesungsunterlagen einen Python-Kernel verwenden (ich glaube ipykernel), erfordert die Portierung auf TypeScript den Einsatz eines spezialisierten TypeScript-Kernels (ich glaube IJavascript). Dieses Design erlaubt es, innerhalb derselben Benutzeroberfläche (Jupyter Lab oder Notebook) nahtlos zwischen verschiedenen Programmiersprachen zu wechseln, indem lediglich der zugrundeliegende Kernel ausgewählt wird. Die spezifische Einrichtung des TypeScript-Kernels und dessen Integration in die Jupyter-Umgebung wird detailliert im Abschnitt 2.5 (Setup und Toolchain) behandelt.\\
 
 \subsection{Einführung in TypeScript}
+TypeScript wurde von Microsoft entwickelt und erstmals im Oktober 2012 der Öffentlichkeit vorgestellt. Die Entwicklung stand unter der Leitung von Anders Hejlsberg, einem renommierten Softwarearchitekten, der zuvor bereits maßgeblich an der Gestaltung von C\#, Delphi und Turbo Pascal beteiligt war. \cite{typescript-wiki} \cite{typescript-github}
+Der primäre Beweggrund für die Schaffung dieser neuen Sprache lag in den Defiziten von JavaScript bei der Entwicklung großer, komplexer Anwendungen (\emph{Large-Scale Application Development}) \cite{typescript-wiki}.\\
+Als Antwort auf diese Herausforderungen ist TypeScript als eine Erweiterung von JavaScript konzipiert, mit dem expliziten Ziel, die Entwicklung großer und langfristig wartbarer Anwendungen zu erleichtern [web:1]. Syntaktisch ist TypeScript als Superset von ECMAScript~5 definiert, sodass jedes gültige JavaScript-Programm zugleich ein gültiges TypeScript-Programm ist [web:1]. Zusätzlich zu JavaScript ergänzt TypeScript unter anderem ein Modulsystem, Klassen, Interfaces sowie ein reichhaltiges graduelles Typsystem, das eine schrittweise (inkrementelle) Typisierung bestehender Codebasen unterstützt. \cite{understanding-typescript}\\
+Ein wesentliches Entwurfsprinzip ist dabei die \emph{Typauslöschung} (type erasure): Die Typinformationen werden vom Compiler zur statischen Analyse genutzt, sind jedoch nicht Bestandteil des erzeugten JavaScript-Codes, sodass zur Laufzeit keine TypeScript-Typen repräsentiert oder automatisch geprüft werden [web:1]. Der TypeScript-Compiler überprüft TypeScript-Programme lediglich zur Übersetzungszeit und transformiert sie in JavaScript, wodurch sie unmittelbar in etablierten JavaScript-Laufzeitumgebungen ausgeführt werden können. Bierman, Abadi und Torgersen (2014) beschreiben TypeScript zudem als bewusst nicht vollständig statisch typsicher ausgelegt, um gängige JavaScript-Idiome und die Typisierung existierender Bibliotheken praktisch zu unterstützen. \cite{understanding-typescript} \\ \\
 Das Notbook Introduction wird hier übernommen.\\
 Hierbei halten wir uns and das Notebook \href{https://github.com/zLeoll/TS-Translation-for-TheoInf/blob/main/Algorithms/TypeScript/Chapter-02/Introduction.ipynb}{Introduction.ipynb}
 Vergleiche z.B. any und unknown.
 
 
 \subsection{TypeScript im Data-Science-Kontext}
+Hier ist dein Abschnitt \textbf{@TobiKnight}\\
 Hier wollen wir einen ersten Eindruck zu TypeScript übergeben. Die zusätzlichen Libraries werden hier auch erwähnt. \\
 Herausforderung: Fehlende Standard-Bibliotheken (NumPy/Pandas Äquivalente).\\
 Vorstellung genutzter Bibliotheken (z.B. stdlib, Plotly.js, etc.).\\
