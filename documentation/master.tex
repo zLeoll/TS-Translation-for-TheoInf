@@ -79,16 +79,24 @@ Die Architektur von Jupyter basiert auf einem Client-Server-Modell, das die Tren
 \end{itemize}
 Ein zentrales Element der Jupyter-Architektur ist der Kernel. Der Kernel ist ein separater Prozess, der für die Ausführung des Codes zuständig ist, den der Benutzer im Notebook eingibt. Wenn eine Code-Zelle ausgeführt wird, sendet das Frontend den Code an den Kernel. Dieser führt die Anweisungen aus und sendet das Ergebnis (z. B. Berechnungswerte oder Grafiken) zurück an das Frontend zur Darstellung.
 Für diese Studienarbeit ist das Kernel-Konzept von entscheidender Bedeutung:\\
-Während die ursprünglichen Vorlesungsunterlagen einen Python-Kernel verwenden (ich glaube ipykernel), erfordert die Portierung auf TypeScript den Einsatz eines spezialisierten TypeScript-Kernels (ich glaube IJavascript). Dieses Design erlaubt es, innerhalb derselben Benutzeroberfläche (Jupyter Lab oder Notebook) nahtlos zwischen verschiedenen Programmiersprachen zu wechseln, indem lediglich der zugrundeliegende Kernel ausgewählt wird. Die spezifische Einrichtung des TypeScript-Kernels und dessen Integration in die Jupyter-Umgebung wird detailliert im Abschnitt 2.5 (Setup und Toolchain) behandelt.\\
+Bitte den folgenden Abschnitt überarbeiten \textbf{@TobiKnight}\\
+Während die ursprünglichen Vorlesungsunterlagen einen Python-Kernel verwenden (ich glaube ipykernel), erfordert die Portierung auf TypeScript den Einsatz eines spezialisierten TypeScript-Kernels (ich glaube IJavascript). Dieses Design erlaubt es, innerhalb derselben Benutzeroberfläche (Jupyter Lab oder Notebook) nahtlos zwischen verschiedenen Programmiersprachen zu wechseln, indem lediglich der zugrundeliegende Kernel ausgewählt wird. Die spezifische Einrichtung des TypeScript-Kernels und dessen Integration in die Jupyter-Umgebung wird detailliert im Abschnitt 2.5 (Setup und Toolchain) behandelt.
+
 
 \subsection{Einführung in TypeScript}
 TypeScript wurde von Microsoft entwickelt und erstmals im Oktober 2012 der Öffentlichkeit vorgestellt. Die Entwicklung stand unter der Leitung von Anders Hejlsberg, einem renommierten Softwarearchitekten, der zuvor bereits maßgeblich an der Gestaltung von C\#, Delphi und Turbo Pascal beteiligt war. \cite{typescript-wiki} \cite{typescript-github}
 Der primäre Beweggrund für die Schaffung dieser neuen Sprache lag in den Defiziten von JavaScript bei der Entwicklung großer, komplexer Anwendungen (\emph{Large-Scale Application Development}) \cite{typescript-wiki}.\\
 Als Antwort auf diese Herausforderungen ist TypeScript als eine Erweiterung von JavaScript konzipiert, mit dem expliziten Ziel, die Entwicklung großer und langfristig wartbarer Anwendungen zu erleichtern [web:1]. Syntaktisch ist TypeScript als Superset von ECMAScript~5 definiert, sodass jedes gültige JavaScript-Programm zugleich ein gültiges TypeScript-Programm ist [web:1]. Zusätzlich zu JavaScript ergänzt TypeScript unter anderem ein Modulsystem, Klassen, Interfaces sowie ein reichhaltiges graduelles Typsystem, das eine schrittweise (inkrementelle) Typisierung bestehender Codebasen unterstützt. \cite{understanding-typescript}\\
 Ein wesentliches Entwurfsprinzip ist dabei die \emph{Typauslöschung} (type erasure): Die Typinformationen werden vom Compiler zur statischen Analyse genutzt, sind jedoch nicht Bestandteil des erzeugten JavaScript-Codes, sodass zur Laufzeit keine TypeScript-Typen repräsentiert oder automatisch geprüft werden [web:1]. Der TypeScript-Compiler überprüft TypeScript-Programme lediglich zur Übersetzungszeit und transformiert sie in JavaScript, wodurch sie unmittelbar in etablierten JavaScript-Laufzeitumgebungen ausgeführt werden können. Bierman, Abadi und Torgersen (2014) beschreiben TypeScript zudem als bewusst nicht vollständig statisch typsicher ausgelegt, um gängige JavaScript-Idiome und die Typisierung existierender Bibliotheken praktisch zu unterstützen. \cite{understanding-typescript} \\ \\
-Das Notbook Introduction wird hier übernommen.\\
-Hierbei halten wir uns and das Notebook \href{https://github.com/zLeoll/TS-Translation-for-TheoInf/blob/main/Algorithms/TypeScript/Chapter-02/Introduction.ipynb}{Introduction.ipynb}
-Vergleiche z.B. any und unknown.
+Nach der Einführung in die Entstehungsgeschichte und die zentralen Entwurfsprinzipien von TypeScript soll im Folgenden die Programmiersprache selbst vorgestellt werden. Ziel ist es, einen Überblick über die grundlegenden Sprachkonstrukte zu geben, welche für die Vorlesungsunterlagen relevant sind.\\
+Die Darstellung orientiert sich dabei am Notebook \href{https://github.com/zLeoll/TS-Translation-for-TheoInf/blob/main/Algorithms/TypeScript/Chapter-02/Introduction.ipynb}{Introduction.ipynb}, das als Einstieg der Vorlesung \emph{Theoretische Informatik} dient. Anhand dieses Notebooks werden zentrale Konzepte wie Variablendeklarationen, Typannotationen, Funktionen, Kontrollstrukturen, Arrays, Objekte sowie grundlegende Aspekte des Typsystems eingeführt und anhand von Codebeispielen illustriert.
+
+\subsubsection{Primitive Datentypen und Arithmetik}
+In TypeScript, wie auch in JavaScript, werden alle numerischen Werte standardmäßig als Gleitkommazahlen gemäß dem IEEE-754-Standard repräsentiert. Es existiert kein separater Datentyp für Ganzzahlen (Integers). Dies gilt selbst dann, wenn die literale Darstellung eine Ganzzahl vermuten lässt.
+\begin{lstlisting}[language=TypeScript, caption={Typüberprüfung numerischer Literale}]
+	typeof 666   // Ausgabe: "number"
+	typeof 666.0 // Ausgabe: "number"
+\end{lstlisting}
 
 
 \subsection{TypeScript im Data-Science-Kontext}
@@ -101,7 +109,8 @@ Allgemeiner Syntaxvergleich; Python mypy und TypeSkript Typechecker (Unterschied
 
 \subsection{Setup und Toolchain}
 Hier soll auf die Installation der Umgebung + die README.md eingegangen werden.
-
+Um zu testen, ob man alle Libraies korrekt installiert hat, kann man es mirhilfe des Notebooks \href{https://github.com/zLeoll/TS-Translation-for-TheoInf/blob/main/Algorithms/TypeScript/Chapter-02/Test-Libraries.ipynb}{Test-Libraries.ipynb} testen\\
+Die erste Zelle im Notebook erwähnen, die das Notebook in Vollbild anzeigen lässt.
 
 
 \newpage
