@@ -20,6 +20,7 @@
 
 
 \listoffigures
+\lstlistoflistings
 \addcontentsline{toc}{section}{Abbildungsverzeichnis}
 \newpage
 
@@ -92,10 +93,37 @@ Nach der Einführung in die Entstehungsgeschichte und die zentralen Entwurfsprin
 Die Darstellung orientiert sich dabei am Notebook \href{https://github.com/zLeoll/TS-Translation-for-TheoInf/blob/main/Algorithms/TypeScript/Chapter-02/Introduction.ipynb}{Introduction.ipynb}, das als Einstieg der Vorlesung \emph{Theoretische Informatik} dient. Anhand dieses Notebooks werden zentrale Konzepte wie Variablendeklarationen, Typannotationen, Funktionen, Kontrollstrukturen, Arrays, Objekte sowie grundlegende Aspekte des Typsystems eingeführt und anhand von Codebeispielen illustriert.
 
 \subsubsection{Primitive Datentypen und Arithmetik}
-In TypeScript, wie auch in JavaScript, werden alle numerischen Werte standardmäßig als Gleitkommazahlen gemäß dem IEEE-754-Standard repräsentiert. Es existiert kein separater Datentyp für Ganzzahlen (Integers). Dies gilt selbst dann, wenn die literale Darstellung eine Ganzzahl vermuten lässt.
-\begin{lstlisting}[language=TypeScript, caption={Typüberprüfung numerischer Literale}]
+In TypeScript, wie auch in JavaScript, werden alle numerischen Werte standardmäßig als Gleitkommazahlen gemäß dem \href{https://de.wikipedia.org/wiki/IEEE_754}{IEEE-754-Standard} repräsentiert. Es existiert kein separater Datentyp für Ganzzahlen (Integers). Dies gilt selbst dann, wenn die literale Darstellung eine Ganzzahl vermuten lässt.
+\begin{lstlisting}[style=tsstyle, caption={Typüberprüfung numerischer Literale}]
 	typeof 666   // Ausgabe: "number"
 	typeof 666.0 // Ausgabe: "number"
+\end{lstlisting}
+Diese Designentscheidung hat direkte Auswirkungen auf die Präzision arithmetischer Operationen. Die Genauigkeit für Ganzzahlen ist durch die Konstante \texttt{Number.MAX\_SAFE\_INTEGER} begrenzt, welche den Wert $2^{53} - 1$ (ca. 9 Billiarden) repräsentiert. Jenseits dieser Grenze ist die exakte Darstellung von Ganzzahlen nicht mehr gewährleistet, was zu Präzisionsverlusten führt.
+\begin{lstlisting}[style=tsstyle, caption={Demonstration des Präzisionsverlusts bei Number}]
+	Number.MAX_SAFE_INTEGER + 1 === Number.MAX_SAFE_INTEGER + 2
+	// Ausgabe: true
+\end{lstlisting}
+Um die Limitierungen des \texttt{Number}-Typs zu umgehen, gibt es den primitive Datentyp \texttt{BigInt}. Er ermöglicht die Darstellung von Ganzzahlen beliebiger Größe, beschränkt lediglich durch den verfügbaren Arbeitsspeicher. Syntaktisch werden \texttt{BigInt}-Literale durch das Suffix \texttt{n} oder über den Konstruktor \texttt{BigInt()} erzeugt.\\
+Ein wichtiger Aspekt der Typsicherheit in TypeScript ist die strikte Trennung dieser beiden numerischen Typen. Es ist nicht möglich, \texttt{BigInt} und \texttt{Number} in arithmetischen Operationen ohne explizite Konvertierung zu mischen. Zudem unterscheidet sich das Verhalten bei der Division: Während \texttt{Number} stets Gleitkommaergebnisse liefert, führt die Division von \texttt{BigInt}-Werten zu einer Trunkierung des Dezimalanteils (Ganzzahldivision).
+\begin{lstlisting}[style=tsstyle, caption={Verwendung von BigInt}]
+	const result: bigint = 7n ** 125n; 
+	// Berechnung extrem großer Potenzen
+	
+	console.log(5n / 2n); 
+	// Ausgabe: 2n (Nachkommastellen werden abgeschnitten)
+\end{lstlisting}
+\subsubsection{Ausgabe und Zeichenkettenliterale}
+Für die Ausgabe von Werten auf der Konsole stellt TypeScript die Funktion \texttt{console.log} bereit. Diese Funktion ist polymorph und akzeptiert Argumente beliebigen Typs, um sie in einer textuellen Repräsentation auszugeben. Ein elementarer Datentyp für textuelle Daten ist der \texttt{String}. In TypeScript können Zeichenkettenliterale äquivalent durch einfache Anführungszeichen (\texttt{'}) oder doppelte Anführungszeichen (\texttt{"}) definiert werden. Es gibt semantisch keinen Unterschied zwischen diesen beiden Notationen, was Entwicklern Flexibilität bei der Einhaltung von Coding-Style-Guidelines gewährt.\\
+In der interaktiven Umgebung eines Jupyter Notebooks wird zudem das Ergebnis des letzten Ausdrucks einer Zelle automatisch ausgegeben, ohne dass ein expliziter Aufruf von \texttt{console.log} notwendig ist.
+\begin{lstlisting}[style=tsstyle, caption={Ausgabe und Definition von Strings}]
+	// Explizite Ausgabe über die Konsole
+	console.log('Hello, World!');
+	
+	// Implizite Ausgabe des letzten Ausdrucks im Notebook
+	'Hello, World!'
+	
+	// Alternative Syntax mit doppelten Anführungszeichen
+	"Hello, World!"
 \end{lstlisting}
 
 

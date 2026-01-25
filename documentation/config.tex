@@ -11,3 +11,52 @@ citecolor=blue]{hyperref}
 \usepackage{enumitem}
 \usepackage{xcolor}
 \usepackage{listings}
+
+\definecolor{codebg}{rgb}{1,1,0.88}
+\definecolor{codecomment}{rgb}{0.8,0,0}
+\definecolor{codekeyword}{rgb}{0,0,0.8}
+\definecolor{codestring}{rgb}{0,0.5,0}
+
+\lstdefinelanguage{TypeScript}{
+	keywords={break,case,catch,class,const,continue,debugger,default,delete,do,else,enum,export,extends,false,finally,for,function,if,import,in,instanceof,interface,let,new,null,return,super,switch,this,throw,true,try,typeof,var,void,while,with,yield,
+		type,public,private,protected,readonly,implements,static,abstract,as,any,unknown,never,number,string,boolean},
+	keywordstyle=\color{codekeyword}\bfseries,
+	ndkeywords={String,Number,Boolean,Object,Array,Map,Set,Date,Promise},
+	ndkeywordstyle=\color{codekeyword}\bfseries,
+	identifierstyle=\color{black},
+	sensitive=true,
+	comment=[l]{//},
+	morecomment=[s]{/*}{*/},
+	commentstyle=\color{codecomment}\itshape,
+	stringstyle=\color{codestring},
+	morestring=[b]',
+	morestring=[b]"
+}
+
+\lstdefinestyle{tsstyle}{
+	language=TypeScript,
+	backgroundcolor=\color{codebg},
+	basicstyle=\ttfamily\small,
+	numbers=left,
+	numberstyle=\tiny,
+	stepnumber=1,
+	numbersep=8pt,
+	frame=single,
+	breaklines=true,
+	showstringspaces=false,
+	tabsize=2,
+	captionpos=b
+}
+
+\lstset{
+	inputencoding=utf8,
+	extendedchars=true,
+	literate=
+	{ä}{{\"a}}1
+	{ö}{{\"o}}1
+	{ü}{{\"u}}1
+	{Ä}{{\"A}}1
+	{Ö}{{\"O}}1
+	{Ü}{{\"U}}1
+	{ß}{{\ss}}1
+}
