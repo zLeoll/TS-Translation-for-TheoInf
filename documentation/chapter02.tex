@@ -105,6 +105,391 @@ Soll sich ein Wert im Laufe des Programms ändern, muss die Variable mit dem Sch
 	count = 2; // Erlaubt, da 'count' mit 'let' deklariert wurde
 \end{lstlisting}
 
+\subsubsection{Arrays}
+Arrays sind eine fundamentale Datenstruktur in TypeScript, die eine geordnete Sammlung von Elementen repräsentiert. Sie entsprechen konzeptionell den Listen in Python, unterscheiden sich jedoch in Syntax und bestimmten Verhaltensweisen. Ein Array wird in TypeScript durch eckige Klammern \texttt{[} und \texttt{]} definiert. Das leere Array, also ein Array ohne Elemente, wird wie folgt notiert:
+
+\begin{lstlisting}[style=tsstyle, caption={Definition eines leeren Arrays}]
+	[]
+\end{lstlisting}
+Ein Array mit konkreten Elementen wird durch Komma-separierte Werte innerhalb der eckigen Klammern erzeugt. Leerzeichen nach den Kommas sind optional, werden jedoch zur besseren Lesbarkeit empfohlen.
+
+\begin{lstlisting}[style=tsstyle, caption={Array mit numerischen Elementen}]
+	[1, 2, 3]
+\end{lstlisting}
+\textbf{Zugriff auf Array-Elemente: Der Index-Operator}\\
+Der \textit{Index-Operator} \texttt{[\(\cdot\)]} ist ein Postfix-Operator, der verwendet wird, um auf das Element an einer bestimmten Position (Index) zuzugreifen. TypeScript verwendet, wie die meisten modernen Programmiersprachen, eine nullbasierte Indizierung (\textit{zero-based indexing}), d.\,h., das erste Element eines Arrays hat den Index \texttt{0}.
+
+\begin{lstlisting}[style=tsstyle, caption={Zugriff auf Array-Elemente}]
+	const L = [1, 2, 3];
+	L[0]; // Gibt das erste Element zurück: 1
+\end{lstlisting}
+Der Index-Operator kann auch auf der linken Seite einer Zuweisung verwendet werden, um ein bestehendes Element zu modifizieren:
+
+\begin{lstlisting}[style=tsstyle, caption={Modifikation eines Array-Elements}]
+	L[0] = 7;
+	L; // Ergebnis: [7, 2, 3]
+\end{lstlisting}
+\textbf{Verkettung von Arrays}\\
+Arrays können mittels der Methode \texttt{concat} verkettet werden. Diese Methode erstellt ein neues Array, das alle Elemente des aufrufenden Arrays gefolgt von allen Elementen des als Argument übergebenen Arrays enthält.
+
+\begin{lstlisting}[style=tsstyle, caption={Verkettung mit concat}]
+	[1, 2, 3].concat([4, 5, 6]); // Ergebnis: [1, 2, 3, 4, 5, 6]
+\end{lstlisting}
+Alternativ kann der \textit{Spread-Operator} \texttt{...} verwendet werden, um Arrays zu entpacken und zu kombinieren. Diese Syntax ist kompakter und wird in TypeScript häufig bevorzugt.
+
+\begin{lstlisting}[style=tsstyle, caption={Verkettung mit dem Spread-Operator}]
+	[...[1, 2, 3], ...[4, 5, 6]]; // Ergebnis: [1, 2, 3, 4, 5, 6]
+\end{lstlisting}
+Die Eigenschaft \texttt{length} gibt die Anzahl der Elemente in einem Array zurück. Formal ist die Länge eines Arrays $L$ definiert als $|L|$, die Kardinalität der Menge der enthaltenen Elemente.
+
+\begin{lstlisting}[style=tsstyle, caption={Bestimmung der Array-Länge}]
+	[4, 5, 4].length; // Ergebnis: 3
+\end{lstlisting}
+\textbf{Die Methode filter}\\
+Die Methode \texttt{filter} ist eine Higher-Order-Funktion, die ein neues Array erzeugt, welches nur jene Elemente des ursprünglichen Arrays enthält, für die eine übergebene Prädikatsfunktion \texttt{true} zurückgibt. Diese Methode implementiert das funktionale Konzept der \textit{Filterung} und ist ein zentrales Werkzeug für deklarative Array-Transformationen. Die formale TypeScript Signatur sieht wie folgt aus: 
+\begin{lstlisting}[style=tsstyle, caption={Signatur \textit{filter}}]
+	filter(
+		callbackfn: (value: number, index: number, array: number[]) => unknown,
+		thisArg?: any
+	): number[]
+\end{lstlisting}
+Die Callback-Funktion erhält automatisch drei Argumente:
+\begin{enumerate}[itemsep=2pt, parsep=2pt, topsep=2pt]
+	\item \texttt{value}: Das aktuell verarbeitete Element
+	\item \texttt{index}: Der nullbasierte Index des Elements im Array
+	\item \texttt{array}: Das ursprüngliche Array, auf dem \texttt{filter} aufgerufen wurde
+\end{enumerate}
+Im folgenden Beispiel werden nur gerade Zahlen aus dem Array extrahiert. Die Bedingung \texttt{n \% 2 === 0} prüft, ob der Rest der Division durch 2 gleich 0 ist.
+
+\begin{lstlisting}[style=tsstyle, caption={Filtern gerader Zahlen}]
+	let K = [1, 2, 3, 4];
+	const result = K.filter((n, i, k) => {
+		console.log(n); // Aktuelles Element
+		console.log(i); // Index
+		console.log(k); // Ursprüngliches Array
+		return n % 2 === 0;
+	});
+	result; // Ergebnis: [2, 4]
+\end{lstlisting}
+Die Ausführung lässt sich wie folgt visualisieren:
+\begin{table}[h]
+	\centering
+	\begin{tabular}{|c|c|c|c|}
+		\hline
+		\textbf{Element (n)} & \textbf{Operation (n \% 2)} & \textbf{Test (=== 0)} & \textbf{Ergebnis} \\ \hline
+		1 & 1 \% 2 = 1 & 1 === 0 $\rightarrow$ false & Drop \\ \hline
+		2 & 2 \% 2 = 0 & 0 === 0 $\rightarrow$ true  & Keep \\ \hline
+		3 & 3 \% 2 = 1 & 1 === 0 $\rightarrow$ false & Drop \\ \hline
+		4 & 4 \% 2 = 0 & 0 === 0 $\rightarrow$ true  & Keep \\ \hline
+	\end{tabular}
+\end{table} 
+\FloatBarrier
+\noindent\textbf{Erzeugung von Arrays mit Array.from}\\
+Neben der literalen Schreibweise bietet TypeScript die statische Methode \texttt{Array.from}, um Arrays dynamisch zu erzeugen. Diese Methode ist besonders nützlich, um Arrays einer bestimmten Länge zu initialisieren und gleichzeitig mit Werten zu befüllen. Sie akzeptiert ein \textit{Array-ähnliches} Objekt (z.\,B. ein Objekt mit einer \texttt{length}-Eigenschaft) und eine optionale Mapping-Funktion. Die formale TypeScript Signatur sieht wie folgt aus:
+\begin{lstlisting}[style=tsstyle, caption={Signatur \texttt{from}}]
+	static from<T, U>(
+		arrayLike: ArrayLike<T>,
+		mapfn: (element: T, index: number) => U
+	): U[]
+\end{lstlisting}
+Im folgenden Beispiel wird ein Array erzeugt, das die Zahlenfolge von 1 bis 10 enthält:
+
+\begin{lstlisting}[style=tsstyle, caption={Erzeugung einer Zahlenfolge}]
+	Array.from({length: 10}, (_, i) => i + 1);
+	// Ergebnis: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+\end{lstlisting}
+Die Argumente werden dabei wie folgt interpretiert:
+\begin{enumerate}[itemsep=2pt, parsep=2pt, topsep=2pt]
+	\item \texttt{\{length: 10\}}: Ein Objekt, das ein Array der Länge 10 simuliert. Da keine Elemente vorhanden sind, werden diese als \texttt{undefined} betrachtet.
+	\item \texttt{(\_, i) => i + 1}: Die Mapping-Funktion. Der Unterstrich \texttt{\_} ist eine Konvention für ein ignoriertes Argument (hier das \texttt{undefined}-Element). \texttt{i} ist der aktuelle Index (0 bis 9), der transformiert wird (\texttt{0} $\rightarrow$ \texttt{1}, \dots).
+\end{enumerate}
+\textbf{Die Methode map}\\
+Die Methode \texttt{map} transformiert jedes Element eines Arrays mithilfe einer Callback-Funktion und gibt ein neues Array zurück, das die Ergebnisse dieser Transformation enthält. Die Länge des Arrays bleibt dabei unverändert.
+
+\begin{lstlisting}[style=tsstyle, caption={Quadrieren von Zahlen mit map}]
+	const K = [1, 2, 3];
+	K.map(n => n * n);
+	// Ergebnis: [1, 4, 9]
+\end{lstlisting}
+\textbf{Die Methode reduce}\\
+Die Methode \texttt{reduce} wird verwendet, um ein Array auf einen einzelnen Wert zu reduzieren (z.\,B. die Summe aller Elemente). Sie iteriert über das Array und führt einen Akkumulator mit, der den Zwischenstand der Berechnung speichert. Die formale TypeScript Signatur sieht wie folgt aus:
+\begin{lstlisting}[style=tsstyle, caption={Signatur \texttt{from}}]
+	reduce(
+		callbackfn: (accumulator: number, currentValue: number) => number,
+		initialValue: number
+	): number
+\end{lstlisting}
+Die Callback-Funktion nimmt zwei Hauptargumente entgegen:
+\begin{itemize}[itemsep=2pt, parsep=2pt, topsep=2pt]
+	\item \texttt{accumulator} (a): Der akkumulierte Wert (Startwert oder Ergebnis der vorherigen Iteration).
+	\item \texttt{currentValue} (b): Das aktuelle Element des Arrays.
+\end{itemize}
+Das folgende Beispiel berechnet die Summe der Zahlen 1, 2 und 3:
+
+\begin{lstlisting}[style=tsstyle, caption={Summierung mit reduce}]
+	[1, 2, 3].reduce((a, b) => a + b, 0);
+	// Ergebnis: 6
+\end{lstlisting}
+Der Ablauf der Berechnung (\textit{Trace}) stellt sich wie folgt dar:
+\begin{table}
+	\centering
+	\begin{tabular}{|c|r|r|r|r|}
+		\hline
+		\textbf{Schritt} & \textbf{a (Akkumulator)} & \textbf{b (Wert)} & \textbf{Operation (a + b)} & \textbf{Neu a} \\ \hline
+		Start & 0 & --- & --- & 0 \\ \hline
+		1 & 0 & 1 & 0 + 1 & 1 \\ \hline
+		2 & 1 & 2 & 1 + 2 & 3 \\ \hline
+		3 & 3 & 3 & 3 + 3 & 6 \\ \hline
+	\end{tabular}
+\end{table}
+\FloatBarrier
+\noindent \textbf{Array Destructuring}\\
+Ein leistungsfähiges Feature von TypeScript ist das \textit{Array Destructuring}. Es ermöglicht das \enquote{Entpacken} (\textit{unpacking}) von Werten aus einem Array direkt in separate Variablen, anstatt mühsam über den Index (wie \texttt{arr[0]}, \texttt{arr[1]}) darauf zuzugreifen. Dies führt zu kompakterem und lesbarerem Code, insbesondere wenn Funktionen mehrere Werte in Form eines Arrays zurückgeben.
+
+\begin{lstlisting}[style=tsstyle, caption={Einfaches Array Destructuring}]
+	let a, b, rest;
+	[a, b] = [10, 20];
+	console.log(a); // Ausgabe: 10
+	console.log(b); // Ausgabe: 20
+\end{lstlisting}
+Destructuring kann auch mit dem \textit{Rest-Operator} (\texttt{...}) kombiniert werden, um die verbleibenden Elemente eines Arrays in einer neuen Array-Variable zu sammeln. Dies ist besonders nützlich, um den "Kopf" (Head) und den "Rest" (Tail) einer Liste zu trennen, ein gängiges Muster in der funktionalen Programmierung.
+
+\begin{lstlisting}[style=tsstyle, caption={Destructuring mit Rest-Operator}]
+	[a, b, ...rest] = [10, 20, 30, 40, 50];
+	console.log(rest); 
+	// Ausgabe: [30, 40, 50]
+\end{lstlisting}
+
+\subsubsection{Tupel}
+Ein \textit{Tupel} ist in TypeScript ein spezieller Array-Typ, der eine feste Anzahl von Elementen mit vorab definierten Datentypen besitzt. Im Gegensatz zu herkömmlichen Arrays, die meist homogen typisiert sind (z.\,B. \texttt{string[]}), erlauben Tupel die Speicherung einer heterogenen Sammlung von Werten in einer strikten Reihenfolge. Dieses Konzept eignet sich besonders, um zusammengehörige Daten zu gruppieren, ohne dafür eigens ein komplexes Objekt definieren zu müssen, beispielsweise für Koordinatenpaare \texttt{[x, y]} oder Rückgabewerte einer Funktion.\\
+Im folgenden Beispiel wird ein Tupel-Typ \texttt{userProfile} definiert, der exakt drei Elemente in der Reihenfolge \texttt{number}, \texttt{string} und \texttt{boolean} erwartet:
+
+\begin{lstlisting}[style=tsstyle, caption={Definition und Initialisierung eines Tupels}]
+	let userProfile: [number, string, boolean]; // Typ-Definition
+	userProfile = [101, "Alice", true]; 
+	// Zuweisung: Reihenfolge und Typen müssen exakt übereinstimmen
+\end{lstlisting}
+Der Zugriff auf die Elemente erfolgt analog zu Arrays über den Index-Operator:
+
+\begin{lstlisting}[style=tsstyle, caption={Zugriff auf Tupel-Elemente}]
+	console.log("Name:", userProfile[1]); // Ausgabe: Name: Alice
+\end{lstlisting}
+
+\subsubsection{Objekte}
+Während Arrays und Tupel Werte in einer geordneten Liste speichern, dienen \textit{Objekte} der Speicherung von Schlüssel-Wert-Paaren (\textit{Key-Value Pairs}). Ein Objekt ist eine Sammlung von Eigenschaften (\textit{Properties}), wobei jede Eigenschaft einen Namen und einen zugehörigen Wert besitzt. In TypeScript werden Objekte literal mit geschweiften Klammern \texttt{\{\}} definiert.\\
+Das nachstehende Beispiel zeigt ein \texttt{student}-Objekt mit grundlegenden Eigenschaften:
+
+\begin{lstlisting}[style=tsstyle, caption={Objektdefinition}]
+	const student = {
+		firstName: "Marvin",
+		matriculationNumber: 123456,
+		isEnrolled: true
+	};
+\end{lstlisting}
+\textbf{Zugriff auf Eigenschaften}\\
+Es existieren zwei gängige Notationen für den Zugriff auf Objekteigenschaften:
+\begin{itemize}[itemsep=2pt, parsep=2pt, topsep=2pt]
+	\item \textbf{Punkt-Notation (\texttt{obj.key}):} Die Standard-Methode für den Zugriff, wenn der Schlüsselname bekannt und ein gültiger Bezeichner ist.
+	\item \textbf{Klammer-Notation (\texttt{obj["key"]}):} Notwendig, wenn der Schlüssel in einer Variable gespeichert ist oder Sonderzeichen enthält.
+\end{itemize}
+
+\begin{lstlisting}[style=tsstyle, caption={Zugriffsarten auf Objekteigenschaften}]
+	console.log(student.firstName);              // Punkt-Notation
+	console.log(student["matriculationNumber"]); // Klammer-Notation
+\end{lstlisting}
+Objekte sind veränderlich (\textit{mutable}), sodass Werte bestehender Eigenschaften nachträglich modifiziert werden können:
+
+\begin{lstlisting}[style=tsstyle, caption={Modifikation von Eigenschaften}]
+	student.isEnrolled = false;
+\end{lstlisting}
+\textbf{Verschachtelte Objekte}\\
+Objekte können beliebig verschachtelt werden, um komplexe Datenstrukturen abzubilden. Das Beispiel \texttt{university} demonstriert eine Hierarchie, in der die Eigenschaft \texttt{location} selbst ein Objekt ist und \texttt{departments} ein Array von Strings darstellt.
+
+\begin{lstlisting}[style=tsstyle, caption={Verschachtelte Objekte}]
+	const university = {
+		name: "HTWG Konstanz",
+		location: {
+			street: "Alfred-Wachtel-Str. 8",
+			city: "Konstanz",
+			zipCode: 78462
+		},
+		departments: ["Computer Science", "Architecture", 
+		"Mechanical Engineering"],
+		isPublic: true
+	};
+\end{lstlisting}
+Der Zugriff auf tiefere Ebenen erfolgt durch Verkettung des Punkt-Operators bzw. Kombination mit dem Array-Index:
+
+\begin{lstlisting}[style=tsstyle, caption={Zugriff auf verschachtelte Daten}]
+	// Zugriff auf verschachteltes Objekt
+	university.location.city; // Ausgabe: Konstanz
+	
+	// Zugriff auf Array innerhalb eines Objekts
+	university.departments[1]; // Ausgabe: Architecture
+\end{lstlisting}
+
+\subsubsection{Skripte und Funktionen}
+\textbf{@TobiKnight}: Hier vielleicht weg lassen?\\
+Um komplexere logische Abläufe zu realisieren, können in TypeScript mehrere Ausdrücke in einem Skript kombiniert und wiederverwendbare Logik in benutzerdefinierten Funktionen gekapselt werden.
+Das folgende Beispiel demonstriert ein Skript, das eine Benutzereingabe simuliert und darauf basierend eine Berechnung durchführt. Konkret wird eine natürliche Zahl $n$ als String eingelesen, in eine Ganzzahl konvertiert und anschließend die Summe aller natürlichen Zahlen von 1 bis $n$ berechnet:
+\[
+\sum_{i=1}^{n} i = 1 + 2 + \dots + n
+\]
+
+\begin{lstlisting}[style=tsstyle, caption={Berechnung der Summe einer Zahlenfolge}]
+	const inputString = "10";
+	// Konvertierung des Strings in eine Ganzzahl (Basis 10)
+	const n = parseInt(inputString, 10);
+	// Erzeugung eines Arrays [1, ..., n]
+	const L = Array.from({ length: n }, (_, i) => i + 1);
+	// Berechnung der Summe mittels reduce
+	const total = L.reduce((acc, curr) => acc + curr, 0);
+	console.log(`The sum 1 + 2 + ... + ${n} is equal to ${total}.`)
+\end{lstlisting}
+Funktionen sind ein zentraler Baustein in TypeScript, um Code zu strukturieren. Sie werden mit dem Schlüsselwort \texttt{function} eingeleitet. Im Gegensatz zu Python oder JavaScript ermöglicht TypeScript die explizite Typisierung sowohl der Parameter als auch des Rückgabewerts. Dies erhöht die Sicherheit und Verständlichkeit des Codes erheblich. Das folgende Beispiel zeigt eine rekursive Implementierung der Summenfunktion \texttt{sum(n)}, definiert durch:
+\[
+\text{sum}(0) = 0
+\]
+\[
+\text{sum}(n) = \text{sum}(n-1) + n, \quad \text{für } n > 0
+\]
+
+\begin{lstlisting}[style=tsstyle, caption={Rekursive Funktionsdefinition}]
+	function sum(n: number): number {
+		// Basisfall: Rekursionsabbruch
+		if (n === 0) {
+			return 0;
+		}
+		// Rekursiver Aufruf
+		return sum(n - 1) + n;
+	}
+\end{lstlisting}
+Die Komponente \colorbox{gray!20}{\textbf{\texttt{function sum(n: number): number}}:} Deklariert eine Funktion namens \texttt{sum}, die einen Parameter \texttt{n} vom Typ \texttt{number} erwartet und einen Wert vom Typ \texttt{number} zurückgibt.
+
+\subsubsection{Boolesche Werte und Operatoren}
+Die Repräsentation von Wahrheitswerten in TypeScript erfolgt über den primitiven Datentyp \texttt{boolean}, der die Werte \texttt{true} und \texttt{false} annehmen kann. Diese Werte sind zentral für die Steuerung des Programmflusses und logische Entscheidungen.\\
+\textbf{Logische Operatoren}\\
+TypeScript unterstützt die klassischen logischen Verknüpfungen Konjunktion (AND), Disjunktion (OR) und Negation (NOT) mittels der folgender Operatoren:
+
+\begin{lstlisting}[style=tsstyle, caption={Logische Verknüpfungen}]
+	true && false; // false
+	true || false; // true
+	!true; // false
+\end{lstlisting}
+\textbf{Vergleichsoperatoren}\\
+Zur Erzeugung von Wahrheitswerten werden häufig numerische Vergleiche herangezogen. TypeScript bietet hierfür eine Reihe von Operatoren:
+\begin{itemize}[itemsep=2pt, parsep=2pt, topsep=2pt]
+	\item \texttt{===}: Strikte Gleichheit (prüft Wert und Typ)
+	\item \texttt{!==}: Strikte Ungleichheit
+	\item \texttt{<}, \texttt{>}, \texttt{<=}, \texttt{>=}: Klassische Größenvergleiche
+\end{itemize}
+Ein wichtiger Unterschied zu Python besteht in der Verkettung von Vergleichen. Ein Ausdruck wie \texttt{1 < 2 < 3} wird in TypeScript nicht mathematisch ausgewertet. Stattdessen würde \texttt{1 < 2} zu \texttt{true} evaluiert, und anschließend versucht, \texttt{true < 3} zu berechnen (was durch Typ-Koerzition zu \texttt{1 < 3} $\rightarrow$ \texttt{true} führen kann, aber oft nicht das Gewünschte ist). Korrekte mathematische Bereichsprüfungen müssen explizit mit \texttt{\&\&} verknüpft werden\\
+\textbf{Quantoren auf Arrays}\\
+TypeScript bietet Methoden auf Arrays, die den logischen Quantoren aus der Prädikatenlogik entsprechen:
+\begin{enumerate}[itemsep=2pt, parsep=2pt, topsep=2pt]
+	\item \textbf{Allquantor ($\forall$):} Die Methode \texttt{every} prüft, ob \textit{alle} Elemente eines Arrays eine Bedingung erfüllen.
+	\begin{lstlisting}[style=tsstyle]
+		const L = [2, 4, 0, 7];
+		// Sind alle Zahlen gerade? -> false, da 7 ungerade ist
+		L.every(x => x % 2 === 0); 
+	\end{lstlisting}
+	
+	\item \textbf{Existenzquantor ($\exists$):} Die Methode \texttt{some} prüft, ob \textit{mindestens ein} Element die Bedingung erfüllt.
+	\begin{lstlisting}[style=tsstyle]
+		// Ist mindestens eine Zahl ungerade? -> true
+		L.some(x => x % 2 !== 0);
+	\end{lstlisting}
+\end{enumerate}
+Diese Methoden ermöglichen eine deklarative und mathematisch fundierte Ausdrucksweise für Mengenoperationen direkt im Code.
+
+\subsubsection{Kontrollstrukturen}
+Kontrollstrukturen dienen dazu, den Ablauf eines Programms zu steuern. TypeScript bietet hierfür klassische Konstrukte, die syntaktisch stark an C, Java oder C++ angelehnt sind. Die grundlegende bedingte Ausführung erfolgt mittels \texttt{if}, \texttt{else if} und \texttt{else}. Im Gegensatz zu Python müssen die Bedingungen in runde Klammern \texttt{()} gesetzt und die Anweisungsblöcke in geschweifte Klammern \texttt{\{\}} eingeschlossen werden.
+
+\begin{lstlisting}[style=tsstyle, caption={If-Else Verzweigung}]
+	let x = 17;
+	if (x < 0) {
+		console.log('The number is negative!');
+	} else if (x === 0) {
+		console.log('The number is zero.');
+	} else {
+		console.log("It's more than one.");
+	}
+\end{lstlisting}
+Alternativ bietet die \texttt{switch}-Anweisung eine strukturierte Möglichkeit, mehrere Bedingungen zu prüfen. Ein interessantes Muster in TypeScript ist das \texttt{switch(true)}-Konstrukt, das es erlaubt, komplexe Ausdrücke in den \texttt{case}-Zweigen auszuwerten:
+
+\begin{lstlisting}[style=tsstyle, caption={Switch-Statement als Alternative}]
+	switch (true) {
+		case (x < 0):
+		console.log('The number is negative!');
+		break;
+		case (x === 0):
+		console.log('The number is zero.');
+		break;
+		default:
+		console.log("It's more than one.");
+	}
+\end{lstlisting}
+Zur Iteration stellt TypeScript verschiedene Schleifenkonstrukte bereit:
+\begin{itemize}[itemsep=2pt, parsep=2pt, topsep=2pt]
+	\item Die \texttt{for...of}-Schleife eignet sich ideal, um über die Elemente eines Arrays oder anderer iterierbarer Objekte zu laufen. Sie ist kompakter und weniger fehleranfällig als die klassische indexbasierte \texttt{for}-Schleife.
+	\item Die \texttt{while}-Schleife führt einen Codeblock solange aus, wie eine definierte Laufbedingung erfüllt ist.
+\end{itemize}
+\textbf{Anwendungsbeispiel: \href{https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes}{Sieb des Eratosthenes}}\\
+Ein klassischer Algorithmus zur Bestimmung aller Primzahlen bis zu einer Grenze $n$ ist das Sieb des Eratosthenes. Die Implementierung in TypeScript demonstriert das Zusammenspiel von Arrays, Schleifen und bedingten Anweisungen:
+
+\begin{enumerate} [itemsep=2pt, parsep=2pt, topsep=2pt]
+	\item Initialisierung eines Arrays \texttt{primes}, wobei \texttt{primes[i] = i} gilt.
+	\item Iteration über alle Zahlen $i$ und $j$, um Vielfache zu eliminieren (d.\,h. auf 0 zu setzen).
+	\item Filterung der verbleibenden Zahlen $\neq 0$.
+\end{enumerate}
+Eine optimierte Version nutzt zudem \texttt{Math.sqrt(n)} als Obergrenze für die äußere Schleife und beginnt die innere Schleife bei $j=i$, um redundante Prüfungen zu vermeiden.
+
+\begin{lstlisting}[style=tsstyle, caption={Optimiertes Sieb des Eratosthenes}]
+	let n = 10000;
+	// Initialisiere Array mit Werten 0 bis n
+	let primes = Array.from({length: n + 1}, (_, i) => i);
+	let limit = Math.ceil(Math.sqrt(n));
+	for (let i = 2; i <= limit; i++) {
+		// Wenn i bereits markiert (0) ist, überspringen
+		if (primes[i] === 0) continue; 
+		let j = i;
+		// Streiche alle Vielfachen von i (beginnend bei i*i)
+		while (i * j <= n) {
+			primes[i * j] = 0;
+			j++;
+		}
+	}
+	// Filtere alle Nicht-Null-Werte (Primzahlen)
+	let result = primes.filter(p => p !== 0 && p >= 2);
+\end{lstlisting}
+
+\subsubsection{Numerische Funktionen}
+TypeScript stellt, über das zugrundeliegende JavaScript, eine umfassende Sammlung mathematischer Standardfunktionen und Konstanten bereit, die im globalen \texttt{Math}-Objekt gekapselt sind. Dieses Objekt fungiert als Namensraum für statische Methoden und Eigenschaften. Zu den elementaren Funktionen gehören:
+\begin{itemize}[itemsep=2pt, parsep=2pt, topsep=2pt]
+	\item \textbf{Wurzelberechnung:} \texttt{Math.sqrt(x)} berechnet die Quadratwurzel $\sqrt{x}$.
+	\item \textbf{Betragsfunktion:} \texttt{Math.abs(x)} liefert den absoluten Wert $|x|$.
+	\item \textbf{Potenzierung:} \texttt{Math.pow(base, exponent)} oder der Exponentialoperator \texttt{**}.
+\end{itemize}
+\textbf{Rundungsfunktionen}\\
+Für die Umwandlung von Gleitkommazahlen in Ganzzahlen stehen drei spezifische Methoden zur Verfügung:
+\begin{enumerate} [itemsep=2pt, parsep=2pt, topsep=2pt]
+	\item \textbf{\texttt{Math.floor(x)}}: Die \textit{Gaußklammer unten} $\lfloor x \rfloor$. Sie rundet stets auf die nächstkleinere ganze Zahl ab.
+	\[ \text{floor}(x) = \max \{ n \in \mathbb{Z} \mid n \le x \} \]
+	\item \textbf{\texttt{Math.ceil(x)}}: Die \textit{Gaußklammer oben} $\lceil x \rceil$. Sie rundet stets auf die nächstgrößere ganze Zahl auf.
+	\[ \text{ceil}(x) = \min \{ n \in \mathbb{Z} \mid n \ge x \} \]
+	\item \textbf{\texttt{Math.round(x)}}: Kaufmännisches Runden zur nächsten ganzen Zahl. Hierbei wird $n.5$ auf $n+1$ gerundet.
+\end{enumerate}
+\textbf{Trigonometrische Funktionen}\\
+Das \texttt{Math}-Objekt umfasst auch die Standard-Trigonometriefunktionen wie \texttt{Math.sin}, \texttt{Math.cos} und \texttt{Math.tan} sowie deren Arkusfunktionen (\texttt{asin}, \texttt{acos}, \texttt{atan}). Es ist zu beachten, dass diese Funktionen Winkel im Bogenmaß (Radiant) erwarten bzw. zurückgeben.\\
+\textbf{Exponential- und Logarithmusfunktionen}\\
+Die Exponentialfunktion $e^x$ wird über \texttt{Math.exp(x)} berechnet. Das Inverse, der natürliche Logarithmus $\ln(x)$, wird in TypeScript (wie in vielen C-basierten Sprachen) als \texttt{Math.log(x)} bezeichnet.\\
+\textbf{Konstanten}\\
+Wichtige mathematische Konstanten sind direkt zugänglich:
+\begin{itemize}[itemsep=2pt, parsep=2pt, topsep=2pt]
+	\item \texttt{Math.PI} für die Kreiszahl $\pi \approx 3.14159$
+	\item \texttt{Math.E} für die Eulersche Zahl $e \approx 2.718$
+\end{itemize}
+
 \subsection{TypeScript im Data-Science-Kontext}
 Hier ist dein Abschnitt \textbf{@TobiKnight}\\
 Hier wollen wir einen ersten Eindruck zu TypeScript übergeben. Die zusätzlichen Libraries werden hier auch erwähnt. \\
