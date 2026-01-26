@@ -62,7 +62,48 @@ In der interaktiven Umgebung eines Jupyter Notebooks wird zudem das Ergebnis des
 	// Alternative Syntax mit doppelten Anführungszeichen
 	"Hello, World!"
 \end{lstlisting}
+\textbf{Template String}\\
+Zusätzlich zu den klassischen Zeichenkettenliteralen unterstützt TypeScript sogenannte \textit{Template Strings}. Diese werden durch Backticks (\texttt{`}) umschlossen und bieten erweiterte Funktionalitäten gegenüber herkömmlichen Strings. Ein zentrales Merkmal ist die String-Interpolation (\textit{String Interpolation}), die es ermöglicht, Ausdrücke direkt in eine Zeichenkette einzubetten. Hierbei wird die Syntax \texttt{\$\{...\}} verwendet, wobei der Inhalt der geschweiften Klammern ausgewertet und das Ergebnis in den String konvertiert wird. Dies erhöht die Lesbarkeit des Codes erheblich, da komplexe Verkettungsoperationen vermieden werden. Zudem unterstützen Template Strings mehrzeilige Zeichenketten ohne spezielle Escape-Sequenzen.
 
+\begin{lstlisting}[style=tsstyle, caption={Verwendung von Template Strings}]
+	const name = "Alice";
+	const age = 25;
+	
+	// Direkte Einbettung von Variablen
+	console.log(`User ${name} is ${age} years old.`);
+	// Ausgabe: User Alice is 25 years old.
+	
+	// Auswertung von Ausdrücken innerhalb des Strings
+	console.log(`Next year, she will be ${age + 1}.`);
+	// Ausgabe: Next year, she will be 26.
+\end{lstlisting}
+
+\subsubsection{Arithmetische Operationen und Variablenzuweisung}
+Ein wesentlicher Unterschied zu vielen anderen Programmiersprachen betrifft die Division. In TypeScript liefert der Standard-Divisionsoperator (\texttt{/}) stets eine Gleitkommazahl als Ergebnis, auch wenn beide Operanden Ganzzahlen sind. Um eine Ganzzahldivision (\textit{Integer Division} oder Euklidische Division) durchzuführen, muss das Ergebnis explizit abgerundet werden. Hierfür steht die Funktion \texttt{Math.floor()} zur Verfügung, welche die größte Ganzzahl zurückgibt, die kleiner oder gleich dem übergebenen Argument ist. Der Modulo-Operator \texttt{\%} berechnet den Rest dieser Division.
+
+\begin{lstlisting}[style=tsstyle, caption={Ganzzahldivision und Modulo}]
+	// Standard-Division (Gleitkomma)
+	7 / 3; // Ergibt 2.333...
+	
+	// Ganzzahldivision
+	Math.floor(7 / 3); // Ergibt 2
+	
+	// Rest der Division (Modulo)
+	7 % 3; // Ergibt 1
+\end{lstlisting}
+Zur Speicherung von Werten unterscheidet TypeScript zwischen Konstanten und Variablen. Das Schlüsselwort \texttt{const} deklariert eine Konstante, deren Wert nach der Initialisierung nicht mehr verändert werden kann (Reassigning is forbidden). Dies fördert die Unveränderlichkeit (\textit{Immutability}) von Daten, wo immer es möglich ist.
+Soll sich ein Wert im Laufe des Programms ändern, muss die Variable mit dem Schlüsselwort \texttt{let} deklariert werden.
+
+\begin{lstlisting}[style=tsstyle, caption={Konstanten vs. Variablen}]
+	// Deklaration von Konstanten
+	const q = Math.floor(7 / 3);
+	const r = 7 % 3;
+	q = 5; // Error: Assignment to constant variable.
+	
+	// Deklaration veränderlicher Variablen
+	let count = 1;
+	count = 2; // Erlaubt, da 'count' mit 'let' deklariert wurde
+\end{lstlisting}
 
 \subsection{TypeScript im Data-Science-Kontext}
 Hier ist dein Abschnitt \textbf{@TobiKnight}\\
