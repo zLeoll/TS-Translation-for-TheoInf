@@ -28,9 +28,10 @@
 \contentsline {lstlisting}{\numberline {28}Modifikation von Eigenschaften}{17}{lstlisting.28}%
 \contentsline {lstlisting}{\numberline {29}Verschachtelte Objekte}{17}{lstlisting.29}%
 \contentsline {lstlisting}{\numberline {30}Zugriff auf verschachtelte Daten}{17}{lstlisting.30}%
-\contentsline {lstlisting}{\numberline {31}Berechnung der Summe einer Zahlenfolge}{18}{lstlisting.31}%
-\contentsline {lstlisting}{\numberline {32}Rekursive Funktionsdefinition}{19}{lstlisting.32}%
-\contentsline {lstlisting}{\numberline {33}Logische Verknüpfungen}{19}{lstlisting.33}%
-\contentsline {lstlisting}{\numberline {34}If-Else Verzweigung}{20}{lstlisting.34}%
-\contentsline {lstlisting}{\numberline {35}Switch-Statement als Alternative}{21}{lstlisting.35}%
-\contentsline {lstlisting}{\numberline {36}Optimiertes Sieb des Eratosthenes}{22}{lstlisting.36}%
+\contentsline {lstlisting}{\numberline {31}Logische Verknüpfungen}{18}{lstlisting.31}%
+\contentsline {lstlisting}{\numberline {32}If-Else Verzweigung}{19}{lstlisting.32}%
+\contentsline {lstlisting}{\numberline {33}Switch-Statement als Alternative}{20}{lstlisting.33}%
+\contentsline {lstlisting}{\numberline {34}Optimiertes Sieb des Eratosthenes}{20}{lstlisting.34}%
+\contentsline {lstlisting}{\numberline {35}Python Tupel}{24}{lstlisting.35}%
+\contentsline {lstlisting}{\numberline {36}TypeScript Tupel Implementierung}{24}{lstlisting.36}%
+\contentsline {lstlisting}{\numberline {37}Dictionaries in TypeScript}{24}{lstlisting.37}%

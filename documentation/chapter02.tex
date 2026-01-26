@@ -13,12 +13,11 @@ Die Architektur von Jupyter basiert auf einem Client-Server-Modell, das die Tren
 \begin{itemize}
 	\item Das Frontend (Client): Der Benutzer interagiert über einen Webbrowser mit dem Notebook. Die Oberfläche erlaubt die Eingabe von Code in Zellen sowie die Gestaltung von Textbereichen mittels Markdown.
 	\item Der Notebook-Server: Dieser Server verwaltet die Dateien und vermittelt die Kommunikation zwischen dem Frontend und dem ausführenden Kernel.
-	\item Das Dateiformat (.ipynb): Jupyter Notebooks werden als JSON-Dateien (JavaScript Object Notation) mit der Endung \colorbox{gray!20}{.ipynb} gespeichert. Diese strukturierte Textdatei enthält den gesamten Inhalt des Notebooks, Code, Markdown-Text, Metadaten sowie die Ausgabeartefakte (z. B. Grafiken oder Konsolenausgaben), in einem standardisierten Format. Dies erleichtert die Versionierung und den Austausch von wissenschaftlichen Ergebnissen.
+	\item Das Dateiformat (.ipynb): Jupyter Notebooks werden als \ac{JSON}-Dateien mit der Endung \colorbox{gray!20}{.ipynb} gespeichert. Diese strukturierte Textdatei enthält den gesamten Inhalt des Notebooks, Code, Markdown-Text, Metadaten sowie die Ausgabeartefakte (z. B. Konsolenausgaben oder Grafiken), in einem standardisierten Format. Dies erleichtert die Versionierung und den Austausch von wissenschaftlichen Ergebnissen.
 \end{itemize}
-Ein zentrales Element der Jupyter-Architektur ist der Kernel. Der Kernel ist ein separater Prozess, der für die Ausführung des Codes zuständig ist, den der Benutzer im Notebook eingibt. Wenn eine Code-Zelle ausgeführt wird, sendet das Frontend den Code an den Kernel. Dieser führt die Anweisungen aus und sendet das Ergebnis (z. B. Berechnungswerte oder Grafiken) zurück an das Frontend zur Darstellung.
+Ein zentrales Element der Jupyter-Architektur ist der Kernel. Der Kernel ist ein separater Prozess, der für die Ausführung des Codes zuständig ist, den der Benutzer im Notebook eingibt. Wenn eine Code-Zelle ausgeführt wird, sendet das Frontend den Code an den Kernel. Dieser führt die Anweisungen aus und sendet das Ergebnis zurück an das Frontend zur Darstellung.
 Für diese Studienarbeit ist das Kernel-Konzept von entscheidender Bedeutung:\\
-Bitte den folgenden Abschnitt überarbeiten \textbf{@TobiKnight}\\
-Während die ursprünglichen Vorlesungsunterlagen einen Python-Kernel verwenden (ich glaube ipykernel), erfordert die Portierung auf TypeScript den Einsatz eines spezialisierten TypeScript-Kernels (ich glaube IJavascript). Dieses Design erlaubt es, innerhalb derselben Benutzeroberfläche (Jupyter Lab oder Notebook) nahtlos zwischen verschiedenen Programmiersprachen zu wechseln, indem lediglich der zugrundeliegende Kernel ausgewählt wird. Die spezifische Einrichtung des TypeScript-Kernels und dessen Integration in die Jupyter-Umgebung wird detailliert im Abschnitt 2.5 (Setup und Toolchain) behandelt.
+Während die ursprünglichen Vorlesungsunterlagen auf dem Standard-Python-Kernel (ipykernel) basieren, erfordert die Portierung auf TypeScript die Integration eines dedizierten TypeScript-Kernels (tslab). Diese Architektur ermöglicht den Wechsel der Programmiersprache innerhalb derselben Benutzeroberfläche durch bloßen Austausch des Backends. Die technische Integration des TypeScript-Kernels wird in Abschnitt 2.5 \hyperref[sec:setup]{Setup und Toolchain} detailliert beschrieben.
 
 
 \subsection{Einführung in TypeScript}
@@ -185,7 +184,7 @@ Die Ausführung lässt sich wie folgt visualisieren:
 \end{table} 
 \FloatBarrier
 \noindent\textbf{Erzeugung von Arrays mit Array.from}\\
-Neben der literalen Schreibweise bietet TypeScript die statische Methode \texttt{Array.from}, um Arrays dynamisch zu erzeugen. Diese Methode ist besonders nützlich, um Arrays einer bestimmten Länge zu initialisieren und gleichzeitig mit Werten zu befüllen. Sie akzeptiert ein \textit{Array-ähnliches} Objekt (z.\,B. ein Objekt mit einer \texttt{length}-Eigenschaft) und eine optionale Mapping-Funktion. Die formale TypeScript Signatur sieht wie folgt aus:
+Neben der literalen Schreibweise bietet TypeScript die statische Methode \texttt{Array.from}, um Arrays dynamisch zu erzeugen. Diese Methode ist besonders nützlich, um Arrays einer bestimmten Länge zu initialisieren und gleichzeitig mit Werten zu befüllen. Sie akzeptiert ein \textit{Array-ähnliches} Objekt (ein Objekt mit einer \texttt{length}-Eigenschaft) und eine optionale Mapping-Funktion. Die formale TypeScript Signatur sieht wie folgt aus:
 \begin{lstlisting}[style=tsstyle, caption={Signatur \texttt{from}}]
 	static from<T, U>(
 		arrayLike: ArrayLike<T>,
@@ -276,7 +275,7 @@ Der Zugriff auf die Elemente erfolgt analog zu Arrays über den Index-Operator:
 \end{lstlisting}
 
 \subsubsection{Objekte}
-Während Arrays und Tupel Werte in einer geordneten Liste speichern, dienen \textit{Objekte} der Speicherung von Schlüssel-Wert-Paaren (\textit{Key-Value Pairs}). Ein Objekt ist eine Sammlung von Eigenschaften (\textit{Properties}), wobei jede Eigenschaft einen Namen und einen zugehörigen Wert besitzt. In TypeScript werden Objekte literal mit geschweiften Klammern \texttt{\{\}} definiert.\\
+Während Arrays und Tupel Werte in einer geordneten Liste speichern, dienen \textit{Objekte} der Speicherung von Schlüssel-Wert-Paaren (\textit{Key-Value Pairs}). Ein Objekt ist eine Sammlung von Eigenschaften (\textit{Properties}), wobei jede Eigenschaft einen Namen und einen zugehörigen Wert besitzt. In TypeScript werden Objekte mit geschweiften Klammern \texttt{\{\}} definiert.\\
 Das nachstehende Beispiel zeigt ein \texttt{student}-Objekt mit grundlegenden Eigenschaften:
 
 \begin{lstlisting}[style=tsstyle, caption={Objektdefinition}]
@@ -328,43 +327,6 @@ Der Zugriff auf tiefere Ebenen erfolgt durch Verkettung des Punkt-Operators bzw.
 	university.departments[1]; // Ausgabe: Architecture
 \end{lstlisting}
 
-\subsubsection{Skripte und Funktionen}
-\textbf{@TobiKnight}: Hier vielleicht weg lassen?\\
-Um komplexere logische Abläufe zu realisieren, können in TypeScript mehrere Ausdrücke in einem Skript kombiniert und wiederverwendbare Logik in benutzerdefinierten Funktionen gekapselt werden.
-Das folgende Beispiel demonstriert ein Skript, das eine Benutzereingabe simuliert und darauf basierend eine Berechnung durchführt. Konkret wird eine natürliche Zahl $n$ als String eingelesen, in eine Ganzzahl konvertiert und anschließend die Summe aller natürlichen Zahlen von 1 bis $n$ berechnet:
-\[
-\sum_{i=1}^{n} i = 1 + 2 + \dots + n
-\]
-
-\begin{lstlisting}[style=tsstyle, caption={Berechnung der Summe einer Zahlenfolge}]
-	const inputString = "10";
-	// Konvertierung des Strings in eine Ganzzahl (Basis 10)
-	const n = parseInt(inputString, 10);
-	// Erzeugung eines Arrays [1, ..., n]
-	const L = Array.from({ length: n }, (_, i) => i + 1);
-	// Berechnung der Summe mittels reduce
-	const total = L.reduce((acc, curr) => acc + curr, 0);
-	console.log(`The sum 1 + 2 + ... + ${n} is equal to ${total}.`)
-\end{lstlisting}
-Funktionen sind ein zentraler Baustein in TypeScript, um Code zu strukturieren. Sie werden mit dem Schlüsselwort \texttt{function} eingeleitet. Im Gegensatz zu Python oder JavaScript ermöglicht TypeScript die explizite Typisierung sowohl der Parameter als auch des Rückgabewerts. Dies erhöht die Sicherheit und Verständlichkeit des Codes erheblich. Das folgende Beispiel zeigt eine rekursive Implementierung der Summenfunktion \texttt{sum(n)}, definiert durch:
-\[
-\text{sum}(0) = 0
-\]
-\[
-\text{sum}(n) = \text{sum}(n-1) + n, \quad \text{für } n > 0
-\]
-
-\begin{lstlisting}[style=tsstyle, caption={Rekursive Funktionsdefinition}]
-	function sum(n: number): number {
-		// Basisfall: Rekursionsabbruch
-		if (n === 0) {
-			return 0;
-		}
-		// Rekursiver Aufruf
-		return sum(n - 1) + n;
-	}
-\end{lstlisting}
-Die Komponente \colorbox{gray!20}{\textbf{\texttt{function sum(n: number): number}}:} Deklariert eine Funktion namens \texttt{sum}, die einen Parameter \texttt{n} vom Typ \texttt{number} erwartet und einen Wert vom Typ \texttt{number} zurückgibt.
 
 \subsubsection{Boolesche Werte und Operatoren}
 Die Repräsentation von Wahrheitswerten in TypeScript erfolgt über den primitiven Datentyp \texttt{boolean}, der die Werte \texttt{true} und \texttt{false} annehmen kann. Diese Werte sind zentral für die Steuerung des Programmflusses und logische Entscheidungen.\\
@@ -491,14 +453,67 @@ Wichtige mathematische Konstanten sind direkt zugänglich:
 \end{itemize}
 
 \subsection{TypeScript im Data-Science-Kontext}
-Hier ist dein Abschnitt \textbf{@TobiKnight}\\
-Hier wollen wir einen ersten Eindruck zu TypeScript übergeben. Die zusätzlichen Libraries werden hier auch erwähnt. \\
-Herausforderung: Fehlende Standard-Bibliotheken (NumPy/Pandas Äquivalente).\\
-Vorstellung genutzter Bibliotheken (z.B. stdlib, Plotly.js, etc.).\\
-Allgemeiner Syntaxvergleich; Python mypy und TypeSkript Typechecker (Unterschied dynamisch statisch getypt, Tupel vs. Umsetzung von Tupeln in TypeScript, Dictionaries vs. dynamische Objekte)
+Während Python als De-facto-Standard im Bereich Data Science gilt, gewinnt das TypeScript-Ökosystem zunehmend an Bedeutung, insbesondere wenn Modelle direkt in Webanwendungen integriert oder visualisiert werden sollen. 
+
+\subsubsection{Herausforderungen und Bibliotheks-Ökosystem}
+Eine wesentliche Herausforderung bei der Migration von Python zu TypeScript ist die Diskrepanz in der Standardbibliothek. Während Python mit Modulen wie \texttt{heapq} oder einer nativen Unterstützung für komplexe Mengenoperationen und Tupel ausgestattet ist, fehlen diese Konstrukte in der Standard-Laufzeitumgebung von TypeScript oft oder sind für wissenschaftliche Zwecke nicht performant genug implementiert. Zudem existiert zwar ein reiches Ökosystem (npm), dieses ist jedoch stark fragmentiert, im Gegensatz zu den monolithischen Standard-Paketen in Python wie beispielsweise NumPy. \\
+
+Um die Funktionalität der Python-Vorlesungsunterlagen zu replizieren, wird in dieser Arbeit auf eine Auswahl spezialisierter Bibliotheken zurückgegriffen:
+
+\begin{description}
+	\item[Mathematik und Logik:] \hfill \\
+	Für numerische Stabilität und symbolische Berechnungen kommen \texttt{mathjs} (umfassende Mathematik-Bibliothek) und \texttt{fraction.js} (für rationale Zahlen zur Vermeidung von Fließkommafehlern) zum Einsatz. Für Constraint-Solving-Probleme und logische Beweise werden der \texttt{logic-solver} sowie der \texttt{z3-solver} (ein Theorem-Prover von Microsoft Research) eingebunden.
+	
+	\item[Datenstrukturen:] \hfill \\
+	Da TypeScript keine native Priority Queue besitzt (äquivalent zu Pythons \texttt{heapq}), wird \texttt{heap-js} verwendet. Eine Besonderheit stellt die Bibliothek \texttt{recursive-set} dar. Native JavaScript \texttt{Sets} prüfen Objekte auf Referenzgleichheit, nicht auf Wertegleichheit. Das bedeutet, zwei inhaltlich identische Objekte werden als unterschiedlich behandelt. \texttt{recursive-set} ermöglicht echte Mengenoperationen auf Basis der tiefen Gleichheit (Deep Equality).
+	
+	\item[Visualisierung und Medien:] \hfill \\
+	Zur Generierung von Graphen wird \texttt{@hpcc-js/wasm} genutzt. Dies ist eine WebAssembly-Portierung von Graphviz, die das Rendern von DOT-Sprache ermöglicht, ohne dass eine lokale \texttt{graphviz.exe}-Installation auf dem Host-System notwendig ist – ein entscheidender Vorteil für die Portabilität des Notebooks. Für die Bildmanipulation wird \texttt{pngjs} verwendet.
+	
+	\item[Type Definitions:] \hfill \\
+	Ein Spezifikum der TypeScript-Entwicklung ist die Notwendigkeit separater Typ-Definitionen für Bibliotheken, die ursprünglich in reinem JavaScript geschrieben wurden. So muss beispielsweise für die Bildverarbeitung zusätzlich das Paket \texttt{@types/pngjs} als \textit{Dev-Dependency} installiert werden, um die statische Typprüfung zu ermöglichen.
+\end{description}
+
+\textbf{@TobiKnight}
+\subsubsection{Syntaxvergleich und Typisierungskonzepte}
+Der fundamentale Unterschied zwischen Python und TypeScript liegt im Zeitpunkt und der Strenge der Typprüfung.
+
+\paragraph{Statisch vs. Dynamisch / MyPy vs. TypeScript Compiler}
+Python ist dynamisch typisiert; Typen werden zur Laufzeit ausgewertet. Tools wie \texttt{mypy} bieten zwar Type-Hinting, diese sind jedoch optional und haben keinen Einfluss auf die Ausführung. TypeScript hingegen ist ein statisch typisierter Superset von JavaScript. Der TypeScript-Compiler (tsc) prüft die Typen zur Kompilierzeit (Transpilierung) und entfernt diese anschließend vollständig (Type Erasure). Das Resultat ist reines JavaScript.
+
+\paragraph{Tupel und Datenstrukturen}
+Ein markanter Unterschied zeigt sich bei unveränderlichen Listen (Tupeln). In Python sind Tupel native, unveränderliche Datentypen.
+\begin{lstlisting}[language=Python, caption={Python Tupel}]
+	# Python: Natives, unveränderliches Tupel
+	point = (10, 20)
+\end{lstlisting}
+
+In TypeScript existieren Tupel nur als Typ-Konstrukt zur Kompilierzeit. Zur Laufzeit sind es gewöhnliche JavaScript-Arrays. Um die Unveränderlichkeit (Immutability) zu gewährleisten, muss der Modifikator \texttt{readonly} explizit verwendet werden:
+
+\begin{lstlisting}[style=tsstyle, caption={TypeScript Tupel Implementierung}]
+	// TypeScript: Array mit fester Länge und Typisierung
+	// 'readonly' verhindert Laufzeitmanipulation (zur Compilezeit)
+	const point: readonly [number, number] = [10, 20];
+\end{lstlisting}
+
+\paragraph{Dictionaries vs. Dynamische Objekte}
+Was in Python das \texttt{dictionary} ist, wird in TypeScript oft durch einfache Objekt-Literale oder die \texttt{Record}-Utility-Types abgebildet. Anders als in Python, wo Dictionaries beliebige hashbare Objekte als Keys nutzen können, sind Objektschlüssel in JavaScript traditionell auf Strings und Symbole beschränkt. Für komplexe Keys muss in TypeScript explizit die \texttt{Map}-Datenstruktur verwendet werden.
+
+\begin{lstlisting}[style=tsstyle, caption={Dictionaries in TypeScript}]
+	// Einfaches Key-Value Mapping (String zu Number)
+	const scores: Record<string, number> = {
+		"Alice": 100,
+		"Bob": 85
+	};
+	
+	// Map für komplexere Anwendungsfälle (erhält Einfügereihenfolge)
+	const complexMap = new Map<object, number>();
+\end{lstlisting}
+
 
 
 \subsection{Setup und Toolchain}
+\label{sec:setup}
 Hier soll auf die Installation der Umgebung + die README.md eingegangen werden.
 Um zu testen, ob man alle Libraies korrekt installiert hat, kann man es mirhilfe des Notebooks \href{https://github.com/zLeoll/TS-Translation-for-TheoInf/blob/main/Algorithms/TypeScript/Chapter-02/Test-Libraries.ipynb}{Test-Libraries.ipynb} testen\\
 Die erste Zelle im Notebook erwähnen, die das Notebook in Vollbild anzeigen lässt.
