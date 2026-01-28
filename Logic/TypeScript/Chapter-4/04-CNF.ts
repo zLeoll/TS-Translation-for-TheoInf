@@ -6,7 +6,7 @@
  */
 
 import { LogicParser } from './PropositionalLogicParser';
-import { RecursiveSet } from 'recursive-set';
+import { RecursiveSet, Tuple } from 'recursive-set';
 
 // --- Type Definitions ---
 
@@ -18,7 +18,7 @@ export type Formula  = Variable | ['⊤' | '⊥'] | ['¬', Formula] | ['↔' | '
 
 // The structure used by the Davis-Putnam solver
 // Literal is now a union: either a raw Variable "p" or a tuple ["¬", "p"]
-export type Literal = Variable | ['¬', Variable];
+export type Literal = Variable | Tuple<['¬', Variable]>;
 export type Clause = RecursiveSet<Literal>;
 export type CNF = RecursiveSet<Clause>;
 
@@ -33,12 +33,10 @@ export function parse(s: string): Formula {
 // --- Helper for Literals ---
 
 function getComplement(l: Literal): Literal {
-    if (Array.isArray(l)) {
-        // l is ['¬', 'p'] -> complement is 'p'
-        return l[1];
+    if (typeof l === 'string') {
+        return new Tuple('¬', l);
     } else {
-        // l is 'p' -> complement is ['¬', 'p']
-        return ['¬', l];
+        return l.get(1);
     }
 }
 
@@ -190,7 +188,7 @@ export function cnf(f: NNF): CNF {
             return new RecursiveSet<Clause>(emptyClause);
         case '¬': {
             const [, p] = f; 
-            const clause = new RecursiveSet<Literal>(['¬', p]);
+            const clause = new RecursiveSet<Literal>(new Tuple('¬', p));
             return new RecursiveSet<Clause>(clause);
         }            
         case '∧': {
@@ -267,10 +265,10 @@ export function prettify(M: CNF): string {
     for (const clause of M) {
         const literalStrings: string[] = [];
         for (const lit of clause) {
-            if (Array.isArray(lit)) {
-                literalStrings.push(`${lit[0]}${lit[1]}`);
-            } else {
+            if (typeof lit === 'string') {
                 literalStrings.push(lit);
+            } else {
+                literalStrings.push(`${lit.get(0)}${lit.get(1)}`);
             }
         }
         clauseStrings.push(`{${literalStrings.join(', ')}}`);
