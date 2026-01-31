@@ -1,163 +1,250 @@
-export function tokenize(s: string): string[] {
-    const lexSpec = /([ ,:\t]+)|([a-z][A-Za-z0-9]*)|([A-Z][A-Za-z0-9]*)|([⊤⊥∧∨¬→↔⊕∀∃()])/g;
-    const tokenArray = Array.from(s.matchAll(lexSpec));
-    const result: string[] = [];
-    for (const match of tokenArray) {
-        const ws = match[1];
-        const identifier = match[2];
-        const funcSymbol = match[3];
-        const operator = match[4];
-        if (ws) {
-            continue;
+// =========================================================
+// 1. AST DEFINITIONEN (Notebook-Kompatibel)
+// =========================================================
+
+export type Term =
+    | { kind: 'Var'; name: string }
+    | { kind: 'Fun'; symbol: string; args: Term[] };
+
+export type Formula =
+    | { kind: 'Const'; value: boolean }
+    | { kind: 'Not'; operand: Formula }
+    | { kind: 'Binary'; op: '∧' | '∨' | '→' | '↔' | '⊕'; left: Formula; right: Formula }
+    | { kind: 'Quantifier'; op: '∀' | '∃'; variable: string; body: Formula }
+    | { kind: 'Pred'; symbol: string; args: Term[] };
+
+export interface Signature {
+    functions: Set<string>;
+    predicates: Set<string>;
+}
+
+// =========================================================
+// 2. TOKENIZER (Only Unicode & Identifiers)
+// =========================================================
+
+function tokenize(s: string): string[] {
+    // 1. Whitespace und Doppelpunkte ignorieren wir (\s* oder :)
+    // 2. Erlaubte Unicode-Symbole und Klammern (Gruppe 1)
+    // 3. Identifier (a-z, A-Z, 0-9, _) (Gruppe 2)
+    
+    const regex = /\s*(?::)*\s*(?:([()¬∧∨→↔⊕⊤⊥∀∃,])|([a-zA-Z0-9_]+))/g;
+    
+    const tokens: string[] = [];
+    let match;
+    
+    while ((match = regex.exec(s)) !== null) {
+        // match[1]: Ein Zeichen (Symbol oder Klammer)
+        if (match[1]) {
+            tokens.push(match[1]);
         }
-        if (identifier) {
-            result.push(identifier);
-        }
-        if (funcSymbol) {
-            result.push(funcSymbol);
-        }
-        if (operator) {
-            result.push(operator);
+        // match[2]: Ein Wort (Identifier)
+        else if (match[2]) {
+            tokens.push(match[2]);
         }
     }
-    return result;
-};
+    return tokens;
+}
 
-export function isVariable(s: string, Variables: Set<string> | null): boolean {
-    const varRegex = /^[a-z][A-Za-z0-9]*$/;
-    if (Variables === null) {
-        return varRegex.test(s);
-    } else {
-        if (varRegex.test(s)) {
-            if (Variables.has(s)) {
-                return true;
-            } else {
-                console.error(`Syntax error: ${s} is not declared as a variable!`);
-                throw new SyntaxError(`Variable "${s}" not declared`);
-            }
-        }
-    }
-    return false;
-};
-
-export function isFunction(s: string): boolean {
-    const funcRegex = /^[A-Z][A-Za-z0-9]*$/;
-    return funcRegex.test(s);
-};
-
-export type Formula = string | [string, ...Formula[]];
+// =========================================================
+// 3. PARSER CLASS (Internal)
+// =========================================================
 
 export class LogicParser {
+    private tokens: string[];
+    private pos: number = 0;
+    private signature: Signature;
 
-    private _tokens: string[];
-    private _operators: string[];
-    private _arguments: Formula[];
-    private _variables: Set<string> | null;
-    private _input: string;
-
-    constructor(s: string, Variables?: Set<string> | null) {
-        this._tokens = tokenize(s).reverse();
-        this._operators = [];
-        this._arguments = [];
-        this._variables = Variables ?? null;
-        this._input = s;
+    constructor(input: string, signature: Signature) {
+        this.tokens = tokenize(input);
+        this.signature = signature;
     }
 
-    parse(): Formula {
-        // Parse the token list and return a Formula that is represented as a
-        // nested array.
-        while (this._tokens.length !== 0) {
-            const nextOp = this._tokens.pop()!;
-            if (isVariable(nextOp, this._variables)) {
-                this._arguments.push(nextOp);
-                continue;
-            }
-            if (isFunction(nextOp)) {
-                this._operators.push(nextOp);
-                this._arguments.push("(");
-                continue;
-            }
-            if (nextOp === "⊤" || nextOp === "⊥") {
-                this._operators.push(nextOp);
-                continue;
-            }
-            if (this._operators.length === 0 || nextOp === "(") {
-                this._operators.push(nextOp);
-                continue;
-            }
-            const stackOp = this._operators[this._operators.length - 1];
-            if (stackOp === "(" && nextOp === ")") {
-                this._operators.pop();
-                if (this._operators.length > 0) {
-                    const fct = this._operators[this._operators.length - 1];
-                    if (isFunction(fct)) {
-                        this._popAndEvaluate();
-                    }
-                }
-            } else if (nextOp === ")" || this._evalBefore(stackOp, nextOp)) {
-                this._popAndEvaluate();
-                this._tokens.push(nextOp);
+    private current(): string {
+        return this.pos < this.tokens.length ? this.tokens[this.pos] : 'EOF';
+    }
+
+    private consume(expected?: string): string {
+        const token = this.current();
+        if (expected && token !== expected) {
+            throw new Error(`Erwartet: '${expected}', Gefunden: '${token}' an Pos ${this.pos}`);
+        }
+        this.pos++;
+        return token;
+    }
+
+    // --- Entry Point ---
+    public parseAll(): Formula {
+        const f = this.parseImplication();
+        if (this.current() !== 'EOF') {
+            throw new Error(`Unerwartetes Token am Ende: ${this.current()}`);
+        }
+        return f;
+    }
+
+    public parseTermEntry(): Term {
+        const t = this.parseTerm(); // Ruft die private parseTerm() auf
+        if (this.current() !== 'EOF') {
+            throw new Error(`Unerwartetes Token am Ende: ${this.current()}`);
+        }
+        return t;
+    }
+
+    // --- Recursive Descent ---
+    
+    private parseImplication(): Formula {
+        let left = this.parseOr();
+        while (true) {
+            const op = this.current();
+            if (op === '→') {
+                this.consume();
+                left = { kind: 'Binary', op: '→', left, right: this.parseOr() };
+            } else if (op === '↔') {
+                this.consume();
+                left = { kind: 'Binary', op: '↔', left, right: this.parseOr() };
             } else {
-                this._operators.push(nextOp);
+                return left;
             }
         }
-        while (this._operators.length !== 0) {
-            this._popAndEvaluate();
-        }
-        if (this._arguments.length !== 1) {
-            throw new Error(`Could not parse: ${this._input}`);
-        }
-        return this._arguments.pop()!;
     }
 
-    _evalBefore(stackOp: string, nextOp: string): boolean {
-        if (stackOp === "(") return false;
-        if (isFunction(stackOp)) return true;
-        const precedences: { [key: string]: number } = {
-            "↔": 1, "→": 2, "⊕": 3, "∨": 4, "∧": 5,
-            "¬": 6, "∀": 7, "∃": 7, "⊤": 8, "⊥": 8,
-        };
-        if (precedences[stackOp] > precedences[nextOp]) {
-            return true;
-        } else if (precedences[stackOp] === precedences[nextOp]) {
-            if ((stackOp === "∀" || stackOp === "∃") && (nextOp === "∀" || nextOp === "∃")) {
-                return false;
+    private parseOr(): Formula {
+        let left = this.parseAnd();
+        while (true) {
+            const op = this.current();
+            if (op === '∨') {
+                this.consume();
+                left = { kind: 'Binary', op: '∨', left, right: this.parseAnd() };
+            } else if (op === '⊕') {
+                this.consume();
+                left = { kind: 'Binary', op: '⊕', left, right: this.parseAnd() };
+            } else {
+                return left;
             }
-            if (stackOp === nextOp) {
-                return ["∧", "∨", "⊕"].includes(stackOp);
-            }
-            return true;
         }
-        return false;
     }
 
-    _popAndEvaluate(): void {
-        const op = this._operators.pop()!;
-        if (op === "⊤" || op === "⊥") {
-            this._arguments.push([op]);
-            return;
+    private parseAnd(): Formula {
+        let left = this.parseNot();
+        while (this.current() === '∧') {
+            this.consume();
+            left = { kind: 'Binary', op: '∧', left, right: this.parseNot() };
         }
-        if (op === "¬") {
-            const arg = this._arguments.pop()!;
-            this._arguments.push(["¬", arg]);
-            return;
-        }
-        if (isFunction(op)) {
-            let args: Formula[] = [];
-            let arg = this._arguments.pop();
-            while (arg !== "(") {
-                args.unshift(arg!);
-                arg = this._arguments.pop();
-            }
-            this._arguments.push([op, ...args]);
-            return;
-        }
-        const rhs = this._arguments.pop()!;
-        const lhs = this._arguments.pop()!;
-        this._arguments.push([op, lhs, rhs]);
+        return left;
     }
 
-    toString(): string {
-        return `${this._tokens.toString()} ${this._arguments.toString()} ${this._operators.toString()}`;
+    private parseNot(): Formula {
+        const token = this.current();
+        if (token === '¬') {
+            this.consume();
+            return { kind: 'Not', operand: this.parseNot() };
+        }
+        if (token === '∀' || token === '∃') {
+            const op = token as '∀' | '∃';
+            this.consume();
+            const varName = this.current();
+            // Variable muss ein Identifier sein
+            if (!/^[a-zA-Z0-9_]+$/.test(varName) || varName === 'EOF') {
+                throw new Error("Nach Quantor muss eine Variable folgen.");
+            }
+            this.consume();
+            return { kind: 'Quantifier', op: op, variable: varName, body: this.parseNot() };
+        }
+        return this.parseAtom();
     }
+
+    private parseAtom(): Formula {
+        const token = this.current();
+        if (token === '(') {
+            this.consume();
+            const f = this.parseImplication();
+            this.consume(')');
+            return f;
+        }
+        if (token === '⊤') {
+            this.consume();
+            return { kind: 'Const', value: true };
+        }
+        if (token === '⊥') {
+            this.consume();
+            return { kind: 'Const', value: false };
+        }
+
+        const name = token;
+        
+        // 1. Prädikat? (Muss in Signatur sein)
+        if (this.signature.predicates.has(name)) {
+            this.consume();
+            let args: Term[] = [];
+            if (this.current() === '(') {
+                this.consume();
+                args = this.parseTermList();
+                this.consume(')');
+            }
+            return { kind: 'Pred', symbol: name, args };
+        }
+        
+        // 2. Fehler: Funktion an Formel-Position
+        if (this.signature.functions.has(name)) {
+            throw new Error(`Symbol '${name}' ist eine Funktion, wird aber als Formel genutzt.`);
+        }
+
+        throw new Error(`Unbekanntes Prädikat: '${name}'`);
+    }
+
+    // --- Term Parsing ---
+
+    private parseTerm(): Term {
+        const name = this.current();
+        
+        // Ein Term MUSS mit einem Identifier starten (Funktion oder Variable)
+        if (!/^[a-zA-Z0-9_]+$/.test(name)) {
+             throw new Error(`Ungültiger Term-Start: '${name}'`);
+        }
+        this.consume();
+
+        // 1. Funktion
+        if (this.signature.functions.has(name)) {
+            let args: Term[] = [];
+            if (this.current() === '(') {
+                this.consume();
+                if (this.current() !== ')') {
+                    args = this.parseTermList();
+                }
+                this.consume(')');
+            }
+            return { kind: 'Fun', symbol: name, args };
+        }
+
+        // 2. Prädikat (Fehler)
+        if (this.signature.predicates.has(name)) {
+            throw new Error(`Symbol '${name}' ist ein Prädikat, darf nicht im Term stehen.`);
+        }
+
+        // 3. Fallback: Variable
+        return { kind: 'Var', name: name };
+    }
+
+    private parseTermList(): Term[] {
+        const args: Term[] = [];
+        args.push(this.parseTerm());
+        while (this.current() === ',') {
+            this.consume();
+            args.push(this.parseTerm());
+        }
+        return args;
+    }
+}
+
+// =========================================================
+// 4. MAIN EXPORT
+// =========================================================
+
+export function parse(input: string, signature: Signature): Formula {
+    const parser = new LogicParser(input, signature);
+    return parser.parseAll();
+}
+
+export function parseTerm(input: string, signature: Signature): Term {
+    const parser = new LogicParser(input, signature);
+    return parser.parseTermEntry(); // Ruft parseTerm() auf -> Erwartet Term
 }
