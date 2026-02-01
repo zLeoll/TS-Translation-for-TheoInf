@@ -1,17 +1,48 @@
+import { Tuple } from 'recursive-set';
+
 // =========================================================
-// 1. AST DEFINITIONEN (Notebook-Kompatibel)
+// 1. AST DEFINITIONEN (Strenge Tuple-Typen & Value Semantics)
 // =========================================================
 
-export type Term =
-    | { kind: 'Var'; name: string }
-    | { kind: 'Fun'; symbol: string; args: Term[] };
+/* 
+   Wir definieren hier exakte Tuple-Typen.
+   Da Tuple<T> in der Library generisch über ein Array ist, definieren wir die Array-Inhalte.
+   Das ermöglicht Deep Equality Checks: formulaA.equals(formulaB).
+*/
 
-export type Formula =
-    | { kind: 'Const'; value: boolean }
-    | { kind: 'Not'; operand: Formula }
-    | { kind: 'Binary'; op: '∧' | '∨' | '→' | '↔' | '⊕'; left: Formula; right: Formula }
-    | { kind: 'Quantifier'; op: '∀' | '∃'; variable: string; body: Formula }
-    | { kind: 'Pred'; symbol: string; args: Term[] };
+// --- TERM TYPES ---
+// Var: ('Var', name)
+export type VarTerm = Tuple<['Var', string]>;
+
+// Fun: ('Fun', symbol, args) -> args ist ein Tuple von Terms
+export type FunTerm = Tuple<['Fun', string, Tuple<Term[]>]>;
+
+export type Term = VarTerm | FunTerm;
+
+// --- FORMULA TYPES ---
+// Const: ('Const', 'true'|'false')
+export type ConstFormula = Tuple<['Const', 'true' | 'false']>;
+
+// Not: ('Not', operand)
+export type NotFormula = Tuple<['Not', Formula]>;
+
+// Binary: ('Binary', op, left, right)
+export type BinaryOp = '∧' | '∨' | '→' | '↔' | '⊕';
+export type BinaryFormula = Tuple<['Binary', BinaryOp, Formula, Formula]>;
+
+// Quantifier: ('Quantifier', op, variable, body)
+export type QuantifierOp = '∀' | '∃';
+export type QuantifierFormula = Tuple<['Quantifier', QuantifierOp, string, Formula]>;
+
+// Pred: ('Pred', symbol, args)
+export type PredFormula = Tuple<['Pred', string, Tuple<Term[]>]>;
+
+export type Formula = 
+    | ConstFormula 
+    | NotFormula 
+    | BinaryFormula 
+    | QuantifierFormula 
+    | PredFormula;
 
 export interface Signature {
     functions: Set<string>;
@@ -19,34 +50,24 @@ export interface Signature {
 }
 
 // =========================================================
-// 2. TOKENIZER (Only Unicode & Identifiers)
+// 2. TOKENIZER
 // =========================================================
 
 function tokenize(s: string): string[] {
-    // 1. Whitespace und Doppelpunkte ignorieren wir (\s* oder :)
-    // 2. Erlaubte Unicode-Symbole und Klammern (Gruppe 1)
-    // 3. Identifier (a-z, A-Z, 0-9, _) (Gruppe 2)
-    
+    // Regex passend zur Python-Logik, aber auf Unicode-Symbole fokussiert
     const regex = /\s*(?::)*\s*(?:([()¬∧∨→↔⊕⊤⊥∀∃,])|([a-zA-Z0-9_]+))/g;
-    
     const tokens: string[] = [];
     let match;
     
     while ((match = regex.exec(s)) !== null) {
-        // match[1]: Ein Zeichen (Symbol oder Klammer)
-        if (match[1]) {
-            tokens.push(match[1]);
-        }
-        // match[2]: Ein Wort (Identifier)
-        else if (match[2]) {
-            tokens.push(match[2]);
-        }
+        if (match[1]) tokens.push(match[1]);
+        else if (match[2]) tokens.push(match[2]);
     }
     return tokens;
 }
 
 // =========================================================
-// 3. PARSER CLASS (Internal)
+// 3. PARSER CLASS
 // =========================================================
 
 export class LogicParser {
@@ -72,7 +93,7 @@ export class LogicParser {
         return token;
     }
 
-    // --- Entry Point ---
+    // --- Entry Points ---
     public parseAll(): Formula {
         const f = this.parseImplication();
         if (this.current() !== 'EOF') {
@@ -82,127 +103,164 @@ export class LogicParser {
     }
 
     public parseTermEntry(): Term {
-        const t = this.parseTerm(); // Ruft die private parseTerm() auf
+        const t = this.parseTerm(); 
         if (this.current() !== 'EOF') {
             throw new Error(`Unerwartetes Token am Ende: ${this.current()}`);
         }
         return t;
     }
 
-    // --- Recursive Descent ---
+    // --- Recursive Descent (Hierarchie gemäß Python Precedence) ---
     
+    // LEVEL 1: Implikation & Äquivalenz (Precedence 1 & 2)
+    // Python '→' (2), '↔' (1) -> Niedrigste Priorität.
+    // Assoziativität: RECHTS (Daher Rekursion auf der rechten Seite)
     private parseImplication(): Formula {
-        let left = this.parseOr();
-        while (true) {
-            const op = this.current();
-            if (op === '→') {
-                this.consume();
-                left = { kind: 'Binary', op: '→', left, right: this.parseOr() };
-            } else if (op === '↔') {
-                this.consume();
-                left = { kind: 'Binary', op: '↔', left, right: this.parseOr() };
-            } else {
-                return left;
-            }
-        }
-    }
+        const left = this.parseXor(); // Ruft nächst höhere Priorität auf
+        const op = this.current();
 
-    private parseOr(): Formula {
-        let left = this.parseAnd();
-        while (true) {
-            const op = this.current();
-            if (op === '∨') {
-                this.consume();
-                left = { kind: 'Binary', op: '∨', left, right: this.parseAnd() };
-            } else if (op === '⊕') {
-                this.consume();
-                left = { kind: 'Binary', op: '⊕', left, right: this.parseAnd() };
-            } else {
-                return left;
-            }
-        }
-    }
-
-    private parseAnd(): Formula {
-        let left = this.parseNot();
-        while (this.current() === '∧') {
+        if (op === '→') {
             this.consume();
-            left = { kind: 'Binary', op: '∧', left, right: this.parseNot() };
+            // RECHTS-ASSOZIATIV: Wir rufen parseImplication rekursiv für rechts auf
+            const right = this.parseImplication(); 
+            return new Tuple('Binary', '→', left, right);
+        } else if (op === '↔') {
+            this.consume();
+            // RECHTS-ASSOZIATIV
+            const right = this.parseImplication(); 
+            return new Tuple('Binary', '↔', left, right);
+        }
+        
+        return left;
+    }
+
+    // LEVEL 2: XOR (Precedence 3)
+    // Python '⊕' (3) < '∨' (4). Daher hier separate Ebene.
+    // Assoziativität: LINKS (Iterativ)
+    private parseXor(): Formula {
+        let left = this.parseOr();
+        while (this.current() === '⊕') {
+            this.consume();
+            const right = this.parseOr();
+            left = new Tuple('Binary', '⊕', left, right);
         }
         return left;
     }
 
+    // LEVEL 3: Disjunktion (Precedence 4)
+    // Assoziativität: LINKS (Iterativ)
+    private parseOr(): Formula {
+        let left = this.parseAnd();
+        while (this.current() === '∨') {
+            this.consume();
+            const right = this.parseAnd();
+            left = new Tuple('Binary', '∨', left, right);
+        }
+        return left;
+    }
+
+    // LEVEL 4: Konjunktion (Precedence 5)
+    // Assoziativität: LINKS (Iterativ)
+    private parseAnd(): Formula {
+        let left = this.parseNot();
+        while (this.current() === '∧') {
+            this.consume();
+            const right = this.parseNot();
+            left = new Tuple('Binary', '∧', left, right);
+        }
+        return left;
+    }
+
+    // LEVEL 5: Negation & Quantoren (Precedence 6 & 7)
+    // Python: Not(6), Quant(7). Binden stärker als binäre Operatoren.
+    // Rekursiv definiert, um "¬∀x..." oder "∀x¬..." zu erlauben.
     private parseNot(): Formula {
         const token = this.current();
+        
+        // Negation
         if (token === '¬') {
             this.consume();
-            return { kind: 'Not', operand: this.parseNot() };
+            return new Tuple('Not', this.parseNot());
         }
+
+        // Quantoren
         if (token === '∀' || token === '∃') {
-            const op = token as '∀' | '∃';
+            const op = token; // Type guard durch if implizit
             this.consume();
+            
             const varName = this.current();
-            // Variable muss ein Identifier sein
             if (!/^[a-zA-Z0-9_]+$/.test(varName) || varName === 'EOF') {
                 throw new Error("Nach Quantor muss eine Variable folgen.");
             }
             this.consume();
-            return { kind: 'Quantifier', op: op, variable: varName, body: this.parseNot() };
+            
+            // Quantor bindet an den direkten nächsten Ausdruck (Not oder Atom)
+            const body = this.parseNot();
+            
+            // Type-Casting vermeiden durch expliziten Check, hier sicher durch Regex oben
+            return new Tuple('Quantifier', op as QuantifierOp, varName, body);
         }
+
         return this.parseAtom();
     }
 
+    // LEVEL 6: Atome (Klammern, Konstanten, Prädikate) (Precedence 8)
     private parseAtom(): Formula {
         const token = this.current();
+
+        // Klammern
         if (token === '(') {
             this.consume();
-            const f = this.parseImplication();
+            const f = this.parseImplication(); // Reset auf niedrigste Prio
             this.consume(')');
             return f;
         }
+
+        // Konstanten
         if (token === '⊤') {
             this.consume();
-            return { kind: 'Const', value: true };
+            return new Tuple('Const', 'true');
         }
         if (token === '⊥') {
             this.consume();
-            return { kind: 'Const', value: false };
+            return new Tuple('Const', 'false');
         }
 
+        // Prädikat
         const name = token;
         
-        // 1. Prädikat? (Muss in Signatur sein)
         if (this.signature.predicates.has(name)) {
             this.consume();
             let args: Term[] = [];
             if (this.current() === '(') {
                 this.consume();
-                args = this.parseTermList();
+                if (this.current() !== ')') {
+                    args = this.parseTermList();
+                }
                 this.consume(')');
             }
-            return { kind: 'Pred', symbol: name, args };
+            const argsTuple = new Tuple(...args);
+            return new Tuple('Pred', name, argsTuple);
         }
         
-        // 2. Fehler: Funktion an Formel-Position
         if (this.signature.functions.has(name)) {
-            throw new Error(`Symbol '${name}' ist eine Funktion, wird aber als Formel genutzt.`);
+            throw new Error(`Symbol '${name}' ist eine Funktion, wird aber als Formel genutzt (Prädikat erwartet).`);
         }
 
-        throw new Error(`Unbekanntes Prädikat: '${name}'`);
+        throw new Error(`Unerwartetes Token oder unbekanntes Prädikat: '${name}'`);
     }
 
-    // --- Term Parsing ---
+    // --- Term Parsing (für Argumente) ---
 
     private parseTerm(): Term {
         const name = this.current();
         
-        // Ein Term MUSS mit einem Identifier starten (Funktion oder Variable)
         if (!/^[a-zA-Z0-9_]+$/.test(name)) {
              throw new Error(`Ungültiger Term-Start: '${name}'`);
         }
         this.consume();
 
-        // 1. Funktion
+        // Funktion
         if (this.signature.functions.has(name)) {
             let args: Term[] = [];
             if (this.current() === '(') {
@@ -212,16 +270,17 @@ export class LogicParser {
                 }
                 this.consume(')');
             }
-            return { kind: 'Fun', symbol: name, args };
+            const argsTuple = new Tuple(...args);
+            return new Tuple('Fun', name, argsTuple);
         }
 
-        // 2. Prädikat (Fehler)
+        // Prädikat im Term nicht erlaubt
         if (this.signature.predicates.has(name)) {
             throw new Error(`Symbol '${name}' ist ein Prädikat, darf nicht im Term stehen.`);
         }
 
-        // 3. Fallback: Variable
-        return { kind: 'Var', name: name };
+        // Variable
+        return new Tuple('Var', name);
     }
 
     private parseTermList(): Term[] {
@@ -236,7 +295,7 @@ export class LogicParser {
 }
 
 // =========================================================
-// 4. MAIN EXPORT
+// 4. MAIN EXPORTS
 // =========================================================
 
 export function parse(input: string, signature: Signature): Formula {
@@ -246,5 +305,5 @@ export function parse(input: string, signature: Signature): Formula {
 
 export function parseTerm(input: string, signature: Signature): Term {
     const parser = new LogicParser(input, signature);
-    return parser.parseTermEntry(); // Ruft parseTerm() auf -> Erwartet Term
+    return parser.parseTermEntry(); 
 }
