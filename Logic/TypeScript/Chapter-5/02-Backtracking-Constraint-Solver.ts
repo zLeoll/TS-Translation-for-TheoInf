@@ -1,101 +1,181 @@
-export type Variable = string;
-export type Value = string | number;
-export type Formula = string;
-export type Assignment = Record<Variable, Value>;
+// --- Typ-Definitionen ---
 
-export type CSPTuple = [Variable[], Value[], Formula[]];
-export type AnnotatedCSP = [Variable[], Value[], Array<[Formula, Set<Variable>]>];
+/**
+ * Represents a CSP (Constraint Satisfaction Problem) with typed variables and values.
+ * @template V - Union type of all variable names (e.g. 'WA' | 'NT')
+ * @template D - Union type of all values (e.g. 'red' | 'green')
+ */
+export interface CSP<V extends string, D extends string | number> {
+  readonly variables: readonly V[];
+  readonly values: readonly D[]; 
+  readonly constraints: readonly string[];
+}
 
-export function collectVariables(expr: string): Set<string> {
-    const identifierRegex = /[a-zA-Z_][a-zA-Z0-9_]*/g;
-    const builtIns = new Set(['abs', 'Math']);
-    const variables = new Set<string>();
-    let match: RegExpExecArray | null;
+/**
+ * Partial assignment mapping variables to domain values.
+ * Uses Partial because during search, not all variables are assigned.
+ */
+export type Assignment<V extends string, D extends string | number> = Partial<Record<V, D>>;
 
-    while ((match = identifierRegex.exec(expr)) !== null) {
-        if (!builtIns.has(match[0])) variables.add(match[0]);
+/**
+ * A complete solution where every variable has a value.
+ */
+export type Solution<V extends string, D extends string | number> = Record<V, D>;
+
+/**
+ * Internal representation of a constraint with pre-parsed variables.
+ */
+interface AnnotatedConstraint {
+  readonly formula: string;
+  readonly vars: ReadonlySet<string>;
+}
+
+// --- Helper Funktionen ---
+
+/**
+ * TYPE GUARD: Prüft zur Laufzeit, ob alle Variablen gesetzt sind.
+ * Wenn true, verengt TypeScript den Typ von 'Assignment' auf 'Solution'.
+ */
+function isComplete<V extends string, D extends string | number>(
+  assignment: Assignment<V, D>,
+  variables: readonly V[]
+): assignment is Solution<V, D> {
+  if (Object.keys(assignment).length !== variables.length) {
+    return false;
+  }
+  for (const v of variables) {
+    if (!(v in assignment)) {
+      return false;
     }
-    return variables;
+  }
+  return true;
 }
-
-export function intersection<T>(setA: Set<T>, setB: Set<T>): Set<T> {
-    return new Set([...setA].filter(x => setB.has(x)));
-}
-
-export function isSubset<T>(subset: Set<T>, superset: Set<T>): boolean {
-    for (let elem of subset) {
-        if (!superset.has(elem)) return false;
+    
+function collectVariables(expr: string): Set<string> {
+  const identifierRegex = /[a-zA-Z_][a-zA-Z0-9_]*/g;
+  const builtIns = new Set(['abs', 'min', 'max', 'pow', 'sum', 'len', 'Math', 'true', 'false', 'start', 'goal', 'invariant', 'transition']);
+  const variables = new Set<string>();
+  let match: RegExpExecArray | null;
+  
+  while ((match = identifierRegex.exec(expr)) !== null) {
+    const candidate = match[0];
+    if (!builtIns.has(candidate)) {
+      variables.add(candidate);
     }
-    return true;
+  }
+  
+  return variables;
 }
 
-export function evaluateExpression(expression: string, context: Record<string, unknown>): unknown {
-    const argNames = Object.keys(context);
-    const argValues = Object.values(context);
-    const dynamicFunc = new Function(...argNames, `return (${expression});`);
-    return dynamicFunc(...argValues);
+function isSubset<T>(subset: ReadonlySet<T>, superset: Set<T>): boolean {
+  for (const elem of subset) {
+    if (!superset.has(elem)) {
+      return false;
+    }
+  }
+  return true;
 }
 
-export function isConsistent(
-    variable: Variable,
-    value: Value,
-    assignment: Assignment,
-    constraints: Array<[Formula, Set<Variable>]>
+function evaluateExpression<V extends string, D extends string | number>(
+  expr: string,
+  context: Assignment<V, D>
 ): boolean {
-    const newAssignment = { ...assignment, [variable]: value };
-    const assignedVars = new Set(Object.keys(newAssignment));
-
-    for (const [formula, varsInFormula] of constraints) {
-        if (varsInFormula.has(variable) && isSubset(varsInFormula, assignedVars)) {
-            try {
-                const argNames = Object.keys(newAssignment);
-                const argValues = Object.values(newAssignment);
-                const checkFunc = new Function(...argNames, `return (${formula});`);
-
-                if (!checkFunc(...argValues)) {
-                    return false;
-                }
-            } catch (e) {
-                console.error(`Fehler beim Auswerten von "${formula}":`, e);
-                return false;
-            }
-        }
-    }
-    return true;
+  const jsExpr = expr
+    .replace(/\band\b/g, '&&')
+    .replace(/\bor\b/g, '||')
+    .replace(/\bnot\b/g, '!');
+  
+  const argNames = Object.keys(context);
+  const argValues = Object.values(context);
+  
+  try {
+    const func = new Function(...argNames, `return (${jsExpr});`);
+    const result: unknown = func(...argValues);
+    
+    return typeof result === 'boolean' ? result : false;
+  } catch (e) {
+    return false;
+  }
 }
 
-export function backtrackSearch(assignment: Assignment, csp: AnnotatedCSP): Assignment | null {
-    const [variables, values, constraints] = csp;
-
-    if (Object.keys(assignment).length === variables.length) {
-        return assignment;
+function isConsistent<V extends string, D extends string | number>(
+  variable: V,
+  value: D,
+  assignment: Assignment<V, D>,
+  constraints: readonly AnnotatedConstraint[]
+): boolean {
+  const newAssignment: Assignment<V, D> = { ...assignment, [variable]: value };
+  const assignedVars = new Set(Object.keys(newAssignment));
+  
+  for (const { formula, vars } of constraints) {
+    if (vars.has(variable) && isSubset(vars, assignedVars)) {
+      if (!evaluateExpression(formula, newAssignment)) {
+        return false;
+      }
     }
+  }
+  
+  return true;
+}
 
-    const unassignedVar = variables.find(v => !(v in assignment));
+// --- Backtrack Search ---
 
-    if (!unassignedVar) return null;
-
-    for (const value of values) {
-        if (isConsistent(unassignedVar, value, assignment, constraints)) {
-            const newAssignment = { ...assignment, [unassignedVar]: value };
-            const result = backtrackSearch(newAssignment, csp);
-            if (result !== null) {
-                return result;
-            }
-        }
-    }
+function backtrackSearch<V extends string, D extends string | number>(
+  assignment: Assignment<V, D>,
+  variables: readonly V[],
+  values: readonly D[],
+  constraints: readonly AnnotatedConstraint[]
+): Solution<V, D> | null {
+  
+  if (isComplete(assignment, variables)) {
+    return assignment; // TypeScript weiß jetzt sicher: Es ist 'Solution<V, D>'
+  }
+  
+  const unassignedVar = variables.find(v => !(v in assignment));
+  
+  if (unassignedVar === undefined) {
     return null;
+  }
+  
+  for (const value of values) {
+    if (isConsistent(unassignedVar, value, assignment, constraints)) {
+      const newAssignment: Assignment<V, D> = { 
+        ...assignment, 
+        [unassignedVar]: value 
+      };
+      
+      const result = backtrackSearch(
+        newAssignment,
+        variables,
+        values,
+        constraints
+      );
+      
+      if (result !== null) {
+        return result;
+      }
+    }
+  }
+  
+  return null;
 }
 
-export function solve(csp: CSPTuple): Assignment | null {
-    const [variables, values, constraints] = csp;
+// --- Exportierte Solve Funktion ---
 
-    const annotatedConstraints: Array<[Formula, Set<Variable>]> = constraints.map(f => {
-        const varsInFormula = collectVariables(f);
-        const varsInProblem = new Set(variables);
-        return [f, intersection(varsInFormula, varsInProblem)];
-    });
-
-    const annotatedCSP: AnnotatedCSP = [variables, values, annotatedConstraints];
-    return backtrackSearch({}, annotatedCSP);
+export function solve<V extends string, D extends string | number>(
+  csp: CSP<V, D>
+): Solution<V, D> | null {
+  const { variables, values, constraints } = csp;
+  
+  const annotatedConstraints: AnnotatedConstraint[] = constraints.map(f => ({
+    formula: f,
+    vars: collectVariables(f)
+  }));
+  
+  return backtrackSearch(
+    {},
+    variables,
+    values,
+    annotatedConstraints
+  );
 }
