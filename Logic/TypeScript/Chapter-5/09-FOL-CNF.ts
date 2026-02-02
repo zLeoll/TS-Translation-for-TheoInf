@@ -1,5 +1,5 @@
 import { LogicParser } from './FOL-Parser';
-import { RecursiveSet } from 'recursive-set';
+import { RecursiveSet } from './Recursive-Set';
 
 // --- Type Definitions ---
 export type Variable = string;
