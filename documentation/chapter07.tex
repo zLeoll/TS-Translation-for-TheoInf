@@ -1,2 +1,25 @@
 \section{Fazit und Ausblick}
 Beispiel FOL-Parser viel zu großer Umfang
+
+
+
+\begin{listing}
+	\label{lst:typescript-beispiel}
+	 \caption{TypeScript: Beispiel mit Interface und Funktion}
+	\begin{minted}{typescript}
+		
+	// Ein Interface definieren
+	interface User {
+		id: number;
+		name: string;
+	}
+	
+	// Eine Funktion mit Typisierung
+	function greet(user: User): string {
+		return `Hallo, ${user.name}!`;
+	}
+	
+	const myUser: User = { id: 1, name: "Max" };
+	console.log(greet(myUser));
+	\end{minted}
+\end{listing}
