@@ -1,0 +1,7 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{+w}{	}\PYG{k+kd}{const}\PYG{+w}{ }\PYG{n+nx}{result}\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{bigint}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mi}{7n}\PYG{+w}{ }\PYG{o}{**}\PYG{+w}{ }\PYG{l+m+mi}{125n}\PYG{p}{;}
+\PYG{+w}{	}\PYG{c+c1}{// Berechnung extrem großer Potenzen}
+\PYG{+w}{	}
+\PYG{+w}{	}\PYG{n+nx}{console}\PYG{p}{.}\PYG{n+nx}{log}\PYG{p}{(}\PYG{l+m+mi}{5n}\PYG{+w}{ }\PYG{o}{/}\PYG{+w}{ }\PYG{l+m+mi}{2n}\PYG{p}{);}
+\PYG{+w}{	}\PYG{c+c1}{// Ausgabe: 2n (Nachkommastellen werden abgeschnitten)}
+\end{MintedVerbatim}

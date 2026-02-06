@@ -1,0 +1,12 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{+w}{	}\PYG{k+kd}{const}\PYG{+w}{ }\PYG{n+nx}{name}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Alice\PYGZdq{}}\PYG{p}{;}
+\PYG{+w}{	}\PYG{k+kd}{const}\PYG{+w}{ }\PYG{n+nx}{age}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mf}{25}\PYG{p}{;}
+\PYG{+w}{	}
+\PYG{+w}{	}\PYG{c+c1}{// Direkte Einbettung von Variablen}
+\PYG{+w}{	}\PYG{n+nx}{console}\PYG{p}{.}\PYG{n+nx}{log}\PYG{p}{(}\PYG{l+s+sb}{`User }\PYG{l+s+si}{\PYGZdl{}\PYGZob{}}\PYG{n+nx}{name}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+sb}{ is }\PYG{l+s+si}{\PYGZdl{}\PYGZob{}}\PYG{n+nx}{age}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+sb}{ years old.`}\PYG{p}{);}
+\PYG{+w}{	}\PYG{c+c1}{// Ausgabe: User Alice is 25 years old.}
+\PYG{+w}{	}
+\PYG{+w}{	}\PYG{c+c1}{// Auswertung von Ausdrücken innerhalb des Strings}
+\PYG{+w}{	}\PYG{n+nx}{console}\PYG{p}{.}\PYG{n+nx}{log}\PYG{p}{(}\PYG{l+s+sb}{`Next year, she will be }\PYG{l+s+si}{\PYGZdl{}\PYGZob{}}\PYG{n+nx}{age}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{l+m+mf}{1}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+sb}{.`}\PYG{p}{);}
+\PYG{+w}{	}\PYG{c+c1}{// Ausgabe: Next year, she will be 26.}
+\end{MintedVerbatim}

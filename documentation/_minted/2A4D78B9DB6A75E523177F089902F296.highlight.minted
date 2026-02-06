@@ -1,0 +1,13 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{+w}{	}\PYG{k+kd}{const}\PYG{+w}{ }\PYG{n+nx}{university}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{		}\PYG{n+nx}{name}\PYG{o}{:}\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}HTWG Konstanz\PYGZdq{}}\PYG{p}{,}
+\PYG{+w}{		}\PYG{n+nx}{location}\PYG{o}{:}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{			}\PYG{n+nx}{street}\PYG{o}{:}\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Alfred\PYGZhy{}Wachtel\PYGZhy{}Str. 8\PYGZdq{}}\PYG{p}{,}
+\PYG{+w}{			}\PYG{n+nx}{city}\PYG{o}{:}\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Konstanz\PYGZdq{}}\PYG{p}{,}
+\PYG{+w}{			}\PYG{n+nx}{zipCode}\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{78462}
+\PYG{+w}{		}\PYG{p}{\PYGZcb{},}
+\PYG{+w}{		}\PYG{n+nx}{departments}\PYG{o}{:}\PYG{+w}{ }\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}Computer Science\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Architecture\PYGZdq{}}\PYG{p}{,}
+\PYG{+w}{		}\PYG{l+s+s2}{\PYGZdq{}Mechanical Engineering\PYGZdq{}}\PYG{p}{],}
+\PYG{+w}{		}\PYG{n+nx}{isPublic}\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{true}
+\PYG{+w}{	}\PYG{p}{\PYGZcb{};}
+\end{MintedVerbatim}

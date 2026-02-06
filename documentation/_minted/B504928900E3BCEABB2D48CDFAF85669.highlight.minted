@@ -1,0 +1,4 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{+w}{	}\PYG{n+nx}{console}\PYG{p}{.}\PYG{n+nx}{log}\PYG{p}{(}\PYG{n+nx}{student}\PYG{p}{.}\PYG{n+nx}{firstName}\PYG{p}{);}\PYG{+w}{              }\PYG{c+c1}{// Punkt\PYGZhy{}Notation}
+\PYG{+w}{	}\PYG{n+nx}{console}\PYG{p}{.}\PYG{n+nx}{log}\PYG{p}{(}\PYG{n+nx}{student}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}matriculationNumber\PYGZdq{}}\PYG{p}{]);}\PYG{+w}{ }\PYG{c+c1}{// Klammer\PYGZhy{}Notation}
+\end{MintedVerbatim}

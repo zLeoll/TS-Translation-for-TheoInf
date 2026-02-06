@@ -1,0 +1,4 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{+w}{	}\PYG{o+ow}{typeof}\PYG{+w}{ }\PYG{l+m+mf}{666}\PYG{+w}{   }\PYG{c+c1}{// Ausgabe: \PYGZdq{}number\PYGZdq{}}
+\PYG{+w}{	}\PYG{o+ow}{typeof}\PYG{+w}{ }\PYG{l+m+mf}{666.0}\PYG{+w}{ }\PYG{c+c1}{// Ausgabe: \PYGZdq{}number\PYGZdq{}}
+\end{MintedVerbatim}

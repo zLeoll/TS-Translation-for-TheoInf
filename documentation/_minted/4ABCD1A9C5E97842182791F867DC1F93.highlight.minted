@@ -1,0 +1,6 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{+w}{	}\PYG{k}{static}\PYG{+w}{ }\PYG{k+kr}{from}\PYG{o}{\PYGZlt{}}\PYG{n+nx}{T}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{U}\PYG{o}{\PYGZgt{}}\PYG{p}{(}
+\PYG{+w}{	}\PYG{n+nx}{arrayLike}\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{ArrayLike}\PYG{o}{\PYGZlt{}}\PYG{n+nx}{T}\PYG{o}{\PYGZgt{}}\PYG{p}{,}
+\PYG{+w}{	}\PYG{n+nx}{mapfn}\PYG{o}{:}\PYG{+w}{ }\PYG{p}{(}\PYG{n+nx}{element}\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{T}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{index}\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{number}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n+nx}{U}
+\PYG{+w}{	}\PYG{p}{)}\PYG{o}{:}\PYG{+w}{ }\PYG{n+nx}{U}\PYG{p}{[]}
+\end{MintedVerbatim}

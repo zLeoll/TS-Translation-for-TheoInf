@@ -1,0 +1,4 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{+w}{	}\PYG{n+nb}{Number}\PYG{p}{.}\PYG{n+nx}{MAX\PYGZus{}SAFE\PYGZus{}INTEGER}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{l+m+mf}{1}\PYG{+w}{ }\PYG{o}{===}\PYG{+w}{ }\PYG{n+nb}{Number}\PYG{p}{.}\PYG{n+nx}{MAX\PYGZus{}SAFE\PYGZus{}INTEGER}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{l+m+mf}{2}
+\PYG{+w}{	}\PYG{c+c1}{// Ausgabe: true}
+\end{MintedVerbatim}

@@ -1,0 +1,5 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{+w}{	}\PYG{k+kd}{let}\PYG{+w}{ }\PYG{n+nx}{userProfile}\PYG{o}{:}\PYG{+w}{ }\PYG{p}{[}\PYG{k+kt}{number}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{string}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{boolean}\PYG{p}{];}\PYG{+w}{ }\PYG{c+c1}{// Typ\PYGZhy{}Definition}
+\PYG{+w}{	}\PYG{n+nx}{userProfile}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{[}\PYG{l+m+mf}{101}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s+s2}{\PYGZdq{}Alice\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kc}{true}\PYG{p}{];}
+\PYG{+w}{	}\PYG{c+c1}{// Zuweisung: Reihenfolge und Typen müssen exakt übereinstimmen}
+\end{MintedVerbatim}

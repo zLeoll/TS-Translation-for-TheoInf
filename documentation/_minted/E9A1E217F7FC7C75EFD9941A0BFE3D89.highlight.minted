@@ -1,0 +1,6 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{+w}{	}\PYG{n+nx}{reduce}\PYG{p}{(}
+\PYG{+w}{	}\PYG{n+nx}{callbackfn}\PYG{o}{:}\PYG{+w}{ }\PYG{p}{(}\PYG{n+nx}{accumulator}\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{number}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{currentValue}\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{number}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{=\PYGZgt{}}\PYG{+w}{ }\PYG{k+kt}{number}\PYG{p}{,}
+\PYG{+w}{	}\PYG{n+nx}{initialValue}\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{number}
+\PYG{+w}{	}\PYG{p}{)}\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{number}
+\end{MintedVerbatim}

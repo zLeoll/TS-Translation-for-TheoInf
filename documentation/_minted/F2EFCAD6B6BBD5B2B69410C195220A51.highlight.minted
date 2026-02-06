@@ -1,0 +1,4 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{+w}{	}\PYG{n+nb}{Array}\PYG{p}{.}\PYG{k+kr}{from}\PYG{p}{(\PYGZob{}}\PYG{n+nx}{length}\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{10}\PYG{p}{\PYGZcb{},}\PYG{+w}{ }\PYG{p}{(}\PYG{n+nx}{\PYGZus{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{i}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n+nx}{i}\PYG{+w}{ }\PYG{o}{+}\PYG{+w}{ }\PYG{l+m+mf}{1}\PYG{p}{);}
+\PYG{+w}{	}\PYG{c+c1}{// Ergebnis: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
+\end{MintedVerbatim}

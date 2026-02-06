@@ -1,0 +1,10 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{+w}{	}\PYG{c+c1}{// Standard\PYGZhy{}Division (Gleitkomma)}
+\PYG{+w}{	}\PYG{l+m+mf}{7}\PYG{+w}{ }\PYG{o}{/}\PYG{+w}{ }\PYG{l+m+mf}{3}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{// Ergibt 2.333...}
+\PYG{+w}{	}
+\PYG{+w}{	}\PYG{c+c1}{// Ganzzahldivision}
+\PYG{+w}{	}\PYG{n+nb}{Math}\PYG{p}{.}\PYG{n+nx}{floor}\PYG{p}{(}\PYG{l+m+mf}{7}\PYG{+w}{ }\PYG{o}{/}\PYG{+w}{ }\PYG{l+m+mf}{3}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{// Ergibt 2}
+\PYG{+w}{	}
+\PYG{+w}{	}\PYG{c+c1}{// Rest der Division (Modulo)}
+\PYG{+w}{	}\PYG{l+m+mf}{7}\PYG{+w}{ }\PYG{o}{\PYGZpc{}}\PYG{+w}{ }\PYG{l+m+mf}{3}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{// Ergibt 1}
+\end{MintedVerbatim}
