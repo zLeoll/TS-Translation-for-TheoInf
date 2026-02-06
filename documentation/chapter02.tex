@@ -50,21 +50,24 @@ Der fundamentale Unterschied zwischen Python und TypeScript liegt im Zeitpunkt u
 Python ist dynamisch typisiert; Typen werden zur Laufzeit ausgewertet. Tools wie \texttt{mypy} bieten zwar Type-Hinting, diese sind jedoch optional und haben keinen Einfluss auf die Ausführung. TypeScript hingegen ist ein statisch typisierter Superset von JavaScript. Der TypeScript-Compiler (tsc) prüft die Typen zur Kompilierzeit (Transpilierung) und entfernt diese anschließend vollständig (Type Erasure). Das Resultat ist reines JavaScript.\\
 \textbf{Tupel und Datenstrukturen}\\
 Ein markanter Unterschied zeigt sich bei unveränderlichen Listen (Tupeln). In Python sind Tupel native, unveränderliche Datentypen.
-\begin{lstlisting}[language=Python, caption={Python Tupel}]
+\Needspace{5\baselineskip}
+\begin{minted}{python}
 	# Python: Natives, unveränderliches Tupel
 	point = (10, 20)
-\end{lstlisting}
+\end{minted}
+\captionof{listing}{Python Tupel}
 In TypeScript existieren Tupel nur als Typ-Konstrukt zur Kompilierzeit. Zur Laufzeit sind es gewöhnliche JavaScript-Arrays. Um die Unveränderlichkeit (Immutability) zu gewährleisten, muss der Modifikator \texttt{readonly} explizit verwendet werden:
-
-\begin{lstlisting}[style=tsstyle, caption={TypeScript Tupel Implementierung}]
+\Needspace{6\baselineskip}
+\begin{minted}{typescript}
 	// TypeScript: Array mit fester Länge und Typisierung
 	// 'readonly' verhindert Laufzeitmanipulation (zur Compilezeit)
 	const point: readonly [number, number] = [10, 20];
-\end{lstlisting}
+\end{minted}
+\captionof{listing}{TypeScript Tupel Implementierung}
 \textbf{Dictionaries vs. Dynamische Objekte}\\
 Was in Python das \texttt{dictionary} ist, wird in TypeScript oft durch einfache Objekt-Literale oder die \texttt{Record}-Utility-Types abgebildet. Anders als in Python, wo Dictionaries beliebige hashbare Objekte als Keys nutzen können, sind Objektschlüssel in JavaScript traditionell auf Strings und Symbole beschränkt. Für komplexe Keys muss in TypeScript explizit die \texttt{Map}-Datenstruktur verwendet werden.
-
-\begin{lstlisting}[style=tsstyle, caption={Dictionaries in TypeScript}]
+\Needspace{10\baselineskip}
+\begin{minted}{typescript}
 	// Einfaches Key-Value Mapping (String zu Number)
 	const scores: Record<string, number> = {
 		"Alice": 100,
@@ -73,9 +76,8 @@ Was in Python das \texttt{dictionary} ist, wird in TypeScript oft durch einfache
 	
 	// Map für komplexere Anwendungsfälle (erhält Einfügereihenfolge)
 	const complexMap = new Map<object, number>();
-\end{lstlisting}
-
-
+\end{minted}
+\captionof{listing}{Dictionaries in TypeScript}
 
 \subsection{Setup und Toolchain}
 \label{sec:setup}
@@ -92,22 +94,28 @@ Die Toolchain gliedert sich in drei Schichten:
 
 \subsubsection{Implementierung der Umgebung}
 Die Einrichtung der Umgebung erfolgt deklarativ über die Kommandozeile der Anaconda-Distribution. Zunächst wird die Laufzeitumgebung durch die Installation von Node.js und dem klassischen Jupyter-Frontend vorbereitet. Dies schafft die Voraussetzungen für die Integration nicht-nativer Kernel.
-
-\begin{lstlisting}[style=tsstyle, caption={Bereitstellung der Laufzeitumgebung}]
+\Needspace{6\baselineskip}
+\begin{minted}{typescript}
 	conda activate base
 	conda install nodejs
 	conda install -c conda-forge nbclassic
-\end{lstlisting}
+\end{minted}
+\captionof{listing}{Bereitstellung der Laufzeitumgebung}
+
 Für die Ausführung von TypeScript innerhalb der Notebooks wird der Kernel \texttt{tslab} verwendet. Im Gegensatz zu reinen JavaScript-Kerneln (wie IJavascript) ermöglicht \texttt{tslab} eine direkte Typ-Prüfung innerhalb der Zellen, was für die didaktische Zielsetzung der Arbeit, die Vermittlung von Typsicherheit, unabdingbar ist.
 
-\begin{lstlisting}[style=tsstyle, caption={Integration des TypeScript-Kernels}]
+\Needspace{6\baselineskip}
+\begin{minted}{typescript}
 	tslab install
 	npm install -g tslab
 	npm install typescript
-\end{lstlisting}
+\end{minted}
+\captionof{listing}{Integration des TypeScript-Kernels}
+
 Die fachlichen Anforderungen der Vorlesungen erfordern spezifische Bibliotheken, die über den Paketmanager \texttt{npm} bezogen werden. Hierbei wird strikt zwischen Laufzeit-Abhängigkeiten (z.\,B. \texttt{mathjs} für Numerik, \texttt{recursive-set} für Mengenlehre) und Entwicklungs-Abhängigkeiten (z.\,B. \texttt{@types/pngjs}) unterschieden. Letztere sind notwendig, um für ursprünglich in JavaScript geschriebene Bibliotheken eine statische Typprüfung zu ermöglichen.
 
-\begin{lstlisting}[style=tsstyle, caption={Installation der Projekt-Abhängigkeiten}]
+\Needspace{6\baselineskip}
+\begin{minted}{typescript}
 	// Mathematische und logische Kernkomponenten
 	npm install fraction.js mathjs logic-solver z3-solver
 	
@@ -117,7 +125,8 @@ Die fachlichen Anforderungen der Vorlesungen erfordern spezifische Bibliotheken,
 	// Visualisierung und Medienverarbeitung
 	npm install @hpcc-js/wasm pngjs
 	npm i --save-dev @types/pngjs
-\end{lstlisting}
+\end{minted}
+\captionof{listing}{Installation der Projekt-Abhängigkeiten}
 
 \subsubsection{Validierung der Toolchain}
 Um sicherzustellen, dass die Interaktion zwischen dem Jupyter-Frontend, dem tslab-Kernel und den installierten Node-Modulen korrekt funktioniert, wurde ein dediziertes Testverfahren etabliert. Das Referenz-Notebook \href{https://github.com/zLeoll/TS-Translation-for-TheoInf/blob/main/Algorithms/TypeScript/Chapter-02/Test-Libraries.ipynb}{Test-Libraries.ipynb} führt einen systematischen Import-Test aller Komponenten durch. Dieses Notebook verifiziert, dass:

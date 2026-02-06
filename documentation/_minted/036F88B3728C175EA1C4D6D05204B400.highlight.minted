@@ -1,0 +1,5 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{+w}{	}\PYG{c+c1}{// TypeScript: Array mit fester Länge und Typisierung}
+\PYG{+w}{	}\PYG{c+c1}{// \PYGZsq{}readonly\PYGZsq{} verhindert Laufzeitmanipulation (zur Compilezeit)}
+\PYG{+w}{	}\PYG{k+kd}{const}\PYG{+w}{ }\PYG{n+nx}{point}\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{readonly}\PYG{+w}{ }\PYG{p}{[}\PYG{k+kt}{number}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{number}\PYG{p}{]}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{[}\PYG{l+m+mf}{10}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mf}{20}\PYG{p}{];}
+\end{MintedVerbatim}

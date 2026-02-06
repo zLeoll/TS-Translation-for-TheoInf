@@ -1,0 +1,5 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+\PYG{+w}{	}\PYG{n+nx}{conda}\PYG{+w}{ }\PYG{n+nx}{activate}\PYG{+w}{ }\PYG{n+nx}{base}
+\PYG{+w}{	}\PYG{n+nx}{conda}\PYG{+w}{ }\PYG{n+nx}{install}\PYG{+w}{ }\PYG{n+nx}{nodejs}
+\PYG{+w}{	}\PYG{n+nx}{conda}\PYG{+w}{ }\PYG{n+nx}{install}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{n+nx}{c}\PYG{+w}{ }\PYG{n+nx}{conda}\PYG{o}{\PYGZhy{}}\PYG{n+nx}{forge}\PYG{+w}{ }\PYG{n+nx}{nbclassic}
+\end{MintedVerbatim}
