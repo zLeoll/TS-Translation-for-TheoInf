@@ -1,4 +1,4 @@
-import { Tuple } from "recursive-set";
+import { Tuple, type Value } from "recursive-set";
 
 // =========================================================
 // 1. AST DEFINITIONEN (Tuple-Typen ohne Tag-Strings)
@@ -10,13 +10,12 @@ export type PredicateSymbol = string;
 
 // --- TERM TYPES ---
 export type VarTerm = Tuple<[VariableName]>;
-export type FunTerm = Tuple<[FunctionSymbol, Tuple<Term[]>]>;
+export type FunTerm = Tuple<[FunctionSymbol, Tuple<Value[]>]>;
 export type Term = VarTerm | FunTerm;
 
 // --- FORMULA TYPES ---
 export type ConstFormula = Tuple<["true" | "false"]>;
 
-// KORRIGIERT: Not enthält jetzt den Operator
 export type NotFormula = Tuple<["¬", Formula]>;
 
 export type BinaryOp = "∧" | "∨" | "→" | "↔";
@@ -25,7 +24,7 @@ export type BinaryFormula = Tuple<[BinaryOp, Formula, Formula]>;
 export type QuantifierOp = "∀" | "∃";
 export type QuantifierFormula = Tuple<[QuantifierOp, VariableName, Formula]>;
 
-export type PredFormula = Tuple<[PredicateSymbol, Tuple<Term[]>]>;
+export type PredFormula = Tuple<[PredicateSymbol, Tuple<Value[]>]>;
 
 export type Formula =
 	| ConstFormula
@@ -35,8 +34,53 @@ export type Formula =
 	| PredFormula;
 
 export interface Signature {
-	functions: Set<string>;
-	predicates: Set<string>;
+	functions: Map<string, number>;
+	predicates: Map<string, number>;
+}
+
+// =========================================================
+// 1.5 TYPE-SAFE FACTORY FUNCTIONS
+// =========================================================
+
+export function createVarTerm(name: VariableName): VarTerm {
+	return new Tuple(name);
+}
+
+export function createFunTerm(symbol: FunctionSymbol, args: Term[]): FunTerm {
+	const argsTuple = new Tuple(...args);
+	return new Tuple(symbol, argsTuple);
+}
+
+export function createPredFormula(
+	symbol: PredicateSymbol,
+	args: Term[],
+): PredFormula {
+	const argsTuple = new Tuple(...args);
+	return new Tuple(symbol, argsTuple);
+}
+
+export function createConstFormula(value: "true" | "false"): ConstFormula {
+	return new Tuple(value);
+}
+
+export function createNotFormula(operand: Formula): NotFormula {
+	return new Tuple("¬", operand);
+}
+
+export function createBinaryFormula(
+	op: BinaryOp,
+	left: Formula,
+	right: Formula,
+): BinaryFormula {
+	return new Tuple(op, left, right);
+}
+
+export function createQuantifierFormula(
+	op: QuantifierOp,
+	varName: VariableName,
+	body: Formula,
+): QuantifierFormula {
+	return new Tuple(op, varName, body);
 }
 
 // =========================================================
@@ -44,7 +88,7 @@ export interface Signature {
 // =========================================================
 
 function tokenize(s: string): string[] {
-	const regex = /\s*(?::)*\s*(?:([()¬∧∨→↔⊤⊥∀∃,])|([a-zA-Z0-9_]+))/g;
+	const regex = /\s*(?:([()¬∧∨→↔⊤⊥∀∃,])|([a-zA-Z0-9_]+))/g;
 	const tokens: string[] = [];
 	let match = regex.exec(s);
 
@@ -112,11 +156,11 @@ export class LogicParser {
 		if (op === "→") {
 			this.consume();
 			const right = this.parseImplication();
-			return new Tuple("→", left, right);
+			return createBinaryFormula("→", left, right);
 		} else if (op === "↔") {
 			this.consume();
 			const right = this.parseImplication();
-			return new Tuple("↔", left, right);
+			return createBinaryFormula("↔", left, right);
 		}
 
 		return left;
@@ -128,7 +172,7 @@ export class LogicParser {
 		while (this.current() === "∨") {
 			this.consume();
 			const right = this.parseAnd();
-			left = new Tuple("∨", left, right);
+			left = createBinaryFormula("∨", left, right);
 		}
 		return left;
 	}
@@ -139,7 +183,7 @@ export class LogicParser {
 		while (this.current() === "∧") {
 			this.consume();
 			const right = this.parseNot();
-			left = new Tuple("∧", left, right);
+			left = createBinaryFormula("∧", left, right);
 		}
 		return left;
 	}
@@ -148,11 +192,10 @@ export class LogicParser {
 	private parseNot(): Formula {
 		const token = this.current();
 
-		// KORRIGIERT: Negation erstellt jetzt Tuple mit Operator
 		if (token === "¬") {
 			this.consume();
 			const operand = this.parseNot();
-			return new Tuple("¬", operand);
+			return createNotFormula(operand);
 		}
 
 		// Quantoren
@@ -167,7 +210,7 @@ export class LogicParser {
 			this.consume();
 
 			const body = this.parseNot();
-			return new Tuple(op as QuantifierOp, varName, body);
+			return createQuantifierFormula(op, varName, body);
 		}
 
 		return this.parseAtom();
@@ -188,19 +231,21 @@ export class LogicParser {
 		// Konstanten
 		if (token === "⊤") {
 			this.consume();
-			return new Tuple("true");
+			return createConstFormula("true");
 		}
 		if (token === "⊥") {
 			this.consume();
-			return new Tuple("false");
+			return createConstFormula("false");
 		}
 
 		// Prädikat
 		const name = token;
 
 		if (this.signature.predicates.has(name)) {
+			const expectedArity = this.signature.predicates.get(name);
 			this.consume();
 			let args: Term[] = [];
+
 			if (this.current() === "(") {
 				this.consume();
 				if (this.current() !== ")") {
@@ -208,8 +253,15 @@ export class LogicParser {
 				}
 				this.consume(")");
 			}
-			const argsTuple = new Tuple(...args);
-			return new Tuple(name, argsTuple);
+
+			// Arität prüfen
+			if (args.length !== expectedArity) {
+				throw new Error(
+					`Prädikat '${name}' erwartet ${expectedArity} Argumente, aber ${args.length} gefunden.`,
+				);
+			}
+
+			return createPredFormula(name, args);
 		}
 
 		if (this.signature.functions.has(name)) {
@@ -233,7 +285,9 @@ export class LogicParser {
 
 		// Funktion
 		if (this.signature.functions.has(name)) {
+			const expectedArity = this.signature.functions.get(name);
 			let args: Term[] = [];
+
 			if (this.current() === "(") {
 				this.consume();
 				if (this.current() !== ")") {
@@ -241,8 +295,15 @@ export class LogicParser {
 				}
 				this.consume(")");
 			}
-			const argsTuple = new Tuple(...args);
-			return new Tuple(name, argsTuple);
+
+			// Arität prüfen
+			if (args.length !== expectedArity) {
+				throw new Error(
+					`Funktion '${name}' erwartet ${expectedArity} Argumente, aber ${args.length} gefunden.`,
+				);
+			}
+
+			return createFunTerm(name, args);
 		}
 
 		// Prädikat im Term nicht erlaubt
@@ -253,7 +314,7 @@ export class LogicParser {
 		}
 
 		// Variable
-		return new Tuple(name);
+		return createVarTerm(name);
 	}
 
 	private parseTermList(): Term[] {
