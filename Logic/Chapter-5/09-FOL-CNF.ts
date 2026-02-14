@@ -10,10 +10,10 @@ import {
     createQuantifierFormula,
 } from "./FOL-Parser";
 
-type Literal = Formula;
-type Clause = RecursiveSet<Literal>;
-type CNF = RecursiveSet<Clause>;
-type Substitution = Map<VariableName, Term>;
+export type Literal = Formula;
+export type Clause = RecursiveSet<Literal>;
+export type CNF = RecursiveSet<Clause>;
+export type Substitution = Map<VariableName, Term>;
 type QuantifierTuple = Array<QuantifierOp | VariableName>;
 
 function getOrThrow(tuple: Tuple<Value[]>, index: number): Value {
