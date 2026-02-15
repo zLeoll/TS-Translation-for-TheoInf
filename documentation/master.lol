@@ -38,4 +38,4 @@
 \contentsline {listing}{\numberline {38}{\ignorespaces If-Else Verzweigung}}{25}{listing.38}%
 \contentsline {listing}{\numberline {39}{\ignorespaces Switch-Statement als Alternative}}{26}{listing.39}%
 \contentsline {listing}{\numberline {40}{\ignorespaces Optimiertes Sieb des Eratosthenes}}{27}{listing.40}%
-\contentsline {listing}{\numberline {41}{\ignorespaces TypeScript: Beispiel mit Interface und Funktion}}{32}{listing.41}%
+\contentsline {listing}{\numberline {41}{\ignorespaces TypeScript: Beispiel mit Interface und Funktion}}{37}{listing.41}%

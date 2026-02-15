@@ -1,4 +1,0 @@
-\begin{MintedVerbatim}[commandchars=\\\{\}]
-\PYG{+w}{		}\PYG{c+c1}{// Ist mindestens eine Zahl ungerade? \PYGZhy{}\PYGZgt{} true}
-\PYG{+w}{		}\PYG{n+nx}{L}\PYG{p}{.}\PYG{n+nx}{some}\PYG{p}{(}\PYG{n+nx}{x}\PYG{+w}{ }\PYG{p}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n+nx}{x}\PYG{+w}{ }\PYG{o}{\PYGZpc{}}\PYG{+w}{ }\PYG{l+m+mf}{2}\PYG{+w}{ }\PYG{o}{!==}\PYG{+w}{ }\PYG{l+m+mf}{0}\PYG{p}{);}
-\end{MintedVerbatim}

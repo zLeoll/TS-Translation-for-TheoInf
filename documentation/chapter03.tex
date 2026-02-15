@@ -394,16 +394,16 @@ TypeScript bietet Methoden auf Arrays, die den logischen Quantoren aus der Präd
 	\item \textbf{Allquantor ($\forall$):} Die Methode \texttt{every} prüft, ob \textit{alle} Elemente eines Arrays eine Bedingung erfüllen.
 	\Needspace{5\baselineskip}
 	\begin{minted}{typescript}
-		const L = [2, 4, 0, 7];
-		// Sind alle Zahlen gerade? -> false, da 7 ungerade ist
-		L.every(x => x % 2 === 0); 
+	const L = [2, 4, 0, 7];
+	// Sind alle Zahlen gerade? -> false, da 7 ungerade ist
+	L.every(x => x % 2 === 0); 
 	\end{minted}
 	
 	\item \textbf{Existenzquantor ($\exists$):} Die Methode \texttt{some} prüft, ob \textit{mindestens ein} Element die Bedingung erfüllt.
 	\Needspace{5\baselineskip}
 	\begin{minted}{typescript}
-		// Ist mindestens eine Zahl ungerade? -> true
-		L.some(x => x % 2 !== 0);
+	// Ist mindestens eine Zahl ungerade? -> true
+	L.some(x => x % 2 !== 0);
 	\end{minted}
 
 \end{enumerate}
@@ -429,13 +429,13 @@ Alternativ bietet die \texttt{switch}-Anweisung eine strukturierte Möglichkeit,
 \begin{minted}{typescript}
 	switch (true) {
 		case (x < 0):
-		console.log('The number is negative!');
-		break;
+			console.log('The number is negative!');
+			break;
 		case (x === 0):
-		console.log('The number is zero.');
-		break;
+			console.log('The number is zero.');
+			break;
 		default:
-		console.log("It's more than one.");
+			console.log("It's more than one.");
 	}
 \end{minted}
 \captionof{listing}{Switch-Statement als Alternative}

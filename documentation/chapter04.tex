@@ -1,20 +1,86 @@
-
 \section{Methodische Vorgehensweise}
-In diesem Kapitel soll gezeigt werden, wie die Übersetzung der Notebooks erfolgt sind. Von dem zuerst grundlegenden Verständnis über die einzelnen Funktionen hin zu der unterstützenden Übersetzung mithilfe von \ac{KI} bis hin zum vollständig funktionierenden Notebook
+Dieses Kapitel dokumentiert den systematischen Übersetzungsprozess der Notebooks, angefangen beim grundlegenden Verständnis der Funktionen über die \ac{KI}-gestützte Übersetzung bis hin zur Validierung der funktionsfähigen Endprodukte.
 
-\subsection{Github Projects}
-Hier möchte ich unser Projektstatus zeigen, eingehen, wie wir uns diese Tickets zugeteilt haben und wie wir mit der großen Menge an Notebooks fertig geworden sind.
+\subsection{Projektmanagement mit GitHub Projects} 
+\label{sec:github_projects}
+Angesichts des erheblichen Umfangs von etwa 80 zu portierenden Jupyter Notebooks erfordert die Durchführung dieser Studienarbeit eine strukturierte Projektplanung und klare Aufgabenteilung. Um die Zusammenarbeit im Team zu gestalten und den Fortschritt transparent zu verfolgen, wird das integrierte Planungswerkzeug \textit{GitHub Projects} eingesetzt. Zu Beginn des Projekts wurden alle Notebooks als einzelne Aufgaben (Tickets) im Backlog erfasst. Jedem Ticket wurde anschließend ein verantwortliches Teammitglied (\textit{Assignee}) zugewiesen. Die visuelle Verwaltung dieser Aufgaben erfolgt über ein Kanban-Board, welches den Arbeitsfluss in verschiedene Phasen unterteilt (siehe Abbildung \ref{fig:GitHub Projects}).
 
+\begin{figure}[H]
+	\centering
+	\captionsetup{skip=6pt}
+	\includegraphics[width=\textwidth]{img/GitHub_Project.png}
+	\caption{GitHub Projects Kanban-Board}
+	\label{fig:GitHub Projects}
+\end{figure}
 
-\subsection{Auswahl der Lehrmaterialien}
-Welche Kriterien es gab...
+Das in Abbildung \ref{fig:GitHub Projects} dargestellte Board gliedert den Workflow in vier Spalten:
+\begin{itemize}[itemsep=2pt, parsep=2pt, topsep=2pt]
+	\item \textbf{Backlog:} Sammelbecken für alle noch nicht begonnenen Aufgaben.
+	\item \textbf{InProcess:} Tickets, die aktuell von einem Teammitglied bearbeitet werden.
+	\item \textbf{Testing:} Notebooks, deren Übersetzung abgeschlossen ist und die zur Überprüfung bereitstehen.
+	\item \textbf{Done:} Erfolgreich validierte und abgeschlossene Notebooks.
+\end{itemize}
+
+Der Übersetzungsprozess folgt einem definierten Zyklus: Sobald die Bearbeitung eines Notebooks beginnt, wird das entsprechende Ticket vom \textit{Backlog} in den Status \textit{InProcess} verschoben. Nach Abschluss der Portierung und dem Push der Änderungen in das Versionskontrollsystem wechselt das Ticket in den Status \textit{Testing}. Dieser Status signalisiert, dass das Notebook für ein Code-Review bereitsteht. Gemäß dem Vier-Augen-Prinzip überprüft nun ein anderes Teammitglied die Implementierung auf Korrektheit und Funktionalität. Erst nach erfolgreicher Validierung und gegebenenfalls notwendigen Korrekturschleifen wird das Ticket final in die Spalte \textit{Done} überführt. Dieser strukturierte Prozess gewährleistet eine kontinuierliche Qualitätssicherung über den gesamten Projektverlauf hinweg.\\
+Eine ergänzende methodische Maßnahme zur Vorbereitung der schriftlichen Ausarbeitung stellt die Nutzung von Labels dar. Um relevante Erkenntnisse und Code-Beispiele bereits während der Implementierungsphase systematisch zu erfassen, wurde das Label \textit{writable} eingeführt. Notebooks, die spezifische Herausforderungen oder diskussionswürdige Code-Fragmente enthalten, wurden mit diesem Label markiert. Diese Verschlagwortung ermöglicht eine Filterung der Tickets im Nachgang und gewährleistet, dass wichtige Aspekte der Portierung gezielt in die Dokumentation der Studienarbeit einfließen können, ohne dass eine erneute, vollständige Sichtung aller Notebooks  notwendig ist.
 
 
 \subsection{Der Übersetzungs-Workflow}
-Wann manuell, wann automatisiert
+Die Portierung der Jupyter Notebooks von Python nach TypeScript folgt einem systematischen und iterativen Prozess, der manuelle Analysen mit \ac{KI}-gestützter Automatisierung kombiniert. Dieser hybride Ansatz gewährleistet sowohl Effizienz bei der Code-Konvertierung als auch die qualitative Sicherung der Inhalte. Der Workflow gliedert sich in die folgenden Phasen:
+
+\subsubsection{Analyse und Vorbereitung}
+Zu Beginn wird das zu bearbeitende Python-Notebook aus dem Repository des Dozenten herunter geladen und lokal ausgeführt. Dieser Schritt dient dazu, ein initiales Verständnis für die implementierten Algorithmen und deren Laufzeitverhalten zu gewinnen. Die Analyse der Python-Ausgabe bildet die Referenzbasis (\textit{Ground Truth}) für die spätere Validierung der TypeScript-Implementierung.
+
+\subsubsection{Hybride Code-Übersetzung}
+Der Kernprozess der Übersetzung erfolgt semi-automatisch unter Einbeziehung von \ac{KI}-Modellen. Dabei werden einzelne Code-Snippets aus dem Python-Original extrahiert und mithilfe spezifischer Prompts, auf die im nachfolgenden Unterkapitel näher eingegangen wird, zur Übersetzung an das KI-Modell übergeben (siehe Abschnitt \ref{subsec:ki-tools}).
+Die generierten TypeScript-Fragmente werden anschließend manuell überprüft und optimiert. Hierbei liegt der Fokus auf zwei Aspekten:
+\begin{enumerate}[itemsep=2pt, parsep=2pt, topsep=2pt]
+	\item \textbf{Funktionale Äquivalenz:} Der übersetzte Code muss dasselbe Verhalten wie das Original zeigen. Abweichungen, die durch sprachspezifische Unterschiede entstehen (z.B. Kontrollstrukturen wie \texttt{switch-case} vs. \texttt{if-elif-else}), werden explizit geprüft und bei Bedarf angepasst.
+	\item \textbf{Syntaktische Nähe:} Gemäß den Projektvorgaben soll die TypeScript-Implementierung strukturell so nah wie möglich an der Python-Vorlage bleiben, um die Nachvollziehbarkeit zu erhalten.
+\end{enumerate}
+Bei Diskrepanzen zwischen den Sprachkonzepten wird ergänzend die offizielle TypeScript-Dokumentation \cite{typescript-documentation} konsultiert, um eine geeignete Lösung zu finden.
+
+\subsubsection{Integration und Test}
+Nach der Übersetzung aller Code-Zellen erfolgt ein umfassender Integrationstest des gesamten Notebooks. Hierbei wird verifiziert, ob die einzelnen Komponenten korrekt interagieren und das erwartete Gesamtergebnis liefern. Fehlerquellen, die durch die statische Typisierung von TypeScript aufgedeckt werden, sowie Laufzeitfehler werden in dieser Phase korrigiert. Sollte die Einbindung externer Bibliotheken notwendig sein, wird der entsprechende Installationsbefehl (\texttt{npm install ...}) in der zentralen Projektdokumentation (\texttt{README.md}) ergänzt, um die Reproduzierbarkeit der Entwicklungsumgebung sicherzustellen.
+
+\subsubsection{Adaption der Texte}
+Erst nach erfolgreicher Validierung der Code-Basis erfolgt die Anpassung der begleitenden Markdown-Texte. Da sich durch den Sprachwechsel oft auch die Semantik (z.,B. Variablendeklaration, Typisierung) ändert, müssen die Erläuterungen entsprechend aktualisiert werden. Zudem werden neu eingeführte Hilfsfunktionen, die in der Python-Version nicht existent waren, aber für die TypeScript-Umsetzung notwendig sind, dokumentiert eingebettet.
+
+\subsubsection{Qualitätssicherung und Review}
+Den Abschluss des Workflows bildet ein zweistufiger Review-Prozess. Zunächst führt der Bearbeiter eine finale Selbstkontrolle von Code und Text durch. Anschließend wird das Notebook auf einen dedizierten Feature-Branch im Versionskontrollsystem gepusht. Dies löst den Review-Prozess durch den zweiten Entwickler aus (Vier-Augen-Prinzip). Der Reviewer prüft die Änderungen auf Korrektheit, Stil und Verständlichkeit. Erst nach Freigabe und eventueller Überarbeitung erfolgt der Merge in den Hauptzweig (\textit{Main-Branch}) sowie der Abschluss des zugehörigen Tickets im Projektmanagement-Tool.
 
 
 \subsection{Einsatz von KI-gestützten Tools}
-Verwendete Modelle (GPT-4, Claude, Copilot etc.)\\
-Prompt-Engineering-Strategien für Code-Übersetzung. (hier würde ich gerne unseren Promt erwähnen und erläutern, vielleicht machen wir hierfür nochmal ein Unterkapitel)\\
-Grenzen der KI (Halluzinationen bei seltenen TS-Libraries).
+\label{subsec:ki-tools}
+Ein zentraler Bestandteil der methodischen Vorgehensweise ist der  Einsatz generativer KI-Modelle zur Unterstützung des Übersetzungsprozesses. Da die manuelle Portierung von rund 80 Jupyter Notebooks extrem zeitaufwendig und fehleranfällig wäre, wurden moderne Large Language Models (LLMs) als Assistenzsysteme in den Workflow integriert.
+
+\subsubsection{Prompt-Engineering-Strategien für die Code-Übersetzung}
+Um konsistente und syntaktisch korrekte Ergebnisse zu erzielen, wurde ein standardisierter System-Prompt entwickelt, der den KI-Modellen als Kontextrahmen dient. Dieser Prompt adressiert spezifische Herausforderungen der Übersetzung von Python nach TypeScript, insbesondere im Hinblick auf das Typsystem und die modulare Struktur der Notebooks.
+
+Der verwendete Basis-Prompt lautet:
+\begin{quote}
+	\textit{Das Jupyter Notebook, welches ich dir hochgeladen habe, soll von Python nach TypeScript übersetzt werden. Ich werde dir in den folgenden Nachrichten einzelne Zellen des Notebooks geben und diese übersetzt du dann bitte einzeln in TypeScript. Falls in der Zelle eine Klasse definiert wird, denke daran, dass TypeScript typgecheckt ist und dass es alle Methoden kennen muss. Definiere deshalb in der gleichen Zelle mit der Klasse zusammen ein Interface, welches alle Methoden und Attribute der Klasse enthält, die später im Python-Notebook noch der Klasse angehängt werden (z.B. bei einer Klasse Trie mit: Trie.find = find; del find). Um in späteren Zellen diese Methoden der jeweiligen Klasse noch anzuhängen, verwende prototype (z.B.: Trie.prototype.find = function() \dots ). Beachte am besten auch immer den Kontext mit Hilfe der Markdown-Zellen, die vor den Code-Zellen stehen. Falls Graphviz in Python vorkommt, verwende \enquote{@hpcc-js/wasm} und für die Ausgabe von HTML-Inhalten verwende tslab mit display.html(\dots). Hier kommt die erste Zelle, die du übersetzen sollst:}
+\end{quote}
+
+Dieser Prompt wurde iterativ optimiert und adressiert mehrere kritische Aspekte:
+\begin{itemize}
+	\item \textbf{Klassenstruktur und Typisierung:} Python erlaubt das dynamische Hinzufügen von Methoden zu Klassen zur Laufzeit (Monkey Patching \cite{monkey-patching}), was in den Algorithmen-Vorlesungen häufig genutzt wird. TypeScript als statisch typisierte Sprache verbietet dies standardmäßig. Der Prompt weist die KI explizit an, Interfaces und Prototypen-Manipulation (\texttt{prototype}) zu nutzen, um diese Dynamik typsicher nachzubilden.
+	\item \textbf{Bibliotheksmapping:} Spezifische Python-Bibliotheken wie Graphviz werden direkt auf ihre TypeScript-Pendants (\texttt{@hpcc-js/wasm}) gemappt, um Halluzinationen bei der Bibliothekswahl zu vermeiden.
+	\item \textbf{Kernel-Spezifikation:} Die Anweisung zur Nutzung von \texttt{display.html(...)} stellt sicher, dass die Ausgabe im Notebook-Kontext korrekt gerendert wird.
+\end{itemize}
+Ergänzend wurde in vielen Interaktionen der Constraint 
+\begin{quote}
+	\textit{"Verwende kein any, kein as und kein non-null assertion operator"}
+\end{quote} hinzugefügt, um die KI zur Generierung von typsicherem Code zu zwingen und die Verwendung von \enquote{Escape Hatches} (Umgehung des Typsystems) zu minimieren.
+
+\subsubsection{Verwendete Modelle und Evolution}
+Im Verlauf des Projekts wurden verschiedene KI-Modelle evaluiert und eingesetzt. Zu Beginn erfolgte die Übersetzung primär mit ChatGPT (Modell GPT-4/4o, später dann GPT-5/5.1). Während die grundlegende Syntaxübersetzung zufriedenstellend war, zeigten sich Schwächen bei komplexeren Kontextabhängigkeiten, etwa bei der Referenzierung von Code über mehrere Notebook-Zellen hinweg. Dies führte dazu, dass bei ca. 70\% der generierten Fragmente manuelle Nachbesserungen erforderlich waren.
+
+Aufgrund dieser Einschränkungen erfolgte ein Wechsel zur Plattform Perplexity AI. Diese zeichnete sich durch eine präzisere Kontextverarbeitung und eine höhere Code-Qualität aus, was den Nachbearbeitungsaufwand auf ca. 50\% reduzierte. Ein wesentlicher Vorteil von Perplexity ist die Fähigkeit, dynamisch das geeignetste Modell für eine Anfrage auszuwählen. Insbesondere der Einsatz des Modells \textit{Gemini 1.5 Pro} (bzw. \textit{Gemini 3 Pro} in der experimentellen Phase) erwies sich als besonders effektiv für die Übersetzung komplexer algorithmischer Logik.
+
+\subsubsection{Grenzen der KI-Unterstützung}
+Trotz des Einsatzes leistungsfähiger Modelle stieß die KI-Unterstützung an systembedingte Grenzen:
+\begin{itemize}
+	\item \textbf{Halluzinationen bei Nischen-Bibliotheken:} Bei selten verwendeten TypeScript-Bibliotheken neigten die Modelle dazu, nicht existente Methoden zu erfinden oder APIs von ähnlichen JavaScript-Bibliotheken zu vermischen.
+	\item \textbf{Kontextlänge:} Der Versuch, ganze Notebooks in einem Schritt zu übersetzen, führte häufig zu unvollständigen Ergebnissen oder dem Verlust von Details. Die abschnittsweise Übersetzung ("Zelle für Zelle"), wie im Prompt definiert, erwies sich als robusterer Ansatz, auch wenn sie den manuellen Koordinationsaufwand erhöhte.
+\end{itemize}
