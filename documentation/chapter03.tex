@@ -164,7 +164,7 @@ Die Methode \texttt{filter} ist eine Higher-Order-Funktion, die ein neues Array 
 \captionof{listing}{Signatur \textit{filter}}
 
 Die Callback-Funktion erhält automatisch drei Argumente:
-\begin{enumerate}[itemsep=2pt, parsep=2pt, topsep=2pt]
+\begin{enumerate}
 	\item \texttt{value}: Das aktuell verarbeitete Element
 	\item \texttt{index}: Der nullbasierte Index des Elements im Array
 	\item \texttt{array}: Das ursprüngliche Array, auf dem \texttt{filter} aufgerufen wurde
@@ -216,7 +216,7 @@ Im folgenden Beispiel wird ein Array erzeugt, das die Zahlenfolge von 1 bis 10 e
 \captionof{listing}{Erzeugung einer Zahlenfolge}
 
 Die Argumente werden dabei wie folgt interpretiert:
-\begin{enumerate}[itemsep=2pt, parsep=2pt, topsep=2pt]
+\begin{enumerate}
 	\item \texttt{\{length: 10\}}: Ein Objekt, das ein Array der Länge 10 simuliert. Da keine Elemente vorhanden sind, werden diese als \texttt{undefined} betrachtet.
 	\item \texttt{(\_, i) => i + 1}: Die Mapping-Funktion. Der Unterstrich \texttt{\_} ist eine Konvention für ein ignoriertes Argument (hier das \texttt{undefined}-Element). \texttt{i} ist der aktuelle Index (0 bis 9), der transformiert wird (\texttt{0} $\rightarrow$ \texttt{1}, \dots).
 \end{enumerate}
@@ -243,7 +243,7 @@ Die Methode \texttt{reduce} wird verwendet, um ein Array auf einen einzelnen Wer
 \captionof{listing}{Signatur \texttt{from}}
 
 Die Callback-Funktion nimmt zwei Hauptargumente entgegen:
-\begin{itemize}[itemsep=2pt, parsep=2pt, topsep=2pt]
+\begin{itemize}
 	\item \texttt{accumulator} (a): Der akkumulierte Wert (Startwert oder Ergebnis der vorherigen Iteration).
 	\item \texttt{currentValue} (b): Das aktuelle Element des Arrays.
 \end{itemize}
@@ -321,7 +321,7 @@ Das nachstehende Beispiel zeigt ein \texttt{student}-Objekt mit grundlegenden Ei
 
 \textbf{Zugriff auf Eigenschaften}\\
 Es existieren zwei gängige Notationen für den Zugriff auf Objekteigenschaften:
-\begin{itemize}[itemsep=2pt, parsep=2pt, topsep=2pt]
+\begin{itemize}
 	\item \textbf{Punkt-Notation (\texttt{obj.key}):} Die Standard-Methode für den Zugriff, wenn der Schlüsselname bekannt und ein gültiger Bezeichner ist.
 	\item \textbf{Klammer-Notation (\texttt{obj["key"]}):} Notwendig, wenn der Schlüssel in einer Variable gespeichert ist oder Sonderzeichen enthält.
 \end{itemize}
@@ -382,7 +382,7 @@ TypeScript unterstützt die klassischen logischen Verknüpfungen Konjunktion (AN
 
 \textbf{Vergleichsoperatoren}\\
 Zur Erzeugung von Wahrheitswerten werden häufig numerische Vergleiche herangezogen. TypeScript bietet hierfür eine Reihe von Operatoren:
-\begin{itemize}[itemsep=2pt, parsep=2pt, topsep=2pt]
+\begin{itemize}
 	\item \texttt{===}: Strikte Gleichheit (prüft Wert und Typ)
 	\item \texttt{!==}: Strikte Ungleichheit
 	\item \texttt{<}, \texttt{>}, \texttt{<=}, \texttt{>=}: Klassische Größenvergleiche
@@ -390,7 +390,7 @@ Zur Erzeugung von Wahrheitswerten werden häufig numerische Vergleiche herangezo
 Ein wichtiger Unterschied zu Python besteht in der Verkettung von Vergleichen. Ein Ausdruck wie \texttt{1 < 2 < 3} wird in TypeScript nicht mathematisch ausgewertet. Stattdessen würde \texttt{1 < 2} zu \texttt{true} evaluiert, und anschließend versucht, \texttt{true < 3} zu berechnen (was durch Typ-Koerzition zu \texttt{1 < 3} $\rightarrow$ \texttt{true} führen kann, aber oft nicht das Gewünschte ist). Korrekte mathematische Bereichsprüfungen müssen explizit mit \texttt{\&\&} verknüpft werden\\
 \textbf{Quantoren auf Arrays}\\
 TypeScript bietet Methoden auf Arrays, die den logischen Quantoren aus der Prädikatenlogik entsprechen:
-\begin{enumerate}[itemsep=2pt, parsep=2pt, topsep=2pt]
+\begin{enumerate}
 	\item \textbf{Allquantor ($\forall$):} Die Methode \texttt{every} prüft, ob \textit{alle} Elemente eines Arrays eine Bedingung erfüllen.
 	\Needspace{5\baselineskip}
 	\begin{minted}{typescript}
@@ -441,14 +441,14 @@ Alternativ bietet die \texttt{switch}-Anweisung eine strukturierte Möglichkeit,
 \captionof{listing}{Switch-Statement als Alternative}
 
 Zur Iteration stellt TypeScript verschiedene Schleifenkonstrukte bereit:
-\begin{itemize}[itemsep=2pt, parsep=2pt, topsep=2pt]
+\begin{itemize}
 	\item Die \texttt{for...of}-Schleife eignet sich ideal, um über die Elemente eines Arrays oder anderer iterierbarer Objekte zu laufen. Sie ist kompakter und weniger fehleranfällig als die klassische indexbasierte \texttt{for}-Schleife.
 	\item Die \texttt{while}-Schleife führt einen Codeblock solange aus, wie eine definierte Laufbedingung erfüllt ist.
 \end{itemize}
 \textbf{Anwendungsbeispiel: \href{https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes}{Sieb des Eratosthenes}}\\
 Ein klassischer Algorithmus zur Bestimmung aller Primzahlen bis zu einer Grenze $n$ ist das Sieb des Eratosthenes. Die Implementierung in TypeScript demonstriert das Zusammenspiel von Arrays, Schleifen und bedingten Anweisungen:
 
-\begin{enumerate} [itemsep=2pt, parsep=2pt, topsep=2pt]
+\begin{enumerate} 
 	\item Initialisierung eines Arrays \texttt{primes}, wobei \texttt{primes[i] = i} gilt.
 	\item Iteration über alle Zahlen $i$ und $j$, um Vielfache zu eliminieren (d.\,h. auf 0 zu setzen).
 	\item Filterung der verbleibenden Zahlen $\neq 0$.
@@ -477,14 +477,14 @@ Eine optimierte Version nutzt zudem \texttt{Math.sqrt(n)} als Obergrenze für di
 
 \subsection{Numerische Funktionen}
 TypeScript stellt, über das zugrundeliegende JavaScript, eine umfassende Sammlung mathematischer Standardfunktionen und Konstanten bereit, die im globalen \texttt{Math}-Objekt gekapselt sind. Dieses Objekt fungiert als Namensraum für statische Methoden und Eigenschaften. Zu den elementaren Funktionen gehören:
-\begin{itemize}[itemsep=2pt, parsep=2pt, topsep=2pt]
+\begin{itemize}
 	\item \textbf{Wurzelberechnung:} \texttt{Math.sqrt(x)} berechnet die Quadratwurzel $\sqrt{x}$.
 	\item \textbf{Betragsfunktion:} \texttt{Math.abs(x)} liefert den absoluten Wert $|x|$.
 	\item \textbf{Potenzierung:} \texttt{Math.pow(base, exponent)} oder der Exponentialoperator \texttt{**}.
 \end{itemize}
 \textbf{Rundungsfunktionen}\\
 Für die Umwandlung von Gleitkommazahlen in Ganzzahlen stehen drei spezifische Methoden zur Verfügung:
-\begin{enumerate} [itemsep=2pt, parsep=2pt, topsep=2pt]
+\begin{enumerate}
 	\item \textbf{\texttt{Math.floor(x)}}: Die \textit{Gaußklammer unten} $\lfloor x \rfloor$. Sie rundet stets auf die nächstkleinere ganze Zahl ab.
 	\[ \text{floor}(x) = \max \{ n \in \mathbb{Z} \mid n \le x \} \]
 	\item \textbf{\texttt{Math.ceil(x)}}: Die \textit{Gaußklammer oben} $\lceil x \rceil$. Sie rundet stets auf die nächstgrößere ganze Zahl auf.
@@ -497,7 +497,7 @@ Das \texttt{Math}-Objekt umfasst auch die Standard-Trigonometriefunktionen wie \
 Die Exponentialfunktion $e^x$ wird über \texttt{Math.exp(x)} berechnet. Das Inverse, der natürliche Logarithmus $\ln(x)$, wird in TypeScript (wie in vielen C-basierten Sprachen) als \texttt{Math.log(x)} bezeichnet.\\
 \textbf{Konstanten}\\
 Wichtige mathematische Konstanten sind direkt zugänglich:
-\begin{itemize}[itemsep=2pt, parsep=2pt, topsep=2pt]
+\begin{itemize}
 	\item \texttt{Math.PI} für die Kreiszahl $\pi \approx 3.14159$
 	\item \texttt{Math.E} für die Eulersche Zahl $e \approx 2.718$
 \end{itemize}

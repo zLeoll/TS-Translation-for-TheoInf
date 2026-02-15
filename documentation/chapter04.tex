@@ -14,7 +14,7 @@ Angesichts des erheblichen Umfangs von etwa 80 zu portierenden Jupyter Notebooks
 \end{figure}
 
 Das in Abbildung \ref{fig:GitHub Projects} dargestellte Board gliedert den Workflow in vier Spalten:
-\begin{itemize}[itemsep=2pt, parsep=2pt, topsep=2pt]
+\begin{itemize}
 	\item \textbf{Backlog:} Sammelbecken für alle noch nicht begonnenen Aufgaben.
 	\item \textbf{InProcess:} Tickets, die aktuell von einem Teammitglied bearbeitet werden.
 	\item \textbf{Testing:} Notebooks, deren Übersetzung abgeschlossen ist und die zur Überprüfung bereitstehen.
@@ -34,7 +34,7 @@ Zu Beginn wird das zu bearbeitende Python-Notebook aus dem Repository des Dozent
 \subsubsection{Hybride Code-Übersetzung}
 Der Kernprozess der Übersetzung erfolgt semi-automatisch unter Einbeziehung von \ac{KI}-Modellen. Dabei werden einzelne Code-Snippets aus dem Python-Original extrahiert und mithilfe spezifischer Prompts, auf die im nachfolgenden Unterkapitel näher eingegangen wird, zur Übersetzung an das KI-Modell übergeben (siehe Abschnitt \ref{subsec:ki-tools}).
 Die generierten TypeScript-Fragmente werden anschließend manuell überprüft und optimiert. Hierbei liegt der Fokus auf zwei Aspekten:
-\begin{enumerate}[itemsep=2pt, parsep=2pt, topsep=2pt]
+\begin{enumerate}
 	\item \textbf{Funktionale Äquivalenz:} Der übersetzte Code muss dasselbe Verhalten wie das Original zeigen. Abweichungen, die durch sprachspezifische Unterschiede entstehen (z.B. Kontrollstrukturen wie \texttt{switch-case} vs. \texttt{if-elif-else}), werden explizit geprüft und bei Bedarf angepasst.
 	\item \textbf{Syntaktische Nähe:} Gemäß den Projektvorgaben soll die TypeScript-Implementierung strukturell so nah wie möglich an der Python-Vorlage bleiben, um die Nachvollziehbarkeit zu erhalten.
 \end{enumerate}

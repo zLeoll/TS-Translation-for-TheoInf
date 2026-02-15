@@ -86,7 +86,7 @@ Die Reproduzierbarkeit der Ergebnisse und die Stabilität der Entwicklungsumgebu
 \subsubsection{Architektur der Laufzeitumgebung}
 Die technische Infrastruktur basiert auf einer hybriden Architektur, die das Python-zentrierte Ökosystem von Anaconda mit der JavaScript-basierten Node.js-Laufzeitumgebung verbindet. Diese Trennung ist notwendig, da Jupyter ursprünglich für Python konzipiert wurde, TypeScript jedoch eine Node.js-Laufzeit für die Transpilierung und Ausführung benötigt.\\
 Die Toolchain gliedert sich in drei Schichten:
-\begin{enumerate}[itemsep=2pt, parsep=2pt, topsep=2pt]
+\begin{enumerate}
 	\item \textbf{Basisinfrastruktur (Anaconda):} Bereitstellung von Python, Jupyter (\texttt{nbclassic}) und Verwaltung der Systempfade.
 	\item \textbf{Laufzeitumgebung (Node.js):} Ausführungsumgebung für den TypeScript-Compiler und die genutzten Bibliotheken.
 	\item \textbf{Kernel-Layer (tslab):} Eine Middleware, die das Jupyter-Messaging-Protokoll implementiert und TypeScript-Codezellen an die Node.js-Laufzeit weiterleitet.
@@ -130,7 +130,7 @@ Die fachlichen Anforderungen der Vorlesungen erfordern spezifische Bibliotheken,
 
 \subsubsection{Validierung der Toolchain}
 Um sicherzustellen, dass die Interaktion zwischen dem Jupyter-Frontend, dem tslab-Kernel und den installierten Node-Modulen korrekt funktioniert, wurde ein dediziertes Testverfahren etabliert. Das Referenz-Notebook \href{https://github.com/zLeoll/TS-Translation-for-TheoInf/blob/main/Algorithms/TypeScript/Chapter-02/Test-Libraries.ipynb}{Test-Libraries.ipynb} führt einen systematischen Import-Test aller Komponenten durch. Dieses Notebook verifiziert, dass:
-\begin{itemize}[itemsep=2pt, parsep=2pt, topsep=2pt]
+\begin{itemize}
 	\item der Kernel korrekt registriert ist und TypeScript-Syntax verarbeitet,
 	\item alle externen Module im Pfad der Laufzeitumgebung gefunden werden,
 	\item die Typdefinitionen korrekt aufgelöst werden.
