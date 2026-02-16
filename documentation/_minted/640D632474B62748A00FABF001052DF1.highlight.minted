@@ -1,7 +1,0 @@
-\begin{MintedVerbatim}[commandchars=\\\{\}]
-\PYG{+w}{	}\PYG{c+c1}{// Zugriff auf verschachteltes Objekt}
-\PYG{+w}{	}\PYG{n+nx}{university}\PYG{p}{.}\PYG{n+nx}{location}\PYG{p}{.}\PYG{n+nx}{city}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{// Ausgabe: Konstanz}
-\PYG{+w}{	}
-\PYG{+w}{	}\PYG{c+c1}{// Zugriff auf Array innerhalb eines Objekts}
-\PYG{+w}{	}\PYG{n+nx}{university}\PYG{p}{.}\PYG{n+nx}{departments}\PYG{p}{[}\PYG{l+m+mf}{1}\PYG{p}{];}\PYG{+w}{ }\PYG{c+c1}{// Ausgabe: Architecture}
-\end{MintedVerbatim}

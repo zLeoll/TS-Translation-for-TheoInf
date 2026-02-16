@@ -1,4 +1,0 @@
-\begin{MintedVerbatim}[commandchars=\\\{\}]
-\PYG{+w}{	}\PYG{n+nx}{L}\PYG{p}{[}\PYG{l+m+mf}{0}\PYG{p}{]}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+m+mf}{7}\PYG{p}{;}
-\PYG{+w}{	}\PYG{n+nx}{L}\PYG{p}{;}\PYG{+w}{ }\PYG{c+c1}{// Ergebnis: [7, 2, 3]}
-\end{MintedVerbatim}

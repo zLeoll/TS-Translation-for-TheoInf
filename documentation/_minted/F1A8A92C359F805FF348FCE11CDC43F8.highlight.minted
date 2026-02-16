@@ -1,3 +1,0 @@
-\begin{MintedVerbatim}[commandchars=\\\{\}]
-\PYG{+w}{	}\PYG{p}{[...[}\PYG{l+m+mf}{1}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mf}{2}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mf}{3}\PYG{p}{],}\PYG{+w}{ }\PYG{p}{...[}\PYG{l+m+mf}{4}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mf}{5}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mf}{6}\PYG{p}{]];}\PYG{+w}{ }\PYG{c+c1}{// Ergebnis: [1, 2, 3, 4, 5, 6]}
-\end{MintedVerbatim}

@@ -1,6 +1,0 @@
-\begin{MintedVerbatim}[commandchars=\\\{\}]
-\PYG{+w}{	}\PYG{k+kd}{let}\PYG{+w}{ }\PYG{n+nx}{a}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{b}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{rest}\PYG{p}{;}
-\PYG{+w}{	}\PYG{p}{[}\PYG{n+nx}{a}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{b}\PYG{p}{]}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{[}\PYG{l+m+mf}{10}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mf}{20}\PYG{p}{];}
-\PYG{+w}{	}\PYG{n+nx}{console}\PYG{p}{.}\PYG{n+nx}{log}\PYG{p}{(}\PYG{n+nx}{a}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{// Ausgabe: 10}
-\PYG{+w}{	}\PYG{n+nx}{console}\PYG{p}{.}\PYG{n+nx}{log}\PYG{p}{(}\PYG{n+nx}{b}\PYG{p}{);}\PYG{+w}{ }\PYG{c+c1}{// Ausgabe: 20}
-\end{MintedVerbatim}

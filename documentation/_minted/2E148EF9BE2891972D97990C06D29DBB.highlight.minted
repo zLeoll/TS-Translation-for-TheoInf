@@ -1,4 +1,0 @@
-\begin{MintedVerbatim}[commandchars=\\\{\}]
-\PYG{+w}{	}\PYG{k+kd}{const}\PYG{+w}{ }\PYG{n+nx}{L}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{p}{[}\PYG{l+m+mf}{1}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mf}{2}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mf}{3}\PYG{p}{];}
-\PYG{+w}{	}\PYG{n+nx}{L}\PYG{p}{[}\PYG{l+m+mf}{0}\PYG{p}{];}\PYG{+w}{ }\PYG{c+c1}{// Gibt das erste Element zurück: 1}
-\end{MintedVerbatim}

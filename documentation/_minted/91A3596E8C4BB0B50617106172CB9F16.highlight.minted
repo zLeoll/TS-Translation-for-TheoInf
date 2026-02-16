@@ -1,6 +1,0 @@
-\begin{MintedVerbatim}[commandchars=\\\{\}]
-\PYG{+w}{	}\PYG{n+nx}{filter}\PYG{p}{(}
-\PYG{+w}{	}\PYG{n+nx}{callbackfn}\PYG{o}{:}\PYG{+w}{ }\PYG{p}{(}\PYG{n+nx}{value}\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{number}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{index}\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{number}\PYG{p}{,}\PYG{+w}{ }\PYG{n+nx}{array}\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{number}\PYG{p}{[])}\PYG{+w}{ }\PYG{p}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n+nx}{unknown}\PYG{p}{,}
-\PYG{+w}{	}\PYG{n+nx}{thisArg?}\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{any}
-\PYG{+w}{	}\PYG{p}{)}\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{number}\PYG{p}{[]}
-\end{MintedVerbatim}
