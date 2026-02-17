@@ -40,17 +40,17 @@
 \contentsline {listing}{\numberline {40}{\ignorespaces Optimiertes Sieb des Eratosthenes}}{28}{listing.40}%
 \contentsline {listing}{\numberline {41}{\ignorespaces Python: Generische rekursive Formeldefinition}}{37}{listing.41}%
 \contentsline {listing}{\numberline {42}{\ignorespaces TypeScript: Strukturell präzise Formeldefinition}}{38}{listing.42}%
-\contentsline {listing}{\numberline {43}{\ignorespaces Progressive Typdefinitionen für Transformationsschritte}}{38}{listing.43}%
+\contentsline {listing}{\numberline {43}{\ignorespaces Progressive Typdefinitionen für Transformationsschritte}}{39}{listing.43}%
 \contentsline {listing}{\numberline {44}{\ignorespaces NNF-Typ mit eingeschränkter Negation}}{39}{listing.44}%
-\contentsline {listing}{\numberline {45}{\ignorespaces Python: Verwendung von frozenset für Klauseln}}{39}{listing.45}%
+\contentsline {listing}{\numberline {45}{\ignorespaces Python: Verwendung von frozenset für Klauseln}}{40}{listing.45}%
 \contentsline {listing}{\numberline {46}{\ignorespaces Problem der Referenzgleichheit in JavaScript}}{40}{listing.46}%
 \contentsline {listing}{\numberline {47}{\ignorespaces TypeScript: RecursiveSet mit struktureller Gleichheit}}{41}{listing.47}%
 \contentsline {listing}{\numberline {48}{\ignorespaces Python: Literal-Repräsentation}}{41}{listing.48}%
 \contentsline {listing}{\numberline {49}{\ignorespaces TypeScript: Literal-Repräsentation mit Tuple}}{42}{listing.49}%
 \contentsline {listing}{\numberline {50}{\ignorespaces Triviality-Prüfung mit struktureller Gleichheit}}{42}{listing.50}%
 \contentsline {listing}{\numberline {51}{\ignorespaces Python: Pattern Matching mit match-Statement}}{43}{listing.51}%
-\contentsline {listing}{\numberline {52}{\ignorespaces TypeScript: Switch-Statement mit Type Guards}}{44}{listing.52}%
-\contentsline {listing}{\numberline {53}{\ignorespaces Python: CNF-Konstruktion mit Set Comprehensions}}{45}{listing.53}%
-\contentsline {listing}{\numberline {54}{\ignorespaces TypeScript: CNF-Konstruktion mit expliziten Schleifen}}{46}{listing.54}%
-\contentsline {listing}{\numberline {55}{\ignorespaces Duplikateliminierung in der Praxis}}{48}{listing.55}%
-\contentsline {listing}{\numberline {56}{\ignorespaces TypeScript: Beispiel mit Interface und Funktion}}{51}{listing.56}%
+\contentsline {listing}{\numberline {52}{\ignorespaces TypeScript: Switch-Statement mit Type Guards}}{43}{listing.52}%
+\contentsline {listing}{\numberline {53}{\ignorespaces Python: CNF-Konstruktion mit Set Comprehensions}}{44}{listing.53}%
+\contentsline {listing}{\numberline {54}{\ignorespaces TypeScript: CNF-Konstruktion mit expliziten Schleifen}}{45}{listing.54}%
+\contentsline {listing}{\numberline {55}{\ignorespaces Duplikateliminierung in der Praxis}}{47}{listing.55}%
+\contentsline {listing}{\numberline {56}{\ignorespaces TypeScript: Beispiel mit Interface und Funktion}}{50}{listing.56}%

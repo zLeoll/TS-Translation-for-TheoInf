@@ -3,7 +3,341 @@ Im folgenden haben wir uns Fälle aus Notebooks herausgesucht, welche wir genaue
 
 
 \subsection{CNF}
-In diesem Teil wollen wir etwas genauer auf das Notebook 04-CNF eingehen und die Umsetzung des Notebooks und dessen Funktionen genauer unter die Lupe nehmen.
+
+Die Umwandlung der Python-Notebooks für den Propositional Logic Parser und die CNF-Konvertierung in TypeScript erforderte fundamentale strukturelle Anpassungen, die primär aus den unterschiedlichen Typsystemen und Datenstrukturen der beiden Sprachen resultieren. Im Folgenden werden die wesentlichen Änderungen und deren Notwendigkeit detailliert erläutert.
+
+\subsubsection{Type-System und strukturelle Typdefinitionen}
+
+Der gravierendste Unterschied zwischen beiden Implementierungen liegt im Typsystem. Während Python ein dynamisches Typsystem mit optionalen Type Hints verwendet, verlangt TypeScript explizite Typdeklarationen, die zur Compile-Zeit geprüft werden.
+
+Rekursive Formeldefinition:
+
+In der Python-Version wurde die Formelstruktur wie folgt definiert:
+
+\Needspace{6\baselineskip}
+\begin{minted}{python}
+	Formula = TypeVar('Formula')
+	Formula = str | tuple[Formula, ...]
+\end{minted}
+\captionof{listing}{Python: Generische rekursive Formeldefinition}
+
+Diese Definition ist bewusst generisch (@TobiNight hier generisch erklären + Quelle) gehalten und erlaubt beliebige Tupel-Strukturen. TypeScript erfordert hingegen eine präzise strukturelle Definition:
+
+\Needspace{8\baselineskip}
+\begin{minted}{typescript}
+export type Formula = Variable | ['⊤' | '⊥'] | ['¬', Formula] |
+                       ['↔' | '→' | '∧' | '∨', Formula, Formula];
+\end{minted}
+\captionof{listing}{TypeScript: Strukturell präzise Formeldefinition}
+
+Diese explizite Definition modelliert exakt die Grammatik der Aussagenlogik als algebraischen Datentyp. Jede Variante des Union Type entspricht einer Produktionsregel:
+
+\begin{itemize}
+	\item \texttt{Variable} repräsentiert atomare Propositionen $p, q, r, \ldots$
+	\item \texttt{['⊤' | '⊥']} kodiert die nullstelligen Junktoren
+	\item \texttt{['¬', Formula]} repräsentiert die Negation als einstelligen Operator
+	\item \texttt{['↔' | '→' | '∧' | '∨', Formula, Formula]} modelliert alle zweistelligen Junktoren als Tupel mit genau zwei Teilformeln
+\end{itemize}
+
+Die Typdefinition erzwingt strukturelle Wohlgeformtheit: Ein Ausdruck wie \texttt{['∧', 'p']} (Konjunktion mit nur einem Operanden) oder \texttt{['¬', '∨', 'p', 'q']} (syntaktisch falsche Verschachtelung) wird zur Compile-Zeit abgelehnt. Damit wird die syntaktische Korrektheit von Formeln nicht erst zur Laufzeit durch Parser-Fehler erkannt, sondern bereits durch das Typsystem garantiert. Dies ist besonders wichtig für die nachfolgenden Transformationsfunktionen, die auf der strukturellen Integrität der Formelbäume aufbauen – eine falsch strukturierte Formel könnte zu Laufzeitfehlern in Pattern-Matching-Ausdrücken oder zu logisch inkorrekten Transformationen führen.
+
+\subsubsection{Typprogression durch Transformationsschritte}
+
+Eine besondere Stärke der TypeScript-Implementation liegt in der expliziten Modellierung der Transformationsschritte durch progressive Typdefinitionen:
+
+\Needspace{10\baselineskip}
+\begin{minted}{typescript}
+// Nach Eliminierung der Bikonditionale
+ export type Formula1 = Variable | ['⊤' | '⊥'] | 
+                        ['¬', Formula1] | ['→' | '∧' | '∨', Formula1, Formula1];
+	
+// Nach Eliminierung der Konditionale
+ export type Formula2 = Variable | ['⊤' | '⊥'] | 
+                        ['¬', Formula2] | ['∧' | '∨', Formula2, Formula2];
+\end{minted}
+\captionof{listing}{Progressive Typdefinitionen für Transformationsschritte}
+
+Diese Typen dokumentieren präzise, welche Operatoren nach jedem Transformationsschritt noch in der Formel vorhanden sein können. Die Funktion \texttt{eliminateBiconditional} nimmt ein \texttt{Formula} entgegen und gibt ein \texttt{Formula1} zurück – der Typ garantiert, dass keine 'binconditional'-Operatoren mehr vorhanden sind. Entsprechend eliminiert \texttt{eliminateConditional} alle 'conditional'-Operatoren und gibt ein \texttt{Formula2} zurück.
+
+Der finale Typ \texttt{NNF} (Negation Normal Form) kodiert zusätzlich die Einschränkung, dass Negationen nur noch auf atomare Variablen angewendet werden:
+
+\Needspace{6\baselineskip}
+\begin{minted}{typescript}
+ type NNF = Variable | ['⊤'] | ['⊥'] | 
+            ['¬', Variable] | ['∧' | '∨', NNF, NNF];
+\end{minted}
+\captionof{listing}{NNF-Typ mit eingeschränkter Negation}
+
+Diese schrittweise Verfeinerung der Typen macht die Algorithmen selbstdokumentierend und verhindert Fehler durch falsche Annahmen über die Formelstruktur.
+
+\subsubsection{RecursiveSet: Notwendigkeit und Implementierung}
+
+Die wichtigste strukturelle Änderung betrifft die Repräsentation von Klauseln und CNF-Formeln. Python verwendet native \texttt{frozenset}-Objekte:
+
+\Needspace{8\baselineskip}
+\begin{minted}{python}
+ Variable = str
+ Literal = Variable | tuple[str, Variable]
+ Clause = frozenset[Literal]
+ CNF = set[Clause]
+\end{minted}
+\captionof{listing}{Python: Verwendung von frozenset für Klauseln}
+
+JavaScript bzw. TypeScript verfügt jedoch nicht über eine native Set-Implementation, die strukturelle Gleichheit (value equality) für verschachtelte Strukturen unterstützt. Das native \texttt{Set} in JavaScript verwendet Referenzgleichheit, was zu folgenden Problemen führt:
+
+\Needspace{11\baselineskip}
+\begin{minted}{typescript}
+ // JavaScript-Problem: Referenzgleichheit
+ const set1 = new Set();
+ const literal1 = ['¬', 'p'];
+ const literal2 = ['¬', 'p'];
+ set1.add(literal1);
+ set1.add(literal2);
+ console.log(set1.size); // Ausgabe: 2 (erwartet: 1)
+
+ // literal1 !== literal2 (verschiedene Referenzen)
+ // obwohl strukturell identisch
+\end{minted}
+\captionof{listing}{Problem der Referenzgleichheit in JavaScript}
+
+Dieses Problem ist besonders kritisch für den Davis-Putnam-Algorithmus und andere Resolutionsverfahren, die auf der eindeutigen Repräsentation von Klauseln und Literalen basieren. Ohne korrekte Duplikaterkennung würde der Algorithmus:
+
+\begin{itemize}
+	\item Identische Klauseln mehrfach speichern und verarbeiten
+	\item Redundante Resolutionsschritte durchführen
+	\item Falsche Ergebnisse bei der Erfüllbarkeitsprüfung liefern
+	\item Exponentiell mehr Speicher verbrauchen
+\end{itemize}
+
+Die Lösung ist die Verwendung der \texttt{recursive-set} Library, die strukturelle Gleichheit implementiert:
+
+\Needspace{12\baselineskip}
+\begin{minted}{typescript}
+ import { RecursiveSet, Tuple } from 'recursive-set';
+	
+ export type Literal = Variable | Tuple<['¬', Variable]>;
+ export type Clause = RecursiveSet;
+ export type CNF = RecursiveSet;
+	
+ // Korrekte Duplikaterkennung
+ const clause = new RecursiveSet();
+ clause.add(new Tuple('¬', 'p'));
+ clause.add(new Tuple('¬', 'p'));
+ console.log(clause.size); // Ausgabe: 1 (korrekt)
+\end{minted}
+\captionof{listing}{TypeScript: RecursiveSet mit struktureller Gleichheit}
+
+Die \texttt{Tuple}-Klasse aus derselben Library wird verwendet, um Literale wie $\neg p$ zu repräsentieren. Sie garantiert ebenfalls strukturelle Gleichheit und ist hashbar, sodass sie als Element in \texttt{RecursiveSet} verwendet werden kann.
+
+\subsubsection{Literal-Repräsentation und Komplementbildung}
+
+Ein weiterer wichtiger Unterschied liegt in der Repräsentation von Literalen. In Python:
+
+\Needspace{8\baselineskip}
+\begin{minted}{python}
+ # Python: Literale als Union von str und tuple
+ Literal = Variable | tuple[str, Variable]
+	
+ # Beispiele:
+ positiv = 'p'                    # Positive Literal
+ negativ = ('¬', 'p')            # Negative Literal
+\end{minted}
+\captionof{listing}{Python: Literal-Repräsentation}
+
+In TypeScript musste die Struktur angepasst werden, um mit \texttt{RecursiveSet} kompatibel zu sein:
+
+\Needspace{12\baselineskip}
+\begin{minted}{typescript}
+ // TypeScript: Literale mit Tuple-Wrapper
+ export type Literal = Variable | Tuple<['¬', Variable]>;
+	
+ // Hilfsfunktion für Komplementbildung
+ function getComplement(l: Literal): Literal {
+   if (typeof l === 'string') {
+	 return new Tuple('¬', l);
+   } else {
+     return l.get(1);
+   }
+ y}
+\end{minted}
+\captionof{listing}{TypeScript: Literal-Repräsentation mit Tuple}
+
+Die Funktion \texttt{getComplement} ist essentiell für die Triviality-Prüfung von Klauseln. Eine Klausel ist trivial (immer wahr), wenn sie sowohl ein Literal $p$ als auch sein Komplement $\neg p$ enthält:
+
+\Needspace{12\baselineskip}
+\begin{minted}{typescript}
+	export function isTrivial(clause: Clause): boolean {
+		for (const lit of clause) {
+			const comp = getComplement(lit);
+			// RecursiveSet.has() verwendet strukturelle Gleichheit
+			if (clause.has(comp)) {
+				return true;
+			}
+		}
+		return false;
+	}
+\end{minted}
+\captionof{listing}{Triviality-Prüfung mit struktureller Gleichheit}
+
+Diese Implementation funktioniert korrekt nur durch die strukturelle Gleichheit von \texttt{RecursiveSet}. Mit einem normalen JavaScript-\texttt{Set} würde die Prüfung \texttt{clause.has(comp)} fehlschlagen, selbst wenn das Komplement strukturell vorhanden ist.
+
+\subsection{Pattern Matching und Type Guards}
+
+Python 3.10+ unterstützt strukturelles Pattern Matching mit \texttt{match}-Statements, die besonders elegant für die Verarbeitung von Formelstrukturen sind:
+
+\Needspace{13\baselineskip}
+\begin{minted}{python}
+ def eliminateBiconditional(f: Formula) -> Formula:
+   match f:
+     case str(p):
+       return p
+     case ('↔', g, h):
+       return eliminateBiconditional(('∧', ('→', g, h), ('→', h, g)))
+     case ('¬', g):
+       return ('¬', eliminateBiconditional(g))
+     case (op, g, h):
+      return (op, eliminateBiconditional(g), eliminateBiconditional(h))
+\end{minted}
+\captionof{listing}{Python: Pattern Matching mit match-Statement}
+
+TypeScript hingegen unterstützt kein direktes Pattern Matching, daher werden \texttt{switch}-Statements mit Type Guards und Destructuring verwendet:
+
+\Needspace{18\baselineskip}
+\begin{minted}{typescript}
+export function eliminateBiconditional(f: Formula): Formula1 {
+  if (typeof f === 'string') {
+	return f;
+  }
+  const [op] = f;
+  switch (op) {
+    case '↔': {
+	  const [, g, h] = f;
+        return eliminateBiconditional(['∧', ['→', g, h], ['→', h, g]]);
+    }
+	case '¬': {
+	  const [, g] = f;
+	  return ['¬', eliminateBiconditional(g)];
+    }
+    // ... weitere Cases
+ }
+}
+\end{minted}
+\captionof{listing}{TypeScript: Switch-Statement mit Type Guards}
+
+Der Type Guard \texttt{typeof f === 'string'} ermöglicht es dem Compiler, in den nachfolgenden Zweigen zu erkennen, dass \texttt{f} eine der Array-Varianten des Types sein muss: \texttt{['⊤' | '⊥'] | ['¬', Formula] | ['↔' | '→' | '∧' | '∨', Formula, Formula]}. Im \texttt{case '↔'}-Zweig verfeinert der Compiler den Typ weiter auf \texttt{['↔', Formula, Formula]}, sodass die Destructuring-Syntax \texttt{const [, g, h] = f} die beiden Operanden als Typ \texttt{Formula} extrahiert, während das erste Element (der Operator '↔') übersprungen wird.
+
+\subsection{CNF-Konstruktion und Set-Operationen}
+
+Die eigentliche CNF-Konstruktion zeigt deutlich die Unterschiede in der Set-Manipulation. Python verwendet Set Comprehensions:
+
+\Needspace{14\baselineskip}
+\begin{minted}{python}
+ def cnf(f: Formula) -> CNF:
+   match f:
+     case str(p):
+       return { frozenset({p}) }
+     case ('∧', g, h):
+       return cnf(g) | cnf(h)
+     case ('∨', g, h):
+       return { k1 | k2 for k1 in cnf(g) for k2 in cnf(h) }
+	 # ...
+\end{minted}
+\captionof{listing}{Python: CNF-Konstruktion mit Set Comprehensions}
+
+Die distributive Regel für die Disjunktion $(g \vee h)$ erzeugt alle Kombinationen von Klauseln aus $g$ und $h$ und vereinigt diese paarweise. In Python ist dies durch die prägnante Set Comprehension ausdrückbar.
+
+TypeScript benötigt explizite Schleifen und \texttt{RecursiveSet}-Operationen:
+
+\Needspace{20\baselineskip}
+\begin{minted}{typescript}
+ export function cnf(f: NNF): CNF {
+   if (typeof f === 'string') {
+     const clause = new RecursiveSet(f);
+	   return new RecursiveSet(clause);
+   }
+   switch (f[0]) {
+     case '∧': {
+	   const [, g, h] = f;
+	   const left = cnf(g);
+	   const right = cnf(h);
+	   return left.union(right);
+     }
+     case '∨': {
+       const [, g, h] = f;
+       const left = cnf(g);
+       const right = cnf(h);
+       const result = new RecursiveSet();
+       for (const c1 of left) {
+         for (const c2 of right) {
+           const unionClause = c1.union(c2);
+		   result.add(unionClause);
+         }
+       }
+	   return result;
+     }
+	 // ...
+   }
+ }
+\end{minted}
+\captionof{listing}{TypeScript: CNF-Konstruktion mit expliziten Schleifen}
+
+Die verschachtelte Schleife für die Disjunktion iteriert über alle Klauseln beider Teilformeln und vereinigt sie. \texttt{RecursiveSet} garantiert hier automatisch, dass keine Duplikate entstehen – sowohl auf Klausel- als auch auf Literal-Ebene. Dies ist essentiell für die Effizienz nachfolgender Algorithmen.
+
+\subsection{Praktische Auswirkungen für Davis-Putnam}
+
+Die Verwendung von \texttt{RecursiveSet} ist nicht nur eine technische Notwendigkeit, sondern hat direkte Auswirkungen auf die Korrektheit und Effizienz des Davis-Putnam-Algorithmus:
+
+\begin{enumerate}
+	\item \textbf{Unit-Propagation}: Wenn eine Unit-Klausel $\{l\}$ existiert, müssen alle Klauseln, die $\neg l$ enthalten, entfernt werden. Ohne strukturelle Gleichheit würden identische Klauseln mehrfach vorkommen und die Propagation wäre inkonsistent.
+	
+	\item \textbf{Pure-Literal-Elimination}: Die Identifikation reiner Literale (die in keiner Klausel negiert vorkommen) erfordert korrekte Duplikaterkennung. Ansonsten würde ein Literal fälschlicherweise als gemischt klassifiziert.
+	
+	\item \textbf{Resolution}: Bei der Resolution zweier Klauseln über ein Literal $l$ entsteht die Resolvente durch Vereinigung unter Ausschluss von $l$ und $\neg l$. Duplikate müssen hier automatisch eliminiert werden.
+	
+	\item \textbf{Speichereffizienz}: In realen Anwendungen können CNF-Formeln Tausende von Klauseln enthalten. Ohne Duplikaterkennung würde der Speicherverbrauch exponentiell wachsen.
+\end{enumerate}
+
+Ein Beispiel verdeutlicht das Problem:
+
+\Needspace{13\baselineskip}
+\begin{minted}{typescript}
+ // Formel: (p ∨ q) ∧ (p ∨ q)
+ // Ohne RecursiveSet: {{p,q}, {p,q}} - zwei Klauseln
+ // Mit RecursiveSet: {{p,q}} - eine Klausel
+
+ const formula = ['∧', ['∨', 'p', 'q'], ['∨', 'p', 'q']];
+ const result = normalize(formula);
+ // result.size === 1 (korrekt)
+
+ // Ohne RecursiveSet würden identische Klauseln
+ // mehrfach im Davis-Putnam verarbeitet
+\end{minted}
+\captionof{listing}{Duplikateliminierung in der Praxis}
+
+\subsection{Zusammenfassung der Kernänderungen}
+
+Die Migration von Python zu TypeScript erforderte folgende fundamentale Anpassungen:
+
+\begin{itemize}
+	\item \textbf{Explizite Typdefinitionen}: TypeScript verlangt strukturell präzise Union Types für Formeln, die zur Compile-Zeit validiert werden.
+	
+	\item \textbf{Progressive Typen}: Die Transformationsschritte werden durch separate Typen (\texttt{Formula1}, \texttt{Formula2}, \texttt{NNF}) dokumentiert und erzwungen.
+	
+	\item \textbf{RecursiveSet statt frozenset}: Zwingend notwendig für strukturelle Gleichheit bei verschachtelten Strukturen wie Klauseln und CNF-Mengen.
+	
+	\item \textbf{Tuple-Wrapper}: Negative Literale müssen als \texttt{Tuple<['¬', Variable]>} statt einfache Arrays repräsentiert werden, um Hashbarkeit und strukturelle Gleichheit zu garantieren.
+	
+	\item \textbf{Explizite Schleifen}: Set Comprehensions müssen durch verschachtelte \texttt{for}-Schleifen mit \texttt{RecursiveSet}-Operationen ersetzt werden.
+	
+	\item \textbf{Switch statt Match}: Pattern Matching wird durch \texttt{switch}-Statements mit Type Guards und Destructuring simuliert.
+\end{itemize}
+
+Alle diese Änderungen waren nicht optionale Verbesserungen, sondern essentielle Anpassungen an die Eigenheiten der TypeScript/JavaScript-Plattform. Insbesondere \texttt{RecursiveSet} ist unverzichtbar für die korrekte Funktionsweise des Davis-Putnam-Algorithmus und aller darauf aufbauenden SAT-Solver, da nur so die eindeutige Repräsentation von Klauseln und die automatische Duplikateliminierung garantiert werden kann.
+
+
+
+
+
 
 
 \subsection{Graphviz}
