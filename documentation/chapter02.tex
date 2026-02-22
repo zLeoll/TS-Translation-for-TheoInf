@@ -45,39 +45,132 @@ Um die Funktionalität der Python-Vorlesungsunterlagen zu replizieren, wird in d
 
 \textbf{@TobiKnight}
 \subsubsection{Syntaxvergleich und Typisierungskonzepte}
-Der fundamentale Unterschied zwischen Python und TypeScript liegt im Zeitpunkt und der Strenge der Typprüfung.\\
-\textbf{Statisch vs. Dynamisch / MyPy vs. TypeScript Compiler}\\
-Python ist dynamisch typisiert; Typen werden zur Laufzeit ausgewertet. Tools wie \texttt{mypy} bieten zwar Type-Hinting, diese sind jedoch optional und haben keinen Einfluss auf die Ausführung. TypeScript hingegen ist ein statisch typisierter Superset von JavaScript. Der TypeScript-Compiler (tsc) prüft die Typen zur Kompilierzeit (Transpilierung) und entfernt diese anschließend vollständig (Type Erasure). Das Resultat ist reines JavaScript.\\
-\textbf{Tupel und Datenstrukturen}\\
-Ein markanter Unterschied zeigt sich bei unveränderlichen Listen (Tupeln). In Python sind Tupel native, unveränderliche Datentypen.
-\Needspace{5\baselineskip}
+Der fundamentale Unterschied zwischen Python und TypeScript liegt im Zeitpunkt und der Strenge der Typprüfung. \\
+
+
+\noindent \textbf{Statisch vs.\ Dynamisch / MyPy vs.\ TypeScript Compiler}\\
+Um diesen Unterschied zu verstehen, ist es hilfreich, zunächst zu klären, was ein \textit{Datentyp} ist.
+Jeder Wert, den ein Programm verarbeitet, hat eine bestimmte Art: Eine ganze Zahl wie \texttt{42}
+verhält sich anders als ein Text wie \texttt{"Hallo"} oder ein Wahrheitswert wie \texttt{True}.
+Diese verschiedenen Arten von Werten nennt man \textit{Datentypen}.
+Der grundlegende Unterschied zwischen Python und TypeScript liegt darin, \textit{wann} und
+\textit{ob überhaupt} geprüft wird, ob diese Typen im Programm korrekt verwendet werden.\\
+
+
+\noindent \textbf{Dynamische Typisierung in Python}
+\\
+Python verwendet standardmäßig \textit{dynamische Typisierung}.
+Das bedeutet, dass der Typ einer Variable nicht im Voraus festgelegt werden muss.
+Python ermittelt den Typ erst dann, wenn das Programm tatsächlich ausgeführt wird, also
+zur sogenannten \textit{Laufzeit}.
+Als Analogie lässt sich ein Rucksack vorstellen, in den man beliebige Dinge (Datentypen) packen kann:
+Mal liegt ein Buch darin, mal eine Flasche Wasser.
+Erst wenn man etwas herausnehmen will und feststellt, dass es nicht passt, gibt es ein Problem.\\
+In Python ist es daher ohne Weiteres möglich, einer Variable zunächst eine Zahl
+und später einen Text zuzuweisen:
+
+\Needspace{6\baselineskip}
 \begin{minted}{python}
-	# Python: Natives, unveränderliches Tupel
-	point = (10, 20)
+ x = 42        # x hat den Typ int (ganze Zahl)
+ x = "Hallo"   # x hat jetzt den Typ str (Text)  Python erlaubt dies
+ # Der Fehler tritt erst beim Ausführen der nächsten Zeile auf:
+ x + 1
 \end{minted}
-\captionof{listing}{Python Tupel}
-In TypeScript existieren Tupel nur als Typ-Konstrukt zur Kompilierzeit. Zur Laufzeit sind es gewöhnliche JavaScript-Arrays. Um die Unveränderlichkeit (Immutability) zu gewährleisten, muss der Modifikator \texttt{readonly} explizit verwendet werden:
+\captionof{listing}{Dynamische Typisierung in Python}
+
+Den Fehler in der letzten Zeile würde Python erst bemerken, wenn diese Zeile tatsächlich ausgeführt wird.
+In einem großen Programm mit vielen Zeilen Code kann das dazu führen, dass Fehler lange
+unentdeckt bleiben, zum Beispiel dann, wenn eine bestimmte Stelle im Code nur selten erreicht wird.
+
+\subsubsection{Syntaxvergleich und Typisierungskonzepte}
+Der fundamentale Unterschied zwischen Python und TypeScript liegt im Zeitpunkt und der Strenge der Typprüfung.\\
+Um diesen Unterschied zu verstehen, ist es hilfreich, zunächst zu klären, was eine \textit{Variable} und was ein \textit{Datentyp} ist.
+In der Programmierung speichert man Daten in Variablen. Man kann sich eine Variable wie eine Kiste vorstellen: Der \textit{Name} der Variable (z.\,B. \texttt{x}) steht als Etikett außen auf der Kiste, und der eigentliche \textit{Wert} (z.\,B. \texttt{42}) liegt darin. Jeder dieser Werte hat zudem eine bestimmte Art: Eine ganze Zahl wie \texttt{42} verhält sich anders als ein Text wie \texttt{"Hallo"} oder ein Wahrheitswert wie \texttt{True}. Diese verschiedenen Arten von Werten nennt man \textit{Datentypen}.
+
+Der grundlegende Unterschied zwischen Python und TypeScript liegt darin, \textit{wann} und \textit{ob überhaupt} geprüft wird, ob diese Typen im Programm korrekt verwendet werden.\\
+
+
+\textbf{Dynamische Typisierung in Python}\\
+Python verwendet standardmäßig \textit{dynamische Typisierung}.
+Das bedeutet, dass der Typ einer Variable nicht im Voraus festgelegt werden muss.
+Python ermittelt den Typ erst dann, wenn das Programm tatsächlich ausgeführt wird, also zur sogenannten \textit{Laufzeit}.
+Als Analogie lässt sich eine unbeschriftete Schublade vorstellen. Zuerst legt man einen Hammer (eine Zahl) hinein. Später räumt man die Schublade aus und legt stattdessen einen Pinsel (einen Text) hinein, die Schublade akzeptiert beides problemlos. Der Fehler fällt erst in dem Moment auf, in dem man blind in die Schublade greift, um einen Nagel in die Wand zu schlagen: Man merkt erst beim Zugriff auf die Schublade (Variable), dass man mit einem Pinsel nicht hämmern kann.
+
+
+In Python ist es daher ohne Weiteres möglich, einer Variable zunächst eine Zahl und später einen Text zuzuweisen:
+
+\Needspace{6\baselineskip}
+\begin{minted}{python}
+ x = 42        # x hat den Typ int (ganze Zahl)
+ x = "Hallo"   # x hat jetzt den Typ str (Text) -- Python erlaubt dies
+ # Der Fehler tritt erst beim Ausfuehren der naechsten Zeile auf:
+ x + 1
+\end{minted}
+\captionof{listing}{Dynamische Typisierung in Python}
+
+Den Fehler in der letzten Zeile würde Python erst bemerken, wenn diese Zeile tatsächlich ausgeführt wird.
+In einem großen Programm mit vielen Zeilen Code kann das dazu führen, dass Fehler lange unentdeckt bleiben, zum Beispiel dann, wenn eine bestimmte Stelle im Code nur selten erreicht wird.\\
+
+\textbf{Statische Typisierung in TypeScript}
+
+TypeScript hingegen verwendet \textit{statische Typisierung}.
+Der Typ einer Variable muss entweder explizit angegeben werden oder wird vom Compiler automatisch erkannt. Diese automatische Erkennung nennt man \textit{Typinferenz} (abgeleitet von \textit{inferieren}, also schlussfolgern).
+Entscheidend ist, dass TypeScript alle Typen bereits \textit{vor} der Ausführung des Programms überprüft.
+Dieser Vorgang heißt \textit{Kompilierung}, und das Programm, das diese Prüfung durchführt, nennt man \textit{TypeScript-Compiler}.
+
+Der TypeScript-Compiler liest den gesamten Code durch und prüft, ob alle Typangaben widerspruchsfrei sind.
+Findet er einen Fehler, bricht er ab und gibt eine Fehlermeldung aus. Das Programm wird also gar nicht erst gestartet.
+
+Das folgende Beispiel zeigt, wie TypeScript denselben Fehler verhindert. Eine Methode um in TypeScript eine neue Variable anzulegen, ist die Verwendung des Schlüsselworts \texttt{let}. Es signalisiert dem Compiler: Hier wird eine neue Variable erstellt.  Dahinter folgt der Name der Variable, ein Doppelpunkt und der gewünschte Datentyp gefolgt von einem Gleichzeichen gefolgt von dem zuzuweisenden Wert. \\
+
 \Needspace{6\baselineskip}
 \begin{minted}{typescript}
-	// TypeScript: Array mit fester Länge und Typisierung
-	// 'readonly' verhindert Laufzeitmanipulation (zur Compilezeit)
-	const point: readonly [number, number] = [10, 20];
+ let x: number = 42;
+ // Die folgende Zeile wuerde vom Compiler sofort rot markiert werden:
+ x = "Hallo";
+ // Fehlermeldung: Type 'string' is not assignable to type 'number'.
 \end{minted}
-\captionof{listing}{TypeScript Tupel Implementierung}
-\textbf{Dictionaries vs. Dynamische Objekte}\\
-Was in Python das \texttt{dictionary} ist, wird in TypeScript oft durch einfache Objekt-Literale oder die \texttt{Record}-Utility-Types abgebildet. Anders als in Python, wo Dictionaries beliebige hashbare Objekte als Keys nutzen können, sind Objektschlüssel in JavaScript traditionell auf Strings und Symbole beschränkt. Für komplexe Keys muss in TypeScript explizit die \texttt{Map}-Datenstruktur verwendet werden.
-\Needspace{10\baselineskip}
-\begin{minted}{typescript}
-	// Einfaches Key-Value Mapping (String zu Number)
-	const scores: Record<string, number> = {
-		"Alice": 100,
-		"Bob": 85
-	};
+\captionof{listing}{Statische Typisierung in TypeScript}
+
+Der Compiler würde bei der Zuweisung des Textes sofort einen Fehler melden, da in eine \texttt{number}-Variable kein \texttt{string} (Text) gelegt werden darf.
+Der Vorteil ist, dass solche Fehler bereits beim Schreiben des Codes und nicht erst beim Ausführen gefunden werden.\\
+
+\textbf{MyPy als optionale Typprüfung für Python}
+
+Da die dynamische Typisierung in größeren Projekten fehleranfällig sein kann, wurde für Python das Werkzeug \textit{MyPy} entwickelt.
+MyPy ist ein \textit{statischer Typprüfer} für Python: Es analysiert den Code auf Typfehler, indem es ihn lediglich durchliest, ohne das Programm tatsächlich zu starten. Anders als der TypeScript-Compiler, der den Code nach der Prüfung auch übersetzt, ist MyPy ein reines Kontrollwerkzeug und belässt den Python-Code unverändert.
+
+
+Ein wesentlicher Unterschied zum TypeScript-Compiler ist, dass MyPy vollständig \textit{optional} ist.
+Um MyPy nutzen zu können, müssen im Code freiwillige Typangaben vorhanden sein, sogenannte \textit{Type Hints} (Typhinweise).
+Diese Typhinweise haben keinen Einfluss auf das Verhalten des Programms, Python ignoriert sie bei der Ausführung vollständig.
+
+Das folgende Beispiel verdeutlicht dies mit einer einfachen Variable:
+
+\Needspace{6\baselineskip}
+\begin{minted}{python}
+ # Die Variable wird mit dem Typhinweis ': int' (ganze Zahl) versehen
+ alter: int = 20
+ # MyPy meldet hier VOR dem Start einen Fehler, da "Zwanzig" ein Text ist.
+ alter = "Zwanzig"
+\end{minted}
+\captionof{listing}{Typhinweise in Python mit MyPy-Prüfung}
+
+
+\textbf{Bedeutung für die Übersetzung}
+
+Für die Übersetzung von den Python-Notebooks in TypeScript-Notebooks ergibt sich aus dem Unterschied der Typprüfung eine wichtige Herausforderung.
+Die Python-Notebooks können in drei Zuständen vorliegen:
+
+\begin{enumerate}
+	\item \textbf{Vollständig ungetypter Code:} Es sind keine Typangaben vorhanden.
+	Die Typen müssen also beim Übersetzen ermittelt und ergänzt werden.
+	\item \textbf{Teilweise getypter Code:} Nur manche Stellen enthalten Typhinweise.
+	Hier müssen einerseits die fehlenden Typen für TypeScript ermittelt und ergänzt werden. Andererseits können die bereits vorhandenen Typangaben oft nicht einfach eins zu eins übernommen werden, sondern erfordern ebenfalls Anpassungen.
+	\item \textbf{Vollständig mit MyPy annotierter Code:} Alle relevanten Stellen enthalten Typhinweise.
+	Diese können zwar oft direkt in TypeScript-Typen übertragen werden, jedoch müssen selbst hier häufig noch Präzisierungen vorgenommen werden. Der Grund dafür ist, dass das Typsystem von TypeScript in manchen Bereichen anders strukturiert oder strenger ist als das von MyPy.
 	
-	// Map für komplexere Anwendungsfälle (erhält Einfügereihenfolge)
-	const complexMap = new Map<object, number>();
-\end{minted}
-\captionof{listing}{Dictionaries in TypeScript}
+\end{enumerate}
 
 \subsection{Setup und Toolchain}
 \label{sec:setup}
