@@ -52,7 +52,7 @@ Der fundamentale Unterschied zwischen Python und TypeScript liegt im Zeitpunkt u
 Um diesen Unterschied zu verstehen, ist es hilfreich, zunächst zu klären, was ein Datentyp ist.
 Jeder Wert, den ein Programm verarbeitet, hat eine bestimmte Art: Eine ganze Zahl wie \texttt{42}
 verhält sich anders als ein Text wie \texttt{"Hallo"} oder ein Wahrheitswert wie \texttt{True}.
-Diese verschiedenen Arten von Werten nennt man Datentypen.
+Diese verschiedenen Arten von Werten heißen Datentypen.
 Der grundlegende Unterschied zwischen Python und TypeScript liegt darin, wann und
 ob überhaupt geprüft wird, ob diese Typen im Programm korrekt verwendet werden.\\
 
@@ -63,9 +63,9 @@ Python verwendet standardmäßig dynamische Typisierung.
 Das bedeutet, dass der Typ einer Variable nicht im Voraus festgelegt werden muss.
 Python ermittelt den Typ erst dann, wenn das Programm tatsächlich ausgeführt wird, also
 zur sogenannten Laufzeit.
-Als Analogie lässt sich ein Rucksack vorstellen, in den man beliebige Dinge (Datentypen) packen kann:
+Als Analogie lässt sich ein Rucksack vorstellen, in den beliebige Dinge (Datentypen) gepackt werden können:
 Mal liegt ein Buch darin, mal eine Flasche Wasser.
-Erst wenn man etwas herausnehmen will und feststellt, dass es nicht passt, gibt es ein Problem.\\
+Erst wenn etwas herausgenommen und feststellt wird, dass es nicht passt, gibt es ein Problem.\\
 In Python ist es daher ohne Weiteres möglich, einer Variable zunächst eine Zahl
 und später einen Text zuzuweisen:
 
@@ -85,9 +85,9 @@ unentdeckt bleiben, zum Beispiel dann, wenn eine bestimmte Stelle im Code nur se
 \textbf{Statische Typisierung in TypeScript}
 
 TypeScript hingegen verwendet statische Typisierung.
-Der Typ einer Variable muss entweder explizit angegeben werden oder wird vom Compiler automatisch erkannt. Diese automatische Erkennung nennt man Typinferenz (abgeleitet von inferieren, also schlussfolgern).
+Der Typ einer Variable muss entweder explizit angegeben werden oder wird vom Compiler automatisch erkannt. Diese automatische Erkennung heißt Typinferenz (abgeleitet von inferieren, also schlussfolgern).
 Entscheidend ist, dass TypeScript alle Typen bereits vor der Ausführung des Programms überprüft.
-Dieser Vorgang heißt Kompilierung, und das Programm, das diese Prüfung durchführt, nennt man TypeScript-Compiler.
+Dieser Vorgang heißt Kompilierung, und das Programm, das diese Prüfung durchführt, heißt TypeScript-Compiler.
 
 Der TypeScript-Compiler liest den gesamten Code durch und prüft, ob alle Typangaben widerspruchsfrei sind.
 Findet er einen Fehler, bricht er ab und gibt eine Fehlermeldung aus. Das Programm wird also gar nicht erst gestartet.
@@ -164,7 +164,7 @@ Die Einrichtung der Umgebung erfolgt deklarativ über die Kommandozeile der Anac
 	\item Node.js: \url{https://nodejs.org}
 \end{enumerate}
 
-Danach muss man die Anaconda-Kommandozeile öffnen und folgende Befehle ausführen um die Laufzeitumgebung zu installieren:
+Danach erfolgt die Installation der Laufzeitumgebung über die Anaconda-Kommandozeile mit den folgenden Befehlen.
 \Needspace{6\baselineskip}
 \begin{minted}{typescript}
  conda activate logic-algo
