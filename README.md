@@ -1,25 +1,30 @@
 # TS-Translation-for-TheoInf
 In this repository, you can find the Jupyter Notebooks by Professor Karl Stroetmann from the courses Algorithms and Logic, translated from Python to TypeScript.
 
+## Prerequisites
+
+Before you begin, make sure the following programs are installed:
+
+- **Anaconda**: [https://www.anaconda.com/download](https://www.anaconda.com/download)
+- **Node.js**: [https://nodejs.org](https://nodejs.org)
+
+
 ## Setup
-To setup your environment, execute the following commands in your anaconda terminal:
+To setup your environment the tslab kernel and required libraries, execute the following commands in your anaconda terminal:
 
 ```bash
-conda activate base
-conda install nodejs
+conda activate logic-algo
+conda install -c conda-forge nodejs
 conda install -c conda-forge nbclassic
-tslab install
+
+npm init -y
 npm install -g tslab
-npm install typescript
-npm install fraction.js
-npm install mathjs
-npm install @hpcc-js/wasm
-npm install pngjs
-npm i --save-dev @types/pngjs
-npm install heap-js
-npm install logic-solver
-npm install z3-solver
-npm install recursive-set@8.0.0
+tslab install
+
+npm install fraction.js mathjs logic-solver z3-solver
+npm install heap-js recursive-set@8.0.0
+npm install @hpcc-js/wasm pngjs
+npm install --save-dev @types/pngjs
 ```
 
 ## Verifying installation

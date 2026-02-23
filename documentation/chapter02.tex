@@ -3,12 +3,12 @@ Dieses Kapitel erläutert die technologischen Grundlagen und Werkzeuge, die für
 
 
 \subsection{Anaconda}
-Anaconda ist eine weit verbreitete Open-Source-Distribution für die Programmiersprachen Python und R, die speziell für Aufgaben in den Bereichen Data Science, maschinelles Lernen und wissenschaftliches Rechnen entwickelt wurde. Sie vereinfacht das Paketmanagement und die Bereitstellung von Softwareumgebungen erheblich, was insbesondere in komplexen wissenschaftlichen Projekten von Vorteil ist. Kernkomponente der Distribution ist der Paketmanager \texttt{conda}. Dieser ermöglicht es, Softwarepakete und deren Abhängigkeiten plattformübergreifend zu installieren, zu aktualisieren und zu verwalten. Ein wesentliches Merkmal von Anaconda ist die Fähigkeit, isolierte Umgebungen (Environments) zu erstellen. Diese Isolation verhindert Konflikte zwischen verschiedenen Versionen von Bibliotheken, die für unterschiedliche Projekte benötigt werden könnten.\\ \\
-Für die vorliegende Arbeit dient Anaconda als primäre Basisinfrastruktur. Obwohl das Ziel der Portierung auf TypeScript liegt, wird Anaconda ebenfalls verwendet, um die ursprünglichen Python-Notebooks auszuführen und zu validieren. Darüber hinaus fungiert das Anaconda Prompt (bzw. das Terminal) als Schnittstelle für systemweite Befehle. Hierüber erfolgen auch die notwendigen Installationen für das TypeScript-Ökosystem, wie beispielsweise die Ausführung von \texttt{npm install}, um Node.js-Pakete global oder lokal verfügbar zu machen. Die Verwaltung der Node.js-Laufzeitumgebung kann ebenfalls in die bestehende Infrastruktur integriert werden, was Anaconda zu einem vielseitigen Werkzeug macht.
+\href{https://www.anaconda.com/}{Anaconda} ist eine weit verbreitete Open-Source-Distribution für die Programmiersprachen Python und R, die speziell für Aufgaben in den Bereichen Data Science, maschinelles Lernen und wissenschaftliches Rechnen entwickelt wurde. Sie vereinfacht das Paketmanagement und die Bereitstellung von Softwareumgebungen erheblich, was insbesondere in komplexen wissenschaftlichen Projekten von Vorteil ist. Kernkomponente der Distribution ist der Paketmanager \href{https://anaconda.org/channels/anaconda/packages/conda/overview}{conda}. Dieser ermöglicht es, Softwarepakete und deren Abhängigkeiten plattformübergreifend zu installieren, zu aktualisieren und zu verwalten. Ein wesentliches Merkmal von Anaconda ist die Fähigkeit, isolierte Umgebungen (Environments) zu erstellen. Diese Isolation verhindert Konflikte zwischen verschiedenen Versionen von Bibliotheken, die für unterschiedliche Projekte benötigt werden könnten.\\ \\
+Für die vorliegende Arbeit dient Anaconda als primäre Basisinfrastruktur. Obwohl das Ziel der Portierung auf TypeScript liegt, wird Anaconda ebenfalls verwendet, um die ursprünglichen Python-Notebooks auszuführen und zu validieren. Darüber hinaus fungiert das Anaconda Prompt (bzw. das Terminal) als Schnittstelle für systemweite Befehle. Hierüber erfolgen auch die notwendigen Installationen für das TypeScript-Ökosystem, wie beispielsweise die Ausführung von \texttt{npm install}, um \href{https://nodejs.org/en}{Node.js}-Pakete global oder lokal verfügbar zu machen. Die Verwaltung der Node.js-Laufzeitumgebung kann ebenfalls in die bestehende Infrastruktur integriert werden, was Anaconda zu einem vielseitigen Werkzeug macht.
 
 
 \subsection{Interaktive Programmierung mit Jupyter}
-Das Jupyter Notebook ist eine webbasierte, interaktive Entwicklungsumgebung, die es ermöglicht, Dokumente zu erstellen, die sowohl ausführbaren Code als auch formatierten Text, mathematische Formeln und Visualisierungen enthalten. Der Name \enquote{Jupyter} ist ein Akronym, das sich ursprünglich aus den Kernsprachen Julia, Python und R ableitete, mittlerweile aber eine Vielzahl weiterer Programmiersprachen unterstützt.\\ \\
+Das \href{https://jupyter.org/}{Jupyter Notebook} ist eine webbasierte, interaktive Entwicklungsumgebung, die es ermöglicht, Dokumente zu erstellen, die sowohl ausführbaren Code als auch formatierten Text, mathematische Formeln und Visualisierungen enthalten. Der Name \enquote{Jupyter} ist ein Akronym, das sich ursprünglich aus den Kernsprachen Julia, Python und R ableitete, mittlerweile aber eine Vielzahl weiterer Programmiersprachen unterstützt.\\ \\
 Die Architektur von Jupyter basiert auf einem Client-Server-Modell, das die Trennung zwischen der Benutzeroberfläche und der Code-Ausführung ermöglicht.
 \begin{itemize}
 	\item Das Frontend (Client): Der Benutzer interagiert über einen Webbrowser mit dem Notebook. Die Oberfläche erlaubt die Eingabe von Code in Zellen sowie die Gestaltung von Textbereichen mittels Markdown.
@@ -17,7 +17,7 @@ Die Architektur von Jupyter basiert auf einem Client-Server-Modell, das die Tren
 \end{itemize}
 Ein zentrales Element der Jupyter-Architektur ist der Kernel. Der Kernel ist ein separater Prozess, der für die Ausführung des Codes zuständig ist, den der Benutzer im Notebook eingibt. Wenn eine Code-Zelle ausgeführt wird, sendet das Frontend den Code an den Kernel. Dieser führt die Anweisungen aus und sendet das Ergebnis zurück an das Frontend zur Darstellung.
 Für diese Studienarbeit ist das Kernel-Konzept von entscheidender Bedeutung:\\
-Während die ursprünglichen Vorlesungsunterlagen auf dem Standard-Python-Kernel (ipykernel) basieren, erfordert die Portierung auf TypeScript die Integration eines dedizierten TypeScript-Kernels (tslab). Diese Architektur ermöglicht den Wechsel der Programmiersprache innerhalb derselben Benutzeroberfläche durch bloßen Austausch des Backends. Die technische Integration des TypeScript-Kernels wird in Abschnitt \hyperref[sec:setup]{Setup und Toolchain} detailliert beschrieben.
+Während die ursprünglichen Vorlesungsunterlagen auf dem Standard-Python-Kernel (ipykernel) basieren, erfordert die Portierung auf TypeScript die Integration eines dedizierten TypeScript-Kernels (\href{https://github.com/yunabe/tslab}{tslab}). Diese Architektur ermöglicht den Wechsel der Programmiersprache innerhalb derselben Benutzeroberfläche durch bloßen Austausch des Backends. Die technische Integration des TypeScript-Kernels wird in Abschnitt \hyperref[sec:setup]{Setup und Toolchain} detailliert beschrieben.
 
 
 
@@ -26,43 +26,43 @@ Während die ursprünglichen Vorlesungsunterlagen auf dem Standard-Python-Kernel
 Während Python als De-facto-Standard im Bereich Data Science gilt, gewinnt das TypeScript-Ökosystem zunehmend an Bedeutung, insbesondere wenn Modelle direkt in Webanwendungen integriert oder visualisiert werden sollen. 
 
 \subsubsection{Herausforderungen und Bibliotheks-Ökosystem}
-Eine wesentliche Herausforderung bei der Migration von Python zu TypeScript ist die Diskrepanz in der Standardbibliothek. Während Python mit Modulen wie \texttt{heapq} oder einer nativen Unterstützung für komplexe Mengenoperationen und Tupel ausgestattet ist, fehlen diese Konstrukte in der Standard-Laufzeitumgebung von TypeScript oft oder sind für wissenschaftliche Zwecke nicht performant genug implementiert. Zudem existiert zwar ein reiches Ökosystem (npm), dieses ist jedoch stark fragmentiert, im Gegensatz zu den monolithischen Standard-Paketen in Python wie beispielsweise NumPy. \\
+Eine wesentliche Herausforderung bei der Migration von Python zu TypeScript ist die Diskrepanz in der Standardbibliothek. Während Python mit Modulen wie \href{https://docs.python.org/3/library/heapq.html}{heapq} oder einer nativen Unterstützung für komplexe Mengenoperationen und Tupel ausgestattet ist, fehlen diese Konstrukte in der Standard-Laufzeitumgebung von TypeScript oft oder sind für wissenschaftliche Zwecke nicht performant genug implementiert. Zudem existiert zwar ein reiches Ökosystem (\href{https://www.npmjs.com/}{npm}), dieses ist jedoch stark fragmentiert, im Gegensatz zu den monolithischen Standard-Paketen in Python wie beispielsweise NumPy. \\
 Um die Funktionalität der Python-Vorlesungsunterlagen zu replizieren, wird in dieser Arbeit auf eine Auswahl spezialisierter Bibliotheken zurückgegriffen:
 
 \begin{description}
 	\item[Mathematik und Logik:] \hfill \\
-	Für numerische Stabilität und symbolische Berechnungen kommen \texttt{mathjs} (umfassende Mathematik-Bibliothek) und \texttt{fraction.js} (für rationale Zahlen zur Vermeidung von Fließkommafehlern) zum Einsatz. Für Constraint-Solving-Probleme und logische Beweise werden der \texttt{logic-solver} sowie der \texttt{z3-solver} (ein Theorem-Prover von Microsoft Research) eingebunden.
+	Für numerische Stabilität und symbolische Berechnungen kommen \href{https://www.npmjs.com/}{mathjs} (umfassende Mathematik-Bibliothek) und \href{https://www.npmjs.com/package/fraction.js}{fraction.js} (für rationale Zahlen zur Vermeidung von Fließkommafehlern) zum Einsatz. Für Constraint-Solving-Probleme und logische Beweise werden der \href{https://www.npmjs.com/package/logic-solver}{logic-solver} sowie der \href{https://www.npmjs.com/package/z3-solver}{z3-solver} (ein Theorem-Prover von Microsoft Research) eingebunden.
 	
 	\item[Datenstrukturen:] \hfill \\
-	Da TypeScript keine native Priority Queue besitzt (äquivalent zu Pythons \texttt{heapq}), wird \texttt{heap-js} verwendet. Eine Besonderheit stellt die Bibliothek \texttt{recursive-set} dar. Native JavaScript \texttt{Sets} prüfen Objekte auf Referenzgleichheit, nicht auf Wertegleichheit. Das bedeutet, zwei inhaltlich identische Objekte werden als unterschiedlich behandelt. \texttt{recursive-set} ermöglicht echte Mengenoperationen auf Basis der tiefen Gleichheit (Deep Equality).
+	Da TypeScript keine native Priority Queue besitzt (äquivalent zu Pythons \texttt{heapq}), wird \href{https://www.npmjs.com/package/heap-js}{heap-js} verwendet. Eine Besonderheit stellt die Bibliothek \href{https://github.com/cstrerath/recursive-set}{recursive-set} dar. Native TypeScript Sets prüfen Objekte auf Referenzgleichheit, nicht auf Wertegleichheit. Das bedeutet, zwei inhaltlich identische Objekte mit gleicher Speicheradresse werden als unterschiedlich behandelt. Die Bibliothek \texttt{recursive-set} ermöglicht daher echte Mengenoperationen auf Basis der Deep Equality (rekursive Inhaltsgleichheit).
 	
 	\item[Visualisierung und Medien:] \hfill \\
-	Zur Generierung von Graphen wird \texttt{@hpcc-js/wasm} genutzt. Dies ist eine WebAssembly-Portierung von Graphviz, die das Rendern von DOT-Sprache ermöglicht, ohne dass eine lokale \texttt{graphviz.exe}-Installation auf dem Host-System notwendig ist – ein entscheidender Vorteil für die Portabilität des Notebooks. Für die Bildmanipulation wird \texttt{pngjs} verwendet.
+	Zur Generierung von Graphen wird \href{https://www.npmjs.com/package/@hpcc-js/wasm}{@hpcc-js/wasm} genutzt. Dies ist eine WebAssembly-Portierung von Graphviz, die das Rendern von \href{https://de.wikipedia.org/wiki/DOT_(Graphviz)}{DOT-Sprache} ermöglicht, ohne dass eine lokale \texttt{graphviz.exe}-Installation auf dem Host-System notwendig ist – ein entscheidender Vorteil für die Portabilität des Notebooks. Für die Bildmanipulation wird \href{https://www.npmjs.com/package/pngjs}{pngjs} verwendet.
 	
 	\item[Type Definitions:] \hfill \\
-	Ein Spezifikum der TypeScript-Entwicklung ist die Notwendigkeit separater Typ-Definitionen für Bibliotheken, die ursprünglich in reinem JavaScript geschrieben wurden. So muss beispielsweise für die Bildverarbeitung zusätzlich das Paket \texttt{@types/pngjs} als \textit{Dev-Dependency} installiert werden, um die statische Typprüfung zu ermöglichen.
+	Ein Spezifikum der TypeScript-Entwicklung ist die Notwendigkeit separater Typ-Definitionen für Bibliotheken, die ursprünglich in reinem JavaScript geschrieben wurden. So muss beispielsweise für die Bildverarbeitung zusätzlich das Paket \href{https://www.npmjs.com/package/@types/pngjs}{@types/pngjs} als Dev-Dependency installiert werden, um die statische Typprüfung zu ermöglichen.
 \end{description}
 
-\textbf{@TobiKnight}
+
 \subsubsection{Syntaxvergleich und Typisierungskonzepte}
 Der fundamentale Unterschied zwischen Python und TypeScript liegt im Zeitpunkt und der Strenge der Typprüfung. \\
 
 
 \noindent \textbf{Statisch vs.\ Dynamisch / MyPy vs.\ TypeScript Compiler}\\
-Um diesen Unterschied zu verstehen, ist es hilfreich, zunächst zu klären, was ein \textit{Datentyp} ist.
+Um diesen Unterschied zu verstehen, ist es hilfreich, zunächst zu klären, was ein Datentyp ist.
 Jeder Wert, den ein Programm verarbeitet, hat eine bestimmte Art: Eine ganze Zahl wie \texttt{42}
 verhält sich anders als ein Text wie \texttt{"Hallo"} oder ein Wahrheitswert wie \texttt{True}.
-Diese verschiedenen Arten von Werten nennt man \textit{Datentypen}.
-Der grundlegende Unterschied zwischen Python und TypeScript liegt darin, \textit{wann} und
-\textit{ob überhaupt} geprüft wird, ob diese Typen im Programm korrekt verwendet werden.\\
+Diese verschiedenen Arten von Werten nennt man Datentypen.
+Der grundlegende Unterschied zwischen Python und TypeScript liegt darin, wann und
+ob überhaupt geprüft wird, ob diese Typen im Programm korrekt verwendet werden.\\
 
 
 \noindent \textbf{Dynamische Typisierung in Python}
 \\
-Python verwendet standardmäßig \textit{dynamische Typisierung}.
+Python verwendet standardmäßig dynamische Typisierung.
 Das bedeutet, dass der Typ einer Variable nicht im Voraus festgelegt werden muss.
 Python ermittelt den Typ erst dann, wenn das Programm tatsächlich ausgeführt wird, also
-zur sogenannten \textit{Laufzeit}.
+zur sogenannten Laufzeit.
 Als Analogie lässt sich ein Rucksack vorstellen, in den man beliebige Dinge (Datentypen) packen kann:
 Mal liegt ein Buch darin, mal eine Flasche Wasser.
 Erst wenn man etwas herausnehmen will und feststellt, dass es nicht passt, gibt es ein Problem.\\
@@ -80,43 +80,14 @@ und später einen Text zuzuweisen:
 
 Den Fehler in der letzten Zeile würde Python erst bemerken, wenn diese Zeile tatsächlich ausgeführt wird.
 In einem großen Programm mit vielen Zeilen Code kann das dazu führen, dass Fehler lange
-unentdeckt bleiben, zum Beispiel dann, wenn eine bestimmte Stelle im Code nur selten erreicht wird.
-
-\subsubsection{Syntaxvergleich und Typisierungskonzepte}
-Der fundamentale Unterschied zwischen Python und TypeScript liegt im Zeitpunkt und der Strenge der Typprüfung.\\
-Um diesen Unterschied zu verstehen, ist es hilfreich, zunächst zu klären, was eine \textit{Variable} und was ein \textit{Datentyp} ist.
-In der Programmierung speichert man Daten in Variablen. Man kann sich eine Variable wie eine Kiste vorstellen: Der \textit{Name} der Variable (z.\,B. \texttt{x}) steht als Etikett außen auf der Kiste, und der eigentliche \textit{Wert} (z.\,B. \texttt{42}) liegt darin. Jeder dieser Werte hat zudem eine bestimmte Art: Eine ganze Zahl wie \texttt{42} verhält sich anders als ein Text wie \texttt{"Hallo"} oder ein Wahrheitswert wie \texttt{True}. Diese verschiedenen Arten von Werten nennt man \textit{Datentypen}.
-
-Der grundlegende Unterschied zwischen Python und TypeScript liegt darin, \textit{wann} und \textit{ob überhaupt} geprüft wird, ob diese Typen im Programm korrekt verwendet werden.\\
-
-
-\textbf{Dynamische Typisierung in Python}\\
-Python verwendet standardmäßig \textit{dynamische Typisierung}.
-Das bedeutet, dass der Typ einer Variable nicht im Voraus festgelegt werden muss.
-Python ermittelt den Typ erst dann, wenn das Programm tatsächlich ausgeführt wird, also zur sogenannten \textit{Laufzeit}.
-Als Analogie lässt sich eine unbeschriftete Schublade vorstellen. Zuerst legt man einen Hammer (eine Zahl) hinein. Später räumt man die Schublade aus und legt stattdessen einen Pinsel (einen Text) hinein, die Schublade akzeptiert beides problemlos. Der Fehler fällt erst in dem Moment auf, in dem man blind in die Schublade greift, um einen Nagel in die Wand zu schlagen: Man merkt erst beim Zugriff auf die Schublade (Variable), dass man mit einem Pinsel nicht hämmern kann.
-
-
-In Python ist es daher ohne Weiteres möglich, einer Variable zunächst eine Zahl und später einen Text zuzuweisen:
-
-\Needspace{6\baselineskip}
-\begin{minted}{python}
- x = 42        # x hat den Typ int (ganze Zahl)
- x = "Hallo"   # x hat jetzt den Typ str (Text) -- Python erlaubt dies
- # Der Fehler tritt erst beim Ausfuehren der naechsten Zeile auf:
- x + 1
-\end{minted}
-\captionof{listing}{Dynamische Typisierung in Python}
-
-Den Fehler in der letzten Zeile würde Python erst bemerken, wenn diese Zeile tatsächlich ausgeführt wird.
-In einem großen Programm mit vielen Zeilen Code kann das dazu führen, dass Fehler lange unentdeckt bleiben, zum Beispiel dann, wenn eine bestimmte Stelle im Code nur selten erreicht wird.\\
+unentdeckt bleiben, zum Beispiel dann, wenn eine bestimmte Stelle im Code nur selten erreicht wird.\\
 
 \textbf{Statische Typisierung in TypeScript}
 
-TypeScript hingegen verwendet \textit{statische Typisierung}.
-Der Typ einer Variable muss entweder explizit angegeben werden oder wird vom Compiler automatisch erkannt. Diese automatische Erkennung nennt man \textit{Typinferenz} (abgeleitet von \textit{inferieren}, also schlussfolgern).
-Entscheidend ist, dass TypeScript alle Typen bereits \textit{vor} der Ausführung des Programms überprüft.
-Dieser Vorgang heißt \textit{Kompilierung}, und das Programm, das diese Prüfung durchführt, nennt man \textit{TypeScript-Compiler}.
+TypeScript hingegen verwendet statische Typisierung.
+Der Typ einer Variable muss entweder explizit angegeben werden oder wird vom Compiler automatisch erkannt. Diese automatische Erkennung nennt man Typinferenz (abgeleitet von inferieren, also schlussfolgern).
+Entscheidend ist, dass TypeScript alle Typen bereits vor der Ausführung des Programms überprüft.
+Dieser Vorgang heißt Kompilierung, und das Programm, das diese Prüfung durchführt, nennt man TypeScript-Compiler.
 
 Der TypeScript-Compiler liest den gesamten Code durch und prüft, ob alle Typangaben widerspruchsfrei sind.
 Findet er einen Fehler, bricht er ab und gibt eine Fehlermeldung aus. Das Programm wird also gar nicht erst gestartet.
@@ -137,12 +108,12 @@ Der Vorteil ist, dass solche Fehler bereits beim Schreiben des Codes und nicht e
 
 \textbf{MyPy als optionale Typprüfung für Python}
 
-Da die dynamische Typisierung in größeren Projekten fehleranfällig sein kann, wurde für Python das Werkzeug \textit{MyPy} entwickelt.
-MyPy ist ein \textit{statischer Typprüfer} für Python: Es analysiert den Code auf Typfehler, indem es ihn lediglich durchliest, ohne das Programm tatsächlich zu starten. Anders als der TypeScript-Compiler, der den Code nach der Prüfung auch übersetzt, ist MyPy ein reines Kontrollwerkzeug und belässt den Python-Code unverändert.
+Da die dynamische Typisierung in größeren Projekten fehleranfällig sein kann, wurde für Python das Werkzeug MyPy entwickelt.
+MyPy ist ein statischer Typprüfer für Python: Es analysiert den Code auf Typfehler, indem es ihn lediglich durchliest, ohne das Programm tatsächlich zu starten. Anders als der TypeScript-Compiler, der den Code nach der Prüfung auch übersetzt, ist MyPy ein reines Kontrollwerkzeug und belässt den Python-Code unverändert.
 
 
-Ein wesentlicher Unterschied zum TypeScript-Compiler ist, dass MyPy vollständig \textit{optional} ist.
-Um MyPy nutzen zu können, müssen im Code freiwillige Typangaben vorhanden sein, sogenannte \textit{Type Hints} (Typhinweise).
+Ein wesentlicher Unterschied zum TypeScript-Compiler ist, dass MyPy vollständig optional ist.
+Um MyPy nutzen zu können, müssen im Code freiwillige Typangaben vorhanden sein, sogenannte Type Hints (Typhinweise).
 Diese Typhinweise haben keinen Einfluss auf das Verhalten des Programms, Python ignoriert sie bei der Ausführung vollständig.
 
 Das folgende Beispiel verdeutlicht dies mit einer einfachen Variable:
@@ -186,22 +157,30 @@ Die Toolchain gliedert sich in drei Schichten:
 \end{enumerate}
 
 \subsubsection{Implementierung der Umgebung}
-Die Einrichtung der Umgebung erfolgt deklarativ über die Kommandozeile der Anaconda-Distribution. Zunächst wird die Laufzeitumgebung durch die Installation von Node.js und dem klassischen Jupyter-Frontend vorbereitet. Dies schafft die Voraussetzungen für die Integration nicht-nativer Kernel.
+Die Einrichtung der Umgebung erfolgt deklarativ über die Kommandozeile der Anaconda-Distribution. Zunächst wird die Laufzeitumgebung durch die Installation von Node.js und dem klassischen Jupyter-Frontend vorbereitet. Dies schafft die Voraussetzungen für die Integration nicht-nativer Kernel. \\
+\textbf{Benötigte Programme:}
+\begin{enumerate}[noitemsep]
+	\item Anaconda: \url{https://www.anaconda.com/download}
+	\item Node.js: \url{https://nodejs.org}
+\end{enumerate}
+
+Danach muss man die Anaconda-Kommandozeile öffnen und folgende Befehle ausführen um die Laufzeitumgebung zu installieren:
 \Needspace{6\baselineskip}
 \begin{minted}{typescript}
-	conda activate base
-	conda install nodejs
-	conda install -c conda-forge nbclassic
+ conda activate logic-algo
+ conda install nodejs
+ conda install -c conda-forge nbclassic
 \end{minted}
 \captionof{listing}{Bereitstellung der Laufzeitumgebung}
 
-Für die Ausführung von TypeScript innerhalb der Notebooks wird der Kernel \texttt{tslab} verwendet. Im Gegensatz zu reinen JavaScript-Kerneln (wie IJavascript) ermöglicht \texttt{tslab} eine direkte Typ-Prüfung innerhalb der Zellen, was für die didaktische Zielsetzung der Arbeit, die Vermittlung von Typsicherheit, unabdingbar ist.
+Für die Ausführung von TypeScript innerhalb der Notebooks wird der Kernel \texttt{tslab} verwendet. Im Gegensatz zu reinen JavaScript-Kerneln (wie IJavascript) ermöglicht \texttt{tslab} eine direkte Typ-Prüfung innerhalb der Zellen, was für die didaktische Zielsetzung der Arbeit, die Vermittlung von Typsicherheit, unabdingbar ist. Der tslab-Kernel und typescript werden über folgende Befehle bereitgestellt.  
 
 \Needspace{6\baselineskip}
 \begin{minted}{typescript}
-	tslab install
-	npm install -g tslab
-	npm install typescript
+ npm init -y
+ npm install -g tslab
+ tslab install
+ npm install typescript
 \end{minted}
 \captionof{listing}{Integration des TypeScript-Kernels}
 
@@ -209,15 +188,13 @@ Die fachlichen Anforderungen der Vorlesungen erfordern spezifische Bibliotheken,
 
 \Needspace{6\baselineskip}
 \begin{minted}{typescript}
-	// Mathematische und logische Kernkomponenten
-	npm install fraction.js mathjs logic-solver z3-solver
-	
-	// Datenstrukturen und Mengenoperationen
-	npm install heap-js recursive-set@8.0.0
-	
-	// Visualisierung und Medienverarbeitung
-	npm install @hpcc-js/wasm pngjs
-	npm i --save-dev @types/pngjs
+ // Mathematische und logische Kernkomponenten
+ npm install fraction.js mathjs logic-solver z3-solver
+ // Datenstrukturen und Mengenoperationen
+ npm install heap-js recursive-set@8.0.0
+ // Visualisierung und Medienverarbeitung
+ npm install @hpcc-js/wasm pngjs
+ npm install --save-dev @types/pngjs
 \end{minted}
 \captionof{listing}{Installation der Projekt-Abhängigkeiten}
 
