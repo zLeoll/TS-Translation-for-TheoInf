@@ -1,102 +1,112 @@
 \section{Einführung in TypeScript}
 TypeScript wurde von Microsoft entwickelt und erstmals im Oktober 2012 der Öffentlichkeit vorgestellt. Die Entwicklung stand unter der Leitung von Anders Hejlsberg, einem renommierten Softwarearchitekten, der zuvor bereits maßgeblich an der Gestaltung von C\#, Delphi und Turbo Pascal beteiligt war. \cite{typescript-wiki} \cite{typescript-github}
-Der primäre Beweggrund für die Schaffung dieser neuen Sprache lag in den Defiziten von JavaScript bei der Entwicklung großer, komplexer Anwendungen (\emph{Large-Scale Application Development}) \cite{typescript-wiki}.\\
-Als Antwort auf diese Herausforderungen ist TypeScript als eine Erweiterung von JavaScript konzipiert, mit dem expliziten Ziel, die Entwicklung großer und langfristig wartbarer Anwendungen zu erleichtern [web:1]. Syntaktisch ist TypeScript als Superset von ECMAScript~5 definiert, sodass jedes gültige JavaScript-Programm zugleich ein gültiges TypeScript-Programm ist [web:1]. Zusätzlich zu JavaScript ergänzt TypeScript unter anderem ein Modulsystem, Klassen, Interfaces sowie ein reichhaltiges graduelles Typsystem, das eine schrittweise (inkrementelle) Typisierung bestehender Codebasen unterstützt. \cite{understanding-typescript}\\
-Ein wesentliches Entwurfsprinzip ist dabei die \emph{Typauslöschung} (type erasure): Die Typinformationen werden vom Compiler zur statischen Analyse genutzt, sind jedoch nicht Bestandteil des erzeugten JavaScript-Codes, sodass zur Laufzeit keine TypeScript-Typen repräsentiert oder automatisch geprüft werden [web:1]. Der TypeScript-Compiler überprüft TypeScript-Programme lediglich zur Übersetzungszeit und transformiert sie in JavaScript, wodurch sie unmittelbar in etablierten JavaScript-Laufzeitumgebungen ausgeführt werden können. Bierman, Abadi und Torgersen (2014) beschreiben TypeScript zudem als bewusst nicht vollständig statisch typsicher ausgelegt, um gängige JavaScript-Idiome und die Typisierung existierender Bibliotheken praktisch zu unterstützen. \cite{understanding-typescript} \\ \\
+Der primäre Beweggrund für die Schaffung dieser neuen Sprache lag in den Defiziten von JavaScript bei der Entwicklung großer, komplexer Anwendungen \cite{typescript-wiki}.\\
+Als Antwort auf diese Herausforderungen ist TypeScript als eine Erweiterung von JavaScript konzipiert, mit dem expliziten Ziel, die Entwicklung großer und langfristig wartbarer Anwendungen zu erleichtern. Syntaktisch ist TypeScript als Superset von ECMAScript~5 definiert, sodass jedes gültige JavaScript-Programm zugleich ein gültiges TypeScript-Programm ist. Zusätzlich zu JavaScript ergänzt TypeScript unter anderem Interfaces sowie ein reichhaltiges graduelles Typsystem, das eine schrittweise (inkrementelle) Typisierung bestehender Codebasen unterstützt. \cite{understanding-typescript}\\
+Ein wesentliches Entwurfsprinzip ist dabei die \emph{Typauslöschung} (type erasure): Die Typinformationen werden vom Compiler zur statischen Analyse genutzt, sind jedoch nicht Bestandteil des erzeugten JavaScript-Codes, sodass zur Laufzeit keine TypeScript-Typen repräsentiert oder automatisch geprüft werden. Der TypeScript-Compiler überprüft TypeScript-Programme lediglich zur Übersetzungszeit und transformiert sie in JavaScript, wodurch sie unmittelbar in etablierten JavaScript-Laufzeitumgebungen ausgeführt werden können. Bierman, Abadi und Torgersen (2014) beschreiben TypeScript zudem als bewusst nicht vollständig statisch typsicher ausgelegt, um gängige JavaScript-Idiome und die Typisierung existierender Bibliotheken praktisch zu unterstützen. \cite{understanding-typescript} \\ \\
 Nach der Einführung in die Entstehungsgeschichte und die zentralen Entwurfsprinzipien von TypeScript soll im Folgenden die Programmiersprache selbst vorgestellt werden. Ziel ist es, einen Überblick über die grundlegenden Sprachkonstrukte zu geben, welche für die Vorlesungsunterlagen relevant sind.\\
 Die Darstellung orientiert sich dabei am Notebook \href{https://github.com/zLeoll/TS-Translation-for-TheoInf/blob/main/Algorithms/TypeScript/Chapter-02/Introduction.ipynb}{Introduction.ipynb}, das als Einstieg der Vorlesung \emph{Theoretische Informatik} dient. Anhand dieses Notebooks werden zentrale Konzepte wie Variablendeklarationen, Typannotationen, Funktionen, Kontrollstrukturen, Arrays, Objekte sowie grundlegende Aspekte des Typsystems eingeführt und anhand von Codebeispielen illustriert.
 
 \subsection{Primitive Datentypen und Arithmetik}
-In TypeScript, wie auch in JavaScript, werden alle numerischen Werte standardmäßig als Gleitkommazahlen gemäß dem \href{https://de.wikipedia.org/wiki/IEEE_754}{IEEE-754-Standard} repräsentiert. Es existiert kein separater Datentyp für Ganzzahlen (Integers). Dies gilt selbst dann, wenn die literale Darstellung eine Ganzzahl vermuten lässt.
+In TypeScript, wie auch in JavaScript, werden alle numerischen Werte standardmäßig als Gleitkommazahlen gemäß dem \href{https://de.wikipedia.org/wiki/IEEE_754}{IEEE-754-Standard} repräsentiert. Es existiert kein separater Datentyp für Ganzzahlen (Integers). Dies gilt selbst dann, wenn die Darstellung eine Ganzzahl vermuten lässt. Der Operator \texttt{typeof} ist ein Operator, der zur Laufzeit den Typ seines Operanden als Zeichenkette zurückgibt und zur einfachen Typinspektion eingesetzt wird.
 \Needspace{5\baselineskip}
 \begin{minted}{typescript}
-	typeof 666   // Ausgabe: "number"
-	typeof 666.0 // Ausgabe: "number"
+ typeof 666   // Ausgabe: "number"
+ typeof 666.0 // Ausgabe: "number"
 \end{minted}
 \captionof{listing}{Typüberprüfung numerischer Literale}
 
 Diese Designentscheidung hat direkte Auswirkungen auf die Präzision arithmetischer Operationen. Die Genauigkeit für Ganzzahlen ist durch die Konstante \texttt{Number.MAX\_SAFE\_INTEGER} begrenzt, welche den Wert $2^{53} - 1$ (ca. 9 Billiarden) repräsentiert. Jenseits dieser Grenze ist die exakte Darstellung von Ganzzahlen nicht mehr gewährleistet, was zu Präzisionsverlusten führt.
 \Needspace{6\baselineskip}
 \begin{minted}{typescript}
-	Number.MAX_SAFE_INTEGER + 1 === Number.MAX_SAFE_INTEGER + 2
-	// Ausgabe: true
+ Number.MAX_SAFE_INTEGER + 1 == Number.MAX_SAFE_INTEGER + 2
+ // Ausgabe: true
 \end{minted}
 \captionof{listing}{Demonstration des Präzisionsverlusts bei Number}
 
-Um die Limitierungen des \texttt{Number}-Typs zu umgehen, gibt es den primitive Datentyp \texttt{BigInt}. Er ermöglicht die Darstellung von Ganzzahlen beliebiger Größe, beschränkt lediglich durch den verfügbaren Arbeitsspeicher. Syntaktisch werden \texttt{BigInt}-Literale durch das Suffix \texttt{n} oder über den Konstruktor \texttt{BigInt()} erzeugt.\\
-Ein wichtiger Aspekt der Typsicherheit in TypeScript ist die strikte Trennung dieser beiden numerischen Typen. Es ist nicht möglich, \texttt{BigInt} und \texttt{Number} in arithmetischen Operationen ohne explizite Konvertierung zu mischen. Zudem unterscheidet sich das Verhalten bei der Division: Während \texttt{Number} stets Gleitkommaergebnisse liefert, führt die Division von \texttt{BigInt}-Werten zu einer Trunkierung des Dezimalanteils (Ganzzahldivision).
+Um die Limitierungen des \texttt{Number}-Typs zu umgehen, existiert der primitive Datentyp \texttt{bigint}. Er ermöglicht die Darstellung von Ganzzahlen beliebiger Größe, beschränkt lediglich durch den verfügbaren Arbeitsspeicher. Syntaktisch werden \texttt{bigint}-Literale durch das Suffix \texttt{n} gekennzeichnet. Ergänzend steht der Wrapper-Konstruktor \texttt{BigInt()} zur Verfügung, der einen gegebenen Wert in den primitiven Typ \texttt{bigint} konvertiert -- analog zur Beziehung zwischen \texttt{number} und dem Wrapper-Objekt \texttt{Number}.\\
+Ein wichtiger Aspekt der Typsicherheit in TypeScript ist die strikte Trennung dieser beiden numerischen Typen. Es ist nicht möglich, \texttt{bigint} und \texttt{number} in arithmetischen Operationen ohne explizite Konvertierung zu mischen. Zudem unterscheidet sich das Verhalten bei der Division: Während \texttt{number} stets Gleitkommaergebnisse liefert, führt die Division von \texttt{bigint}-Werten zu einer Trunkierung des Dezimalanteils (Ganzzahldivision).\\\\
+Für die Deklaration unveränderlicher Variablen wird in TypeScript das Schlüsselwort \texttt{const} verwendet. Eine mit \texttt{const} deklarierte Variable kann nach ihrer initialen Zuweisung nicht neu zugewiesen werden, was die Absicht der Unveränderlichkeit explizit im Code ausdrückt.
 \Needspace{8\baselineskip}
 \begin{minted}{typescript}
-	const result: bigint = 7n ** 125n; 
-	// Berechnung extrem großer Potenzen
+ const result: bigint = 7n ** 125n; 
+ // Berechnung extrem großer Potenzen
 	
-	console.log(5n / 2n); 
-	// Ausgabe: 2n (Nachkommastellen werden abgeschnitten)
+ 5n / 2n 
+ // Ausgabe: 2n (Nachkommastellen werden abgeschnitten)
 \end{minted}
-\captionof{listing}{Verwendung von BigInt}
+\captionof{listing}{Verwendung von bigint}
 
 \subsection{Ausgabe und Zeichenkettenliterale}
-Für die Ausgabe von Werten auf der Konsole stellt TypeScript die Funktion \texttt{console.log} bereit. Diese Funktion ist polymorph und akzeptiert Argumente beliebigen Typs, um sie in einer textuellen Repräsentation auszugeben. Ein elementarer Datentyp für textuelle Daten ist der \texttt{String}. In TypeScript können Zeichenkettenliterale äquivalent durch einfache Anführungszeichen (\texttt{'}) oder doppelte Anführungszeichen (\texttt{"}) definiert werden. Es gibt semantisch keinen Unterschied zwischen diesen beiden Notationen, was Entwicklern Flexibilität bei der Einhaltung von Coding-Style-Guidelines gewährt.\\
+Für die Ausgabe von Werten auf der Konsole stellt TypeScript die Funktion \texttt{console.log} bereit. Diese Funktion ist polymorph und akzeptiert Argumente beliebigen Typs, um sie in einer textuellen Repräsentation auszugeben. Ein elementarer Datentyp für textuelle Daten ist der \texttt{String}. In TypeScript können Zeichenkettenliterale äquivalent durch einfache Anführungszeichen (\texttt{'}) oder doppelte Anführungszeichen (\texttt{"}) definiert werden. Es gibt semantisch keinen Unterschied zwischen diesen beiden Notationen, was Entwicklern Flexibilität bei der Einhaltung von Coding-Style-Guidelines gewährt. Zusätzlich existiert eine dritte Form von Zeichenkettenliteralen, die durch Backticks (\texttt{\textasciigrave}) gekennzeichnet ist und als Grundlage für sogenannte Template Strings dient, auf die im Folgenden gesondert eingegangen wird.\\
 In der interaktiven Umgebung eines Jupyter Notebooks wird zudem das Ergebnis des letzten Ausdrucks einer Zelle automatisch ausgegeben, ohne dass ein expliziter Aufruf von \texttt{console.log} notwendig ist.
 \Needspace{11\baselineskip}
 \begin{minted}{typescript}
-	// Explizite Ausgabe über die Konsole
-	console.log('Hello, World!');
+ // Explizite Ausgabe über die Konsole
+ console.log('Hello, World!');
 	
-	// Implizite Ausgabe des letzten Ausdrucks im Notebook
-	'Hello, World!'
+ // Implizite Ausgabe des letzten Ausdrucks im Notebook
+ 'Hello, World!'
 	
-	// Alternative Syntax mit doppelten Anführungszeichen
-	"Hello, World!"
+ // Alternative Syntax mit doppelten Anführungszeichen
+ "Hello, World!"
 \end{minted}
 \captionof{listing}{Ausgabe und Definition von Strings}
 
 \textbf{Template String}\\
-Zusätzlich zu den klassischen Zeichenkettenliteralen unterstützt TypeScript sogenannte \textit{Template Strings}. Diese werden durch Backticks (\texttt{`}) umschlossen und bieten erweiterte Funktionalitäten gegenüber herkömmlichen Strings. Ein zentrales Merkmal ist die String-Interpolation (\textit{String Interpolation}), die es ermöglicht, Ausdrücke direkt in eine Zeichenkette einzubetten. Hierbei wird die Syntax \texttt{\$\{...\}} verwendet, wobei der Inhalt der geschweiften Klammern ausgewertet und das Ergebnis in den String konvertiert wird. Dies erhöht die Lesbarkeit des Codes erheblich, da komplexe Verkettungsoperationen vermieden werden. Zudem unterstützen Template Strings mehrzeilige Zeichenketten ohne spezielle Escape-Sequenzen.
+Zusätzlich zu den klassischen Zeichenkettenliteralen unterstützt TypeScript sogenannte \textit{Template Strings}. Diese werden durch Backticks (\texttt{\textasciigrave}) umschlossen und bieten erweiterte Funktionalitäten gegenüber herkömmlichen Strings. Ein zentrales Merkmal ist die String-Interpolation, die es ermöglicht, Ausdrücke direkt in eine Zeichenkette einzubetten. Hierbei wird die Syntax \texttt{\$\{...\}} verwendet, wobei der Inhalt der geschweiften Klammern ausgewertet und das Ergebnis in den String konvertiert wird. Dies erhöht die Lesbarkeit des Codes erheblich, da komplexe Verkettungsoperationen vermieden werden. Zudem unterstützen Template Strings mehrzeilige Zeichenketten ohne spezielle Escape-Sequenzen.
 \Needspace{13\baselineskip}
 \begin{minted}{typescript}
-	const name = "Alice";
-	const age = 25;
+ const name = "Alice";
+ const age = 25;
 	
-	// Direkte Einbettung von Variablen
-	console.log(`User ${name} is ${age} years old.`);
-	// Ausgabe: User Alice is 25 years old.
+ // Direkte Einbettung von Variablen
+ console.log(`User ${name} is ${age} years old.`);
+ // Ausgabe: User Alice is 25 years old.
 	
-	// Auswertung von Ausdrücken innerhalb des Strings
-	console.log(`Next year, she will be ${age + 1}.`);
-	// Ausgabe: Next year, she will be 26.
+ // Auswertung von Ausdrücken innerhalb des Strings
+ console.log(`Next year, she will be ${age + 1}.`);
+ // Ausgabe: Next year, she will be 26.
 \end{minted}
 \captionof{listing}{Verwendung von Template Strings}
 
 \subsection{Arithmetische Operationen und Variablenzuweisung}
+TypeScript stellt, analog zu JavaScript, die üblichen arithmetischen Operatoren zur Verfügung. Hierzu zählen die Addition (\texttt{+}), Subtraktion (\texttt{-}), Multiplikation (\texttt{*}), Division (\texttt{/}) sowie der Exponentiationsoperator (\texttt{**}) und der Modulo-Operator (\texttt{\%}), der den Rest einer Division bestimmt.
+
+\begin{minted}{typescript}
+ 1 + 2;    // Addition:        ergibt 3
+ 5 - 3;    // Subtraktion:     ergibt 2
+ 4 * 3;    // Multiplikation:  ergibt 12
+ 7 / 2;    // Division:        ergibt 3.5
+ 7 % 3;    // Modulo:          ergibt 1
+ 2 ** 10;  // Potenzierung:    ergibt 1024
+\end{minted}
+\captionof{listing}{Grundlegende arithmetische Operatoren}
+
 Ein wesentlicher Unterschied zu vielen anderen Programmiersprachen betrifft die Division. In TypeScript liefert der Standard-Divisionsoperator (\texttt{/}) stets eine Gleitkommazahl als Ergebnis, auch wenn beide Operanden Ganzzahlen sind. Um eine Ganzzahldivision (\textit{Integer Division} oder Euklidische Division) durchzuführen, muss das Ergebnis explizit abgerundet werden. Hierfür steht die Funktion \texttt{Math.floor()} zur Verfügung, welche die größte Ganzzahl zurückgibt, die kleiner oder gleich dem übergebenen Argument ist. Der Modulo-Operator \texttt{\%} berechnet den Rest dieser Division.
+
 \Needspace{11\baselineskip}
 \begin{minted}{typescript}
-	// Standard-Division (Gleitkomma)
-	7 / 3; // Ergibt 2.333...
-	
-	// Ganzzahldivision
-	Math.floor(7 / 3); // Ergibt 2
-	
-	// Rest der Division (Modulo)
-	7 % 3; // Ergibt 1
+ 7 / 3;             // Standard-Division:  ergibt 2.333...
+ Math.floor(7 / 3); // Ganzzahldivision:   ergibt 2
+ 7 % 3;             // Rest der Division:  ergibt 1
 \end{minted}
 \captionof{listing}{Ganzzahldivision und Modulo}
 
-Zur Speicherung von Werten unterscheidet TypeScript zwischen Konstanten und Variablen. Das Schlüsselwort \texttt{const} deklariert eine Konstante, deren Wert nach der Initialisierung nicht mehr verändert werden kann (Reassigning is forbidden). Dies fördert die Unveränderlichkeit (\textit{Immutability}) von Daten, wo immer es möglich ist.
-Soll sich ein Wert im Laufe des Programms ändern, muss die Variable mit dem Schlüsselwort \texttt{let} deklariert werden.
+Zur Speicherung von Werten unterscheidet TypeScript zwischen Konstanten und Variablen. Das Schlüsselwort \texttt{const} deklariert eine Konstante, deren Wert nach der Initialisierung nicht mehr verändert werden kann (Reassigning ist verboten). Dies fördert die Unveränderlichkeit  von Daten, wo immer es möglich ist. Soll sich ein Wert im Laufe des Programms ändern, muss die Variable mit dem Schlüsselwort \texttt{let} deklariert werden. Im Gegensatz zu \texttt{const} erlaubt \texttt{let} eine erneute Zuweisung des Variablenwertes, bleibt jedoch, anders als das ältere Schlüsselwort \texttt{var}, auf den umschließenden Block (\textit{block scope}) beschränkt.
+
 \Needspace{11\baselineskip}
 \begin{minted}{typescript}
-	// Deklaration von Konstanten
-	const q = Math.floor(7 / 3);
-	const r = 7 % 3;
-	q = 5; // Error: Assignment to constant variable.
+ // Deklaration von Konstanten
+ const q = Math.floor(7 / 3);
+ const r = 7 % 3;
+ q = 5; // Error: Assignment to constant variable.
 	
-	// Deklaration veränderlicher Variablen
-	let count = 1;
-	count = 2; // Erlaubt, da 'count' mit 'let' deklariert wurde
+ // Deklaration veränderlicher Variablen
+ let count = 1;
+ count = 2; // Erlaubt, da 'count' mit 'let' deklariert wurde
 \end{minted}
 \captionof{listing}{Konstanten vs. Variablen}
+
 
 \subsection{Arrays}
 Arrays sind eine fundamentale Datenstruktur in TypeScript, die eine geordnete Sammlung von Elementen repräsentiert. Sie entsprechen konzeptionell den Listen in Python, unterscheiden sich jedoch in Syntax und bestimmten Verhaltensweisen. Ein Array wird in TypeScript durch eckige Klammern \texttt{[} und \texttt{]} definiert. Das leere Array, also ein Array ohne Elemente, wird wie folgt notiert:
