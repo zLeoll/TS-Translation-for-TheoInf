@@ -10,7 +10,7 @@ Before you begin, make sure the following programs are installed:
 
 
 ## Setup
-To setup your environment the tslab kernel and required libraries, execute the following commands in your anaconda terminal:
+To setup your environment, the tslab kernel and required libraries, execute the following commands in the anaconda terminal:
 
 ```bash
 conda activate logic-algo
