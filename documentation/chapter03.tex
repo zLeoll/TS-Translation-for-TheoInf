@@ -1,49 +1,50 @@
 \section{Einführung in TypeScript}
 TypeScript wurde von Microsoft entwickelt und erstmals im Oktober 2012 der Öffentlichkeit vorgestellt. Die Entwicklung stand unter der Leitung von Anders Hejlsberg, einem renommierten Softwarearchitekten, der zuvor bereits maßgeblich an der Gestaltung von C\#, Delphi und Turbo Pascal beteiligt war. \cite{typescript-wiki} \cite{typescript-github}
 Der primäre Beweggrund für die Schaffung dieser neuen Sprache lag in den Defiziten von JavaScript bei der Entwicklung großer, komplexer Anwendungen \cite{typescript-wiki}.\\
-Als Antwort auf diese Herausforderungen ist TypeScript als eine Erweiterung von JavaScript konzipiert, mit dem expliziten Ziel, die Entwicklung großer und langfristig wartbarer Anwendungen zu erleichtern. Syntaktisch ist TypeScript als Superset von ECMAScript~5 definiert, sodass jedes gültige JavaScript-Programm zugleich ein gültiges TypeScript-Programm ist. Zusätzlich zu JavaScript ergänzt TypeScript unter anderem Interfaces sowie ein reichhaltiges graduelles Typsystem, das eine schrittweise (inkrementelle) Typisierung bestehender Codebasen unterstützt. \cite{understanding-typescript}\\
-Ein wesentliches Entwurfsprinzip ist dabei die \emph{Typauslöschung} (type erasure): Die Typinformationen werden vom Compiler zur statischen Analyse genutzt, sind jedoch nicht Bestandteil des erzeugten JavaScript-Codes, sodass zur Laufzeit keine TypeScript-Typen repräsentiert oder automatisch geprüft werden. Der TypeScript-Compiler überprüft TypeScript-Programme lediglich zur Übersetzungszeit und transformiert sie in JavaScript, wodurch sie unmittelbar in etablierten JavaScript-Laufzeitumgebungen ausgeführt werden können. Bierman, Abadi und Torgersen (2014) beschreiben TypeScript zudem als bewusst nicht vollständig statisch typsicher ausgelegt, um gängige JavaScript-Idiome und die Typisierung existierender Bibliotheken praktisch zu unterstützen. \cite{understanding-typescript} \\ \\
+Als Antwort auf diese Herausforderungen ist TypeScript als eine Erweiterung von JavaScript konzipiert, mit dem expliziten Ziel, die Entwicklung großer und langfristig wartbarer Anwendungen zu erleichtern. Syntaktisch ist TypeScript als Superset von ECMAScript definiert, sodass jedes gültige JavaScript-Programm zugleich ein ausführbares TypeScript-Programm ist. Zusätzlich zu JavaScript ergänzt TypeScript unter anderem Interfaces sowie ein reichhaltiges graduelles Typsystem, das eine schrittweise , inkrementelle Typisierung bestehender Codebasen unterstützt. \cite{understanding-typescript}\\
+Ein wesentliches Entwurfsprinzip ist dabei die \emph{Typauslöschung}: Die Typinformationen werden vom Compiler zur statischen Analyse genutzt, sind jedoch nicht Bestandteil des erzeugten JavaScript-Codes, sodass zur Laufzeit keine TypeScript-Typen repräsentiert oder automatisch geprüft werden. Der TypeScript-Compiler überprüft TypeScript-Programme lediglich zur Übersetzungszeit und transformiert sie in JavaScript, wodurch sie unmittelbar in etablierten JavaScript-Laufzeitumgebungen ausgeführt werden können. Bierman, Abadi und Torgersen (2014) beschreiben TypeScript zudem als bewusst nicht vollständig statisch typsicher ausgelegt, um gängige JavaScript-Idiome und die Typisierung existierender Bibliotheken praktisch zu unterstützen. \cite{understanding-typescript} \\ \\
 Nach der Einführung in die Entstehungsgeschichte und die zentralen Entwurfsprinzipien von TypeScript soll im Folgenden die Programmiersprache selbst vorgestellt werden. Ziel ist es, einen Überblick über die grundlegenden Sprachkonstrukte zu geben, welche für die Vorlesungsunterlagen relevant sind.\\
 Die Darstellung orientiert sich dabei am Notebook \href{https://github.com/zLeoll/TS-Translation-for-TheoInf/blob/main/Algorithms/TypeScript/Chapter-02/Introduction.ipynb}{Introduction.ipynb}, das als Einstieg der Vorlesung \emph{Theoretische Informatik} dient. Anhand dieses Notebooks werden zentrale Konzepte wie Variablendeklarationen, Typannotationen, Funktionen, Kontrollstrukturen, Arrays, Objekte sowie grundlegende Aspekte des Typsystems eingeführt und anhand von Codebeispielen illustriert.
 
 \subsection{Grundkonzepte: Typannotationen und Funktionen}
-Bevor die einzelnen Datentypen und Sprachkonstrukte von TypeScript vorgestellt werden, führt dieser Abschnitt zwei Konzepte ein, die im gesamten Kapitel wiederkehren: Typannotationen und Funktionen. Zudem werden die Schlüsselwörter \texttt{const} und \texttt{let} zur Variablendeklaration eingeführt, auf die im weiteren Verlauf ausführlicher eingegangen wird (siehe Abschnitt~\ref{subsec:arithmetik}).\\
+Bevor die einzelnen Datentypen und Sprachkonstrukte von TypeScript vorgestellt werden, führt dieser Abschnitt zwei Grundkonzepte ein, die im gesamten Kapitel wiederkehren: Typannotationen und Funktionen. Zudem werden die Schlüsselwörter \texttt{const} und \texttt{let} zur Variablendeklaration eingeführt, auf die im weiteren Verlauf ausführlicher eingegangen wird (siehe Abschnitt~\ref{subsec:arithmetik}).\\
 
 \textbf{Typannotationen}\\
 Ein zentrales Merkmal von TypeScript ist die Möglichkeit, Variablen, Parametern und Rückgabewerten explizit einen Datentyp zuzuweisen. Diese sogenannten \textit{Typannotationen} werden mit einem Doppelpunkt (\texttt{:}) nach dem jeweiligen Bezeichner notiert:
 \Needspace{5\baselineskip}
 \begin{minted}{typescript}
- let name: string  = "Alice"; // Variable vom Typ string
- let age:  number  = 25;      // Variable vom Typ number
- let active: boolean = true;  // Variable vom Typ boolean
+ let name:   string  = "Alice"; // Variable vom Typ string
+ let age:    number  = 25;      // Variable vom Typ number
+ let active: boolean = true;    // Variable vom Typ boolean
 \end{minted}
 \captionof{listing}{Typannotationen bei Variablen}
 
 TypeScript unterstützt darüber hinaus die sogenannte \textit{Typinferenz}: Wird ein Wert direkt bei der Deklaration zugewiesen, leitet der Compiler den Typ in den meisten Fällen automatisch ab, sodass eine explizite Annotation optional ist. Beide Schreibweisen sind im Laufe dieses Kapitels anzutreffen.\\
 
 \textbf{Variablendeklaration mit \texttt{const} und \texttt{let}}\\
-Zur Deklaration von Variablen werden in TypeScript die Schlüsselwörter \texttt{const} (für unveränderliche Bindungen) und \texttt{let} (für veränderliche Variablen) verwendet. Das ältere Schlüsselwort \texttt{var} wird in modernem TypeScript nicht mehr empfohlen.
+Zur Deklaration von Variablen werden in TypeScript die Schlüsselwörter \texttt{const} (für unveränderliche Variablen) und \texttt{let} (für veränderliche Variablen) verwendet. Beide sind block-scoped, das heißt sie sind nur innerhalb des unmittelbaren Block-Kontexts (zum Beispiel einer Funktion, einer Schleife oder eines if-Blocks) gültig, in dem sie deklariert wurden. Das ältere Schlüsselwort \texttt{var} wird in modernem TypeScript nicht mehr empfohlen.
 \Needspace{5\baselineskip}
 \begin{minted}{typescript}
  const pi = 3.14;  // unveränderlich
+ pi = 3;           // Fehler: Assignment to constant variable.
  let counter = 0;  // veränderlich
  counter = 1;      // erlaubt
- pi = 3;           // Fehler: Assignment to constant variable.
 \end{minted}
 \captionof{listing}{Variablendeklaration mit const und let}
 
 \textbf{Funktionen}\\
-Eine \textit{Funktion} ist ein benannter, wiederverwendbarer Codeblock, der eine definierte Aufgabe ausführt und optional einen Wert zurückgibt. In TypeScript wird eine Funktion mit dem Schlüsselwort \texttt{function} deklariert. Die Typen der Parameter sowie der Rückgabetyp werden mit Annotationen versehen:
+Eine \textit{Funktion} ist ein benannter, wiederverwendbarer Codeblock, der eine definierte Aufgabe ausführt und optional einen Wert zurückgibt. In TypeScript wird eine Funktion mit dem Schlüsselwort \texttt{function} deklariert. Die Typen der Parameter sowie der Rückgabetyp werden mit Annotationen versehen. Der Rückgabetyp nach der Parameterliste legt fest, welchen Typ der zurückgegebene Wert haben muss. Das Schlüsselwort \texttt{return} beendet die Ausführung der Funktion und gibt den berechneten Wert an die aufrufende Stelle zurück. Gibt eine Funktion keinen Wert zurück, wird \texttt{void} als Rückgabetyp angegeben.\\
+Im folgenden Codeblock wird eine Funktion mit dem Namen \emph{add} definiert, welche zwei Parameter \emph{a} und \emph{b} vom Type \emph{number} entgegennimmt und \emph{number} als Rückgabewert hat:
 \Needspace{7\baselineskip}
 \begin{minted}{typescript}
  function add(a: number, b: number): number {
      return a + b;
  }
+ // Die Funktion wird wie folgt aufgerufen:
  add(3, 5); // Ergebnis: 8
 \end{minted}
 \captionof{listing}{Funktionsdeklaration mit Typannotationen}
 
-Der Rückgabetyp \texttt{: number} nach der Parameterliste legt fest, welchen Typ der zurückgegebene Wert haben muss. Das Schlüsselwort \texttt{return} beendet die Ausführung der Funktion und gibt den Wert an die aufrufende Stelle zurück. Gibt eine Funktion keinen Wert zurück, wird \texttt{void} als Rückgabetyp angegeben.\\
 
 \textbf{Arrow-Funktionen}\\
 Neben der klassischen Syntax existiert eine kompaktere Schreibweise, die \textit{Arrow-Function-Syntax} (Pfeilnotation). Das Schlüsselwort \texttt{function} entfällt; links des Pfeils (\texttt{=>}) stehen die Parameter, rechts der Rückgabeausdruck:
@@ -59,7 +60,7 @@ Arrow-Funktionen werden in TypeScript häufig für kurze, einzeilige Ausdrücke 
 
 \subsection{Primitive Datentypen und Arithmetik}
 \label{subsec:arithmetik}
-In TypeScript, wie auch in JavaScript, werden alle numerischen Werte standardmäßig als Gleitkommazahlen gemäß dem \href{https://de.wikipedia.org/wiki/IEEE_754}{IEEE-754-Standard} repräsentiert. Es existiert kein separater Datentyp für Ganzzahlen (Integers). Dies gilt selbst dann, wenn die Darstellung eine Ganzzahl vermuten lässt. Der Operator \texttt{typeof} ist ein Operator, der zur Laufzeit den Typ seines Operanden als Zeichenkette zurückgibt und zur einfachen Typinspektion eingesetzt wird.
+In TypeScript, wie auch in JavaScript, werden alle numerischen Werte standardmäßig als Gleitkommazahlen gemäß dem \href{https://de.wikipedia.org/wiki/IEEE_754}{IEEE-754-Standard} repräsentiert. Es existiert kein separater Datentyp für Integer (Ganzzahlen). Dies gilt selbst dann, wenn die Darstellung eine Ganzzahl vermuten lässt. Der Operator \texttt{typeof} liefert zur Laufzeit den Typ seines Operanden als Zeichenkette und wird zur einfachen Typinspektion eingesetzt.
 \Needspace{5\baselineskip}
 \begin{minted}{typescript}
  typeof 666   // Ausgabe: "number"
@@ -75,41 +76,40 @@ Diese Designentscheidung hat direkte Auswirkungen auf die Präzision arithmetisc
 \end{minted}
 \captionof{listing}{Demonstration des Präzisionsverlusts bei Number}
 
-Um die Limitierungen des \texttt{Number}-Typs zu umgehen, existiert der primitive Datentyp \texttt{bigint}. Er ermöglicht die Darstellung von Ganzzahlen beliebiger Größe, beschränkt lediglich durch den verfügbaren Arbeitsspeicher. Syntaktisch werden \texttt{bigint}-Literale durch das Suffix \texttt{n} gekennzeichnet. Ergänzend steht der Wrapper-Konstruktor \texttt{BigInt()} zur Verfügung, der einen gegebenen Wert in den primitiven Typ \texttt{bigint} konvertiert -- analog zur Beziehung zwischen \texttt{number} und dem Wrapper-Objekt \texttt{Number}.\\
-Ein wichtiger Aspekt der Typsicherheit in TypeScript ist die strikte Trennung dieser beiden numerischen Typen. Es ist nicht möglich, \texttt{bigint} und \texttt{number} in arithmetischen Operationen ohne explizite Konvertierung zu mischen. Zudem unterscheidet sich das Verhalten bei der Division: Während \texttt{number} stets Gleitkommaergebnisse liefert, führt die Division von \texttt{bigint}-Werten zu einer Trunkierung des Dezimalanteils (Ganzzahldivision).\\
-\Needspace{8\baselineskip}
+Um die Limitierungen des \texttt{number}-Typs zu umgehen, existiert der primitive Datentyp \texttt{bigint}. Er ermöglicht die Darstellung von Ganzzahlen beliebiger Größe, beschränkt lediglich durch den verfügbaren Arbeitsspeicher. Syntaktisch werden \texttt{bigint}-Literale durch das Suffix \texttt{n} gekennzeichnet. Ergänzend steht der Wrapper-Konstruktor \texttt{BigInt()} zur Verfügung, der einen gegebenen Wert in den primitiven Typ \texttt{bigint} konvertiert, analog zur Beziehung zwischen \texttt{number} und dem Wrapper-Objekt \texttt{Number}.\\
+Ein wichtiger Aspekt der Typsicherheit in TypeScript ist die strikte Trennung dieser beiden numerischen Typen. Es ist nicht möglich, \texttt{bigint} und \texttt{number} in arithmetischen Operationen ohne explizite Konvertierung zu mischen. Zudem unterscheidet sich das Verhalten bei der Division: Während \texttt{number} stets Gleitkommaergebnisse liefert, führt die Division von \texttt{bigint}-Werten zu einer Trunkierung des Dezimalanteils (Ganzzahldivision).
+\Needspace{4\baselineskip}
 \begin{minted}{typescript}
  const result: bigint = 7n ** 125n; 
  // Berechnung extrem großer Potenzen
-	
  5n / 2n 
  // Ausgabe: 2n (Nachkommastellen werden abgeschnitten)
 \end{minted}
 \captionof{listing}{Verwendung von bigint}
 
 \subsection{Ausgabe und Zeichenkettenliterale}
-Für die Ausgabe von Werten auf der Konsole stellt TypeScript die Funktion \texttt{console.log} bereit. Diese Funktion ist polymorph und akzeptiert Argumente beliebigen Typs, um sie in einer textuellen Repräsentation auszugeben. Ein elementarer Datentyp für textuelle Daten ist der \texttt{String}. In TypeScript können Zeichenkettenliterale äquivalent durch einfache Anführungszeichen (\texttt{'}) oder doppelte Anführungszeichen (\texttt{"}) definiert werden. Es gibt semantisch keinen Unterschied zwischen diesen beiden Notationen, was Entwicklern Flexibilität bei der Einhaltung von Coding-Style-Guidelines gewährt. Zusätzlich existiert eine dritte Form von Zeichenkettenliteralen, die durch Backticks (\texttt{\textasciigrave}) gekennzeichnet ist und als Grundlage für sogenannte Template Strings dient, auf die im Folgenden gesondert eingegangen wird.\\
+Für die Ausgabe von Werten auf der Konsole stellt TypeScript die Funktion \texttt{console.log} bereit. Diese Funktion ist polymorph (vielgestaltig) und akzeptiert Argumente beliebigen Typs, um sie in einer textuellen Repräsentation auszugeben. Ein elementarer Datentyp für textuelle Daten ist der \texttt{string}. In TypeScript können Zeichenkettenliterale äquivalent durch einfache Anführungszeichen (\texttt{'}) oder doppelte Anführungszeichen (\texttt{"}) definiert werden. Es gibt semantisch keinen Unterschied zwischen diesen beiden Notationen, was Entwicklern Flexibilität bei der Einhaltung von Coding-Style-Guidelines gewährt. Zusätzlich existiert eine dritte Form von Zeichenkettenliteralen, die durch Backticks (\texttt{\textasciigrave}) gekennzeichnet ist und als Grundlage für sogenannte Template Strings dient, auf die im Folgenden gesondert eingegangen wird.\\
 In der interaktiven Umgebung eines Jupyter Notebooks wird zudem das Ergebnis des letzten Ausdrucks einer Zelle automatisch ausgegeben, ohne dass ein expliziter Aufruf von \texttt{console.log} notwendig ist.
-\Needspace{11\baselineskip}
+\Needspace{8\baselineskip}
 \begin{minted}{typescript}
  // Explizite Ausgabe über die Konsole
  console.log('Hello, World!');
-	
- // Implizite Ausgabe des letzten Ausdrucks im Notebook
- 'Hello, World!'
-	
+ 
  // Alternative Syntax mit doppelten Anführungszeichen
- "Hello, World!"
+ console.log("Hello, World!")
+	
+ // Implizite Ausgabe des letzten Ausdrucks einer Codezelle
+ 'Hello, World!'
 \end{minted}
 \captionof{listing}{Ausgabe und Definition von Strings}
 
 \textbf{Template String}\\
-Zusätzlich zu den klassischen Zeichenkettenliteralen unterstützt TypeScript sogenannte \textit{Template Strings}. Diese werden durch Backticks (\texttt{\textasciigrave}) umschlossen und bieten erweiterte Funktionalitäten gegenüber herkömmlichen Strings. Ein zentrales Merkmal ist die String-Interpolation, die es ermöglicht, Ausdrücke direkt in eine Zeichenkette einzubetten. Hierbei wird die Syntax \texttt{\$\{...\}} verwendet, wobei der Inhalt der geschweiften Klammern ausgewertet und das Ergebnis in den String konvertiert wird. Dies erhöht die Lesbarkeit des Codes erheblich, da komplexe Verkettungsoperationen vermieden werden. Zudem unterstützen Template Strings mehrzeilige Zeichenketten ohne spezielle Escape-Sequenzen.
-\Needspace{13\baselineskip}
+Zusätzlich zu den klassischen Zeichenkettenliteralen unterstützt TypeScript sogenannte \textit{Template Strings}. Diese werden durch Backticks (\texttt{\textasciigrave}) umschlossen und bieten erweiterte Funktionalitäten gegenüber herkömmlichen Strings. Ein zentrales Merkmal ist die String-Interpolation, die es ermöglicht, Ausdrücke direkt in eine Zeichenkette einzubetten. Hierbei wird die Syntax \texttt{\$\{...\}} verwendet, wobei der Inhalt der geschweiften Klammern ausgewertet und das Ergebnis in einen \emph{string} konvertiert wird. Dies erhöht die Lesbarkeit des Codes erheblich, da komplexe Verkettungsoperationen vermieden werden. Zudem können Template Strings über mehrere Zeilen gehen, ohne dass man dafür spezielle Zeichen wie \emph{\textbackslash n} im Code einfügen muss.
+\Needspace{10\baselineskip}
 \begin{minted}{typescript}
  const name = "Alice";
  const age = 25;
-	
+ 
  // Direkte Einbettung von Variablen
  console.log(`User ${name} is ${age} years old.`);
  // Ausgabe: User Alice is 25 years old.
@@ -133,7 +133,8 @@ TypeScript stellt, analog zu JavaScript, die üblichen arithmetischen Operatoren
 \end{minted}
 \captionof{listing}{Grundlegende arithmetische Operatoren}
 
-Ein wesentlicher Unterschied zu vielen anderen Programmiersprachen betrifft die Division. In TypeScript liefert der Standard-Divisionsoperator (\texttt{/}) stets eine Gleitkommazahl als Ergebnis, auch wenn beide Operanden Ganzzahlen sind. Um eine Ganzzahldivision (\textit{Integer Division} oder Euklidische Division) durchzuführen, muss das Ergebnis explizit abgerundet werden. Hierfür steht die Funktion \texttt{Math.floor()} zur Verfügung, welche die größte Ganzzahl zurückgibt, die kleiner oder gleich dem übergebenen Argument ist, allerdings wird hierauf im Abschnitt \ref{subsec:numerisch} noch genauer eingegangen. Der Modulo-Operator \texttt{\%} berechnet den Rest dieser Division.
+Ein wesentlicher Unterschied zu vielen anderen Programmiersprachen betrifft die Division. In TypeScript liefert der Standard-Divisionsoperator (\texttt{/}) stets eine Gleitkommazahl als Ergebnis, auch wenn beide Operanden Ganzzahlen sind. Um eine Ganzzahldivision (\textit{Integer Division} oder Euklidische Division) durchzuführen, muss das Ergebnis explizit abgerundet werden. Hierfür steht die Funktion \texttt{Math.floor()} zur Verfügung, welche die größte Ganzzahl zurückgibt, die kleiner oder gleich dem übergebenen Argument ist, allerdings wird hierauf im Abschnitt \ref{subsec:numerisch} noch genauer eingegangen.\\
+Der Modulo-Operator \texttt{\%} berechnet den Rest dieser Division.
 
 \Needspace{11\baselineskip}
 \begin{minted}{typescript}
@@ -142,22 +143,6 @@ Ein wesentlicher Unterschied zu vielen anderen Programmiersprachen betrifft die 
  7 % 3;             // Rest der Division:  ergibt 1
 \end{minted}
 \captionof{listing}{Ganzzahldivision und Modulo}
-
-Zur Speicherung von Werten unterscheidet TypeScript zwischen Konstanten und Variablen. Das Schlüsselwort \texttt{const} deklariert eine Konstante, deren Wert nach der Initialisierung nicht mehr verändert werden kann (Reassigning ist verboten). Dies fördert die Unveränderlichkeit  von Daten, wo immer es möglich ist. Soll sich ein Wert im Laufe des Programms ändern, muss die Variable mit dem Schlüsselwort \texttt{let} deklariert werden. Im Gegensatz zu \texttt{const} erlaubt \texttt{let} eine erneute Zuweisung des Variablenwertes, bleibt jedoch, anders als das ältere Schlüsselwort \texttt{var}, auf den umschließenden Block (\textit{block scope}) beschränkt.
-
-\Needspace{11\baselineskip}
-\begin{minted}{typescript}
- // Deklaration von Konstanten
- const q = Math.floor(7 / 3);
- const r = 7 % 3;
- q = 5; // Error: Assignment to constant variable.
-	
- // Deklaration veränderlicher Variablen
- let count = 1;
- count = 2; // Erlaubt, da 'count' mit 'let' deklariert wurde
-\end{minted}
-\captionof{listing}{Konstanten vs. Variablen}
-
 
 \subsection{Arrays}
 \label{subsec:arrays}
@@ -171,20 +156,20 @@ Ein Array mit konkreten Elementen wird durch Komma-separierte Werte innerhalb de
 \captionof{listing}{Array mit numerischen Elementen}
 
 \textbf{Zugriff auf Array-Elemente: Der Index-Operator}\\
-Der \textit{Index-Operator} \texttt{[\(\cdot\)]} ist ein Postfix-Operator, der verwendet wird, um auf das Element an einer bestimmten Position (Index) zuzugreifen. TypeScript verwendet, wie die meisten modernen Programmiersprachen, eine nullbasierte Indizierung (\textit{zero-based indexing}), d.\,h., das erste Element eines Arrays hat den Index \texttt{0}. Es ist zu beachten, dass \texttt{const} lediglich die Neuzuweisung der Variable verhindert, nicht jedoch die Mutation des Arrays selbst. Die Elemente des Arrays können daher weiterhin verändert werden:
+Der \textit{Index-Operator} \texttt{[\(\cdot\)]} ist ein Postfix-Operator, der verwendet wird, um auf das Element an einer bestimmten Position (Index) zuzugreifen. TypeScript verwendet, wie die meisten modernen Programmiersprachen, eine nullbasierte Indizierung, das heißt, das erste Element eines Arrays hat den Index \texttt{0}. Es ist zu beachten, dass \texttt{const} lediglich die Neuzuweisung der Variable verhindert, nicht jedoch die Mutation des Arrays selbst. Die Elemente des Arrays können daher weiterhin verändert werden:
 
 \Needspace{5\baselineskip}
 \begin{minted}{typescript}
- const L = [1, 2, 3];
- L[0]; // Gibt das erste Element zurück: 1
+ const arr = [1, 2, 3];
+ arr[0]; // Gibt das erste Element zurück: 1
 \end{minted}
 \captionof{listing}{Zugriff auf Array-Elemente}
 
 Der Index-Operator kann auch auf der linken Seite einer Zuweisung verwendet werden, um ein bestehendes Element zu modifizieren:
 \Needspace{5\baselineskip}
 \begin{minted}{typescript}
- L[0] = 7;
- L; // Ergebnis: [7, 2, 3]
+ arr[0] = 7;
+ arr; // Ergebnis: [7, 2, 3]
 \end{minted}
 \captionof{listing}{Modifikation eines Array-Elements}
 
@@ -196,7 +181,7 @@ Arrays können mittels der Methode \texttt{concat} verkettet werden. Diese Metho
 \end{minted}
 \captionof{listing}{Verkettung mit concat}
 
-Alternativ kann der \textit{Spread-Operator} \texttt{...} verwendet werden, um Arrays zu entpacken und zu kombinieren. Diese Syntax ist kompakter und wird in TypeScript häufig bevorzugt.
+Alternativ kann der \textit{Spread-Operator} \texttt{...} verwendet werden, um Arrays zu entpacken und zu kombinieren. Diese Syntax ist oft kompakter wenn mehrere Arrays konkateniert werden und wird in TypeScript häufig bevorzugt.
 \Needspace{4\baselineskip}
 \begin{minted}{typescript}
  [...[1, 2, 3], ...[4, 5, 6]]; // Ergebnis: [1, 2, 3, 4, 5, 6]
@@ -211,18 +196,17 @@ Die Eigenschaft \texttt{length} gibt die Anzahl der Elemente in einem Array zur�
 \captionof{listing}{Bestimmung der Array-Länge}
 
 \textbf{Die Methode filter}\\
-Die Methode \texttt{filter} erzeugt ein neues Array, das nur jene Elemente des ursprünglichen Arrays enthält, für die eine übergebene Bedingung erfüllt ist. Das ursprüngliche Array wird dabei nicht verändert. Die Bedingung wird als Funktion übergeben, die für jedes Element entweder \texttt{true} (Element wird behalten) oder \texttt{false} (Element wird verworfen) zurückgibt. In TypeScript wird für solche kurzen Funktionen häufig die \textit{Arrow-Function-Syntax} (\texttt{=>}) verwendet. Dies ist eine kompakte Schreibweise für Funktionen: Links vom Pfeil stehen die Eingabeparameter, rechts vom Pfeil steht der Rückgabewert.
+Die Methode \texttt{filter} erzeugt ein neues Array, das nur jene Elemente des ursprünglichen Arrays enthält, für die eine übergebene Bedingung erfüllt ist. Das ursprüngliche Array wird dabei nicht verändert. Die Bedingung wird als Funktion übergeben, die für jedes Element entweder \texttt{true} (Element wird behalten) oder \texttt{false} (Element wird verworfen) zurückgibt. In TypeScript wird für solche kurzen Funktionen häufig die \textit{Arrow-Function-Syntax} (\texttt{=>}) verwendet. 
 
 Im folgenden Beispiel werden aus einer Liste von Zahlen nur jene herausgefiltert, die größer als 3 sind:
 \Needspace{5\baselineskip}
 \begin{minted}{typescript}
- const zahlen = [1, 2, 3, 4, 5];
- const ergebnis = zahlen.filter(n => n > 3);
- // Ergebnis: [4, 5]
+ const numbers = [1, 2, 3, 4, 5];
+ const result = numbers.filter(n => n > 3); // Ergebnis: [4, 5]
 \end{minted}
 \captionof{listing}{Filtern von Zahlen mit filter}
 
-Die Funktion \texttt{n => n > 3} wird intern für jedes Element des Arrays aufgerufen. Für \texttt{n = 1}, \texttt{2} und \texttt{3} liefert sie \texttt{false}, weshalb diese Elemente verworfen werden. Für \texttt{n = 4} und \texttt{5} liefert sie \texttt{true}, sodass diese im Ergebnis-Array verbleiben.
+Die Funktion \texttt{n => n > 3} wird intern für jedes Element des Arrays aufgerufen. Für \texttt{n = 1}, \texttt{2} und \texttt{3} liefert sie \texttt{false}, weshalb diese Elemente verworfen werden. Für \texttt{n = 4} und \texttt{5} liefert sie \texttt{true}, sodass diese im Ergebnis-Array verbleiben. Das ursprüngliche Array \texttt{numbers} bleibt unverändert.
 
 \begin{table}[h]
 	\centering
@@ -239,9 +223,9 @@ Die Funktion \texttt{n => n > 3} wird intern für jedes Element des Arrays aufge
 \FloatBarrier
 
 \noindent\textbf{Erzeugung von Arrays mit Array.from}\\
-Neben der literalen Schreibweise bietet TypeScript die statische Methode \texttt{Array.from}, um Arrays dynamisch zu erzeugen. Sie ist besonders nützlich, wenn ein Array einer bestimmten Länge mit berechneten Werten befüllt werden soll, beispielsweise um eine Zahlenfolge zu erzeugen.
+Neben der literalen Schreibweise (mit eckigen Klammern [ ]) bietet TypeScript die statische Methode \texttt{Array.from}, um Arrays dynamisch zu erzeugen. Sie ist besonders nützlich, wenn ein Array einer bestimmten Länge mit berechneten Werten befüllt werden soll, beispielsweise um eine Zahlenfolge zu erzeugen.
 
-Die Methode akzeptiert zwei Argumente: zunächst ein Objekt mit einer \texttt{length}-Eigenschaft, das die gewünschte Länge des Arrays festlegt, sowie eine optionale Mapping-Funktion, die für jeden Index aufgerufen wird und den Wert an dieser Position bestimmt. Im folgenden Beispiel wird ein Array mit den Zahlen 1 bis 10 erzeugt:
+Die Methode akzeptiert zwei Argumente: zunächst ein Objekt mit einer \texttt{length}-Eigenschaft, das die gewünschte Länge des Arrays festlegt, sowie eine optionale Mapping-Funktion, die für jeden Index aufgerufen wird und den Wert an dieser Position bestimmt. Eine solche Mapping-Funktion (Abbildungsfunktion) heißt so, weil sie jeden ursprünglichen Eingabewert systematisch auf einen neuen, veränderten Wert abbildet, indem sie ihn nach einer festgelegten Regel transformiert und dann als Ergebnis im neuen Array speichert. Im folgenden Beispiel wird ein Array mit den Zahlen 1 bis 10 erzeugt:
 \Needspace{5\baselineskip}
 \begin{minted}{typescript}
  Array.from({length: 10}, (_, i) => i + 1);
@@ -251,8 +235,8 @@ Die Methode akzeptiert zwei Argumente: zunächst ein Objekt mit einer \texttt{le
 
 Die Argumente werden dabei wie folgt interpretiert:
 \begin{enumerate}
-	\item \texttt{\{length: 10\}}: Ein Objekt, das \texttt{Array.from} signalisiert, ein Array der Länge 10 zu erzeugen. Da keine konkreten Werte angegeben sind, wäre jede Position zunächst \texttt{undefined}.
-	\item \texttt{(\_, i) => i + 1}: Die Mapping-Funktion bestimmt den tatsächlichen Wert an jeder Position. Sie erhält zwei Argumente: das Element selbst (hier \texttt{undefined}, da kein Inhalt vorhanden ist) und den aktuellen Index \texttt{i}. Da das Element nicht benötigt wird, ist es per Konvention mit einem Unterstrich (\texttt{\_}) als "ignoriert" markiert. Der Index \texttt{i} läuft von \texttt{0} bis \texttt{9} und wird durch \texttt{i + 1} in die gewünschten Werte \texttt{1} bis \texttt{10} transformiert.
+	\item \texttt{\{length: 10\}}: Ein Objekt, das \texttt{Array.from} signalisiert, ein Array der Länge 10 zu erzeugen. Da keine konkreten Werte angegeben sind, ist jeder Wert zunächst \texttt{undefined}.
+	\item \texttt{(\_, i) => i + 1}: Die Mapping-Funktion bestimmt den tatsächlichen Wert an jeder Position. Sie erhält zwei Argumente: das Element selbst (hier \texttt{undefined}, da noch kein Wert vorhanden ist) und den aktuellen Index \texttt{i}. Da das Element nicht benötigt wird, ist es per Konvention mit einem Unterstrich (\texttt{\_}) als \emph{ignoriert} markiert. Der Index \texttt{i} läuft von \texttt{0} bis \texttt{9} und wird durch \texttt{i + 1} in die gewünschten Werte \texttt{1} bis \texttt{10} transformiert.
 \end{enumerate}
 
 \textbf{Die Methode map}\\
@@ -261,18 +245,17 @@ Die Methode \texttt{map} transformiert jedes Element eines Arrays mithilfe einer
 Im folgenden Beispiel wird jedes Element einer Zahlenliste verdoppelt:
 \Needspace{5\baselineskip}
 \begin{minted}{typescript}
- const zahlen = [1, 2, 3, 4];
- const doppelt = zahlen.map(n => n * 2);
- // Ergebnis: [2, 4, 6, 8]
+ const numbers = [1, 2, 3, 4];
+ const result = numbers.map(n => n * 2); // Ergebnis: [2, 4, 6, 8]
 \end{minted}
 \captionof{listing}{Verdoppeln von Zahlen mit map}
 
-Die Funktion \texttt{n => n * 2} wird für jedes Element einmal aufgerufen und gibt dessen doppelten Wert zurück. Das Ergebnis ist ein neues Array, in dem jede Position den transformierten Wert der entsprechenden Position im Original enthält. Das ursprüngliche Array \texttt{zahlen} bleibt unverändert.\\
+Die Funktion \texttt{n => n * 2} wird für jedes Element einmal aufgerufen und gibt dessen doppelten Wert zurück. Das Ergebnis ist ein neues Array, in dem jede Position den transformierten Wert der entsprechenden Position im Original enthält. Das ursprüngliche Array \texttt{numbers} bleibt unverändert.\\
 
 \textbf{Die Methode reduce}\\
 Die Methode \texttt{reduce} verdichtet ein Array auf einen einzigen Wert, indem sie ein Element nach dem anderen mit einem laufenden Zwischenergebnis (dem sogenannten \textit{Akkumulator}) verrechnet. 
 
-Der Aufruf \texttt{zahlen.reduce((acc, n) => acc + n, 0)} setzt sich aus drei Teilen zusammen:
+Der Aufruf \texttt{numbers.reduce((acc, n) => acc + n, 0)} setzt sich aus drei Teilen zusammen:
 \begin{enumerate}
 	\item Der \textbf{Startwert}: Die \texttt{0} am Ende ist der initiale Wert für die Berechnung.
 	\item Die \textbf{Callback-Funktion}: \texttt{(acc, n) => acc + n} definiert die Rechenvorschrift.
@@ -286,9 +269,8 @@ Der Aufruf \texttt{zahlen.reduce((acc, n) => acc + n, 0)} setzt sich aus drei Te
 Im folgenden Beispiel wird die Summe aller Elemente eines Arrays berechnet:
 \Needspace{5\baselineskip}
 \begin{minted}{typescript}
- const zahlen = [1, 2, 3, 4];
- const summe = zahlen.reduce((acc, n) => acc + n, 0);
- // Ergebnis: 10
+ const numbers = [1, 2, 3, 4];
+ const sum = numbers.reduce((acc, n) => acc + n, 0); // Ergebnis: 10
 \end{minted}
 \captionof{listing}{Summierung mit reduce}
 
@@ -309,23 +291,24 @@ Der Akkumulator \texttt{acc} startet mit dem Wert \texttt{0}. In jedem Schritt w
 \FloatBarrier
 
 \textbf{Array Destructuring}\\
-Ein leistungsfähiges Feature von TypeScript ist das \textit{Array Destructuring}. Es ermöglicht das \enquote{Entpacken} (\textit{unpacking}) von Werten aus einem Array direkt in separate Variablen, anstatt mühsam über den Index (wie \texttt{arr[0]}, \texttt{arr[1]}) darauf zuzugreifen. Dies führt zu kompakterem und lesbarerem Code, insbesondere wenn Funktionen mehrere Werte in Form eines Arrays zurückgeben. TypeScript erlaubt die Deklaration einer Variablen mit \texttt{let} ohne sofortige Wertzuweisung. Der Wert kann zu einem späteren Zeitpunkt zugewiesen werden.
+Ein leistungsfähiges Feature von TypeScript ist das \textit{Array Destructuring}. Es ermöglicht das Entpacken von Werten aus einem Array direkt in separate Variablen, anstatt mühsam über den Index (wie \texttt{arr[0]}, \texttt{arr[1]}) darauf zuzugreifen. Dies führt zu kompakterem und lesbarerem Code, insbesondere wenn Funktionen mehrere Werte in Form eines Arrays zurückgeben. TypeScript erlaubt die Deklaration einer Variablen mit \texttt{let} ohne sofortige Wertzuweisung. Der Wert kann zu einem späteren Zeitpunkt zugewiesen werden.
 
 \Needspace{7\baselineskip}
 \begin{minted}{typescript}
- let a, b, rest;
+ let a, b;
  [a, b] = [10, 20];
  console.log(a); // Ausgabe: 10
  console.log(b); // Ausgabe: 20
 \end{minted}
 \captionof{listing}{Einfaches Array Destructuring}
 
-Destructuring kann auch mit dem \textit{Rest-Operator} (\texttt{...}) kombiniert werden, um die verbleibenden Elemente eines Arrays in einer neuen Array-Variable zu sammeln. Dies ist besonders nützlich, um den "Kopf" (Head) und den "Rest" (Tail) einer Liste zu trennen, ein gängiges Muster in der funktionalen Programmierung.
+Destructuring kann auch mit dem \textit{Rest-Operator} (\texttt{...}) kombiniert werden, um die verbleibenden Elemente eines Arrays in einer neuen Array-Variable zu sammeln. Dies ist besonders nützlich, um den \emph{Head} und den \emph{Tail} einer Liste zu trennen, ein gängiges Muster in der funktionalen Programmierung.
 \Needspace{6\baselineskip}
 \begin{minted}{typescript}
- [a, b, ...rest] = [10, 20, 30, 40, 50];
- console.log(rest); 
- // Ausgabe: [30, 40, 50]
+ let head, tail;
+ [head, ...tail] = [10, 20, 30, 40, 50];
+ console.log(head); // Ausgabe: [10]
+ console.log(tail); // Ausgabe: [20, 30, 40, 50]
 \end{minted}
 \captionof{listing}{Destructuring mit Rest-Operator}
 
@@ -349,7 +332,7 @@ Der Zugriff auf die Elemente erfolgt analog zu Arrays über den Index-Operator:
 \captionof{listing}{Zugriff auf Tupel-Elemente}
 
 \subsection{Objekte}
-In TypeScript (und JavaScript) sind \textit{Objekte} das grundlegende Strukturkonzept zur Modellierung zusammengesetzter Daten. Ein Objekt fasst Werte als \textit{Eigenschaften} (\textit{Properties}) zusammen, die jeweils aus einem Schlüssel (Property-Name) und einem zugehörigen Wert bestehen. Viele Spezialkonstrukte der Sprache, insbesondere Arrays, basieren zur Laufzeit ebenfalls auf Objekten, stellen jedoch zusätzliche, listenartige Operationen bereit (z.\,B. \texttt{length} und Array-Methoden).\\
+In TypeScript sind \textit{Objekte} das grundlegende Strukturkonzept zur Modellierung zusammengesetzter Daten. Ein Objekt fasst Werte als \textit{Properties} (\textit{Eigenschaften}) zusammen, die jeweils aus einem Schlüssel (Property-Name) und einem zugehörigen Wert bestehen. Viele Spezialkonstrukte der Sprache, insbesondere Arrays, basieren zur Laufzeit ebenfalls auf Objekten, stellen jedoch zusätzliche, listenartige Operationen bereit (z.\,B. \texttt{length} und Array-Methoden).\\
 In TypeScript werden Objektliterale mit geschweiften Klammern \texttt{\{\}} definiert. Das nachstehende Beispiel zeigt ein \texttt{student}-Objekt mit grundlegenden Eigenschaften:
 \Needspace{8\baselineskip}
 \begin{minted}{typescript}
@@ -371,11 +354,11 @@ Für den Zugriff auf Objekteigenschaften existieren zwei gängige Notationen:
 \begin{minted}{typescript}
  console.log(student.firstName);               // Punkt-Notation
  const key = "matriculationNumber";
- console.log(student[key]);                   // Klammer-Notation mit Variable
+ console.log(student[key]);                    // Klammer-Notation mit Variable
 \end{minted}
 \captionof{listing}{Zugriffsarten auf Objekteigenschaften}
 
-Objekte sind veränderlich (\textit{mutable}), sodass Werte bestehender Eigenschaften nachträglich modifiziert werden können:
+Objekte sind mutable (\textit{veränderlich}), sodass Werte bestehender Eigenschaften nachträglich modifiziert werden können:
 \Needspace{4\baselineskip}
 \begin{minted}{typescript}
  student.isEnrolled = false;
@@ -388,18 +371,18 @@ Objekte können verschachtelt werden, um komplexe Datenstrukturen abzubilden. Da
 \begin{minted}{typescript}
  const university = {
      name: "HTWG Konstanz",
-         location: {
-             street: "Alfred-Wachtel-Str. 8",
-             city: "Konstanz",
-             zipCode: 78462
-         },
-         departments: ["Computer Science", "Architecture","Mechanical Engineering"],
-         isPublic: true
+     location: {
+         street: "Alfred-Wachtel-Str. 8",
+         city: "Konstanz",
+         zipCode: 78462
+     },
+     departments: ["Computer Science", "Architecture", "Mechanical Engineering"],
+     isPublic: true
  };
 \end{minted}
 \captionof{listing}{Verschachtelte Objekte}
 
-Der Zugriff auf tiefere Ebenen erfolgt durch Verkettung des Punkt-Operators bzw. Kombination mit dem Array-Index:
+Der Zugriff auf tiefere Ebenen erfolgt durch Verkettung des Punkt-Operators beziehungsweise Kombination mit dem Array-Index:
 \Needspace{8\baselineskip}
 \begin{minted}{typescript}
  // Zugriff auf verschachteltes Objekt
@@ -437,10 +420,10 @@ Ein essenzielles Konzept bei der Auswertung von \texttt{\&\&} und \texttt{||} is
 \captionof{listing}{Logische Verknüpfungen}
 
 \textbf{Vergleichsoperatoren und Strikte Gleichheit}\\
-Zur Erzeugung von Wahrheitswerten werden häufig Vergleiche herangezogen. Ein zentrales Konzept in TypeScript (und JavaScript) ist die Unterscheidung zwischen \textit{strikter} und \textit{loser} Gleichheit:
+Zur Erzeugung von Wahrheitswerten werden häufig Vergleiche herangezogen. Ein zentrales Konzept in TypeScript ist die Unterscheidung zwischen \textit{strikter} und \textit{loser} Gleichheit:
 \begin{itemize}
 	\item \textbf{Strikte Gleichheit (\texttt{===} und \texttt{!==}):} Vergleicht sowohl den Wert als auch den Datentyp. \texttt{5 === "5"} ergibt \texttt{false}, da eine Zahl mit einem String verglichen wird. Dies ist der empfohlene Standard in TypeScript.
-	\item \textbf{Lose Gleichheit (\texttt{==} und \texttt{!=}):} Führt vor dem Vergleich eine automatische Typumwandlung (\textit{\href{https://developer.mozilla.org/en-US/docs/Glossary/Type_coercion}{Typ-Koerzition}}) durch. \texttt{5 == "5"} ergibt \texttt{true}, da der String "5" implizit in die Zahl 5 umgewandelt wird. Dies führt häufig zu unerwartetem Verhalten und sollte vermieden werden.
+	\item \textbf{Lose Gleichheit (\texttt{==} und \texttt{!=}):} Führt vor dem Vergleich eine automatische Typumwandlung (\textit{\href{https://developer.mozilla.org/en-US/docs/Glossary/Type_coercion}{Typ-Koerzition}}) durch. \texttt{5 == "5"} ergibt \texttt{true}, da der String \texttt{"5"} implizit in die Zahl 5 umgewandelt wird. Dies führt häufig zu unerwartetem Verhalten und sollte vermieden werden.
 \end{itemize}
 Zusätzlich stehen die klassischen Größenvergleiche (\texttt{<}, \texttt{>}, \texttt{<=}, \texttt{>=}) zur Verfügung.\\
 Ein wichtiger Unterschied zu Python besteht in der Verkettung von Vergleichen. Ein mathematischer Ausdruck wie $3 > 2 > 1$ wird in TypeScript syntaktisch akzeptiert, liefert aber ein falsches Ergebnis. Die Auswertung erfolgt strikt von links nach rechts: Zuerst wird \texttt{3 > 2} zu dem Boolean \texttt{true} evaluiert. Anschließend versucht TypeScript den Vergleich \texttt{true > 1} zu berechnen. Hierbei greift die erwähnte Typ-Koerzition, bei der \texttt{true} als die Zahl $1$ interpretiert wird. Der finale Vergleich lautet somit $1 > 1$, was zu dem fehlerhaften Ergebnis \texttt{false} führt. Korrekte mathematische Bereichsprüfungen müssen daher explizit mit dem logischen UND verknüpft werden: \texttt{3 > 2 \&\& 2 > 1}.\\\\
@@ -449,18 +432,17 @@ TypeScript bietet Methoden auf Arrays, die den logischen Quantoren aus der Präd
 \begin{enumerate}
 	\item \textbf{Allquantor ($\forall$):} Die Methode \texttt{every} prüft, ob \textit{alle} Elemente eines Arrays eine Bedingung erfüllen.
 	\Needspace{5\baselineskip}
-	\begin{minted}{typescript}
- const L = [2, 4, 0, 7];
+\begin{minted}{typescript}
+ const arr = [2, 4, 0, 7];
+ arr.every(x => x % 2 === 0); 
  // Sind alle Zahlen gerade? -> false, da 7 ungerade ist
- L.every(x => x % 2 === 0); 
-	\end{minted}
+\end{minted}
 	
 	\item \textbf{Existenzquantor ($\exists$):} Die Methode \texttt{some} prüft, ob \textit{mindestens ein} Element die Bedingung erfüllt.
 	\Needspace{5\baselineskip}
-	\begin{minted}{typescript}
- // Ist mindestens eine Zahl ungerade? -> true
- L.some(x => x % 2 !== 0);
-	\end{minted}
+\begin{minted}{typescript}
+ arr.some(x => x % 2 !== 0); // Ist mindestens eine Zahl ungerade? -> true
+\end{minted}
 	
 \end{enumerate}
 Diese Methoden ermöglichen eine deklarative und mathematisch fundierte Ausdrucksweise für Mengenoperationen direkt im Code.
@@ -484,8 +466,8 @@ Die grundlegende bedingte Ausführung erfolgt mittels \texttt{if}, \texttt{else 
 \end{minted}
 \captionof{listing}{If-Else Verzweigung}
 
-Alternativ bietet die \texttt{switch}-Anweisung eine strukturierte Möglichkeit, mehrere Bedingungen gegen einen Wert zu prüfen. Am Ende jedes \texttt{case}-Blocks wird das Schlüsselwort \texttt{break} verwendet, um das Verlassen der \texttt{switch}-Struktur zu erzwingen. Fehlt das \texttt{break}, \enquote{fällt} das Programm in den nächsten \texttt{case} durch (\textit{Fall-through}). Innerhalb von Schleifen kann hier theoretisch auch das Schlüsselwort \texttt{continue} stehen, um den aktuellen Schleifendurchlauf vorzeitig zu beenden und mit der nächsten Iteration fortzufahren.
-Ein interessantes Muster in TypeScript ist das \texttt{switch(true)}-Konstrukt, das es erlaubt, komplexe Ausdrücke anstelle von statischen Werten in den \texttt{case}-Zweigen auszuwerten:
+Alternativ bietet die \texttt{switch}-Anweisung eine strukturierte Möglichkeit, mehrere Bedingungen gegen einen Wert zu prüfen. Am Ende jedes \texttt{case}-Blocks wird das Schlüsselwort \texttt{break} verwendet, um das Verlassen der \texttt{switch}-Struktur zu erzwingen. Fehlt das \texttt{break}, \enquote{fällt} das Programm in den nächsten \texttt{case} durch. Innerhalb von Schleifen kann hier theoretisch auch das Schlüsselwort \texttt{continue} stehen, um den aktuellen Schleifendurchlauf vorzeitig zu beenden und mit der nächsten Iteration fortzufahren.\\
+Ein interessantes Muster in TypeScript ist das \texttt{switch(true)}-Konstrukt, das es erlaubt, boolesche Ausdrücke anstelle von statischen Werten in den \texttt{case}-Zweigen auszuwerten:
 \Needspace{13\baselineskip}
 \begin{minted}{typescript}
  switch (true) {
@@ -504,9 +486,35 @@ Ein interessantes Muster in TypeScript ist das \texttt{switch(true)}-Konstrukt, 
 \textbf{Schleifenkonstrukte}\\
 Zur Iteration stellt TypeScript verschiedene Schleifenkonstrukte bereit:
 \begin{itemize}
-	\item Die klassische \textbf{\texttt{for}-Schleife} nutzt eine Zählvariable, eine Laufbedingung und eine Schrittweite (\texttt{for (let i = 0; i < n; i++) \{ ... \}}). Sie bietet maximale Kontrolle über den Iterationsprozess.
+	\item Die klassische \textbf{\texttt{for}-Schleife} nutzt eine Zählvariable, eine Laufbedingung und eine Schrittweite. Sie bietet maximale Kontrolle über den Iterationsprozess.
+\Needspace{5\baselineskip}
+\begin{minted}{typescript}
+ const arr = [1, 2, 3];
+ for (let i = 0; i < arr.length; i++) {
+     console.log(i);
+ }
+\end{minted}
+	\captionof{listing}{Klassische for-Schleife}
 	\item Die \textbf{\texttt{for...of}-Schleife} eignet sich ideal, um direkt über die Elemente eines Arrays oder anderer iterierbarer Objekte zu laufen. Sie ist kompakter und weniger fehleranfällig als die klassische indexbasierte \texttt{for}-Schleife.
+\Needspace{5\baselineskip}
+\begin{minted}{typescript}
+ const arr = [1, 2, 3];
+ for (const element of arr) {
+     console.log(element);
+ }
+\end{minted}
+\captionof{listing}{for...of-Schleife}
 	\item Die \textbf{\texttt{while}-Schleife} führt einen Codeblock solange aus, wie eine definierte Laufbedingung erfüllt ist.
+\Needspace{6\baselineskip}
+\begin{minted}{typescript}
+ const arr = [1, 2, 3];
+ let i = 0;
+ while (i < arr.length) {
+     console.log(arr[i]);
+     i++;
+ }
+\end{minted}
+\captionof{listing}{while-Schleife}
 \end{itemize}
 
 \textbf{Anwendungsbeispiel: \href{https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes}{Sieb des Eratosthenes}}\\
@@ -517,12 +525,12 @@ Ein klassischer Algorithmus zur Bestimmung aller Primzahlen bis zu einer Grenze 
 	\item Iteration über alle Zahlen $i$ und $j$, um Vielfache zu eliminieren (d.\,h. auf 0 zu setzen).
 	\item Filterung der verbleibenden Zahlen $\neq 0$.
 \end{enumerate}
-Eine optimierte Version nutzt zudem \texttt{Math.sqrt(n)} als Obergrenze für die äußere Schleife und beginnt die innere Schleife bei $j=i$, um redundante Prüfungen zu vermeiden.
+Eine optimierte Version nutzt zudem \texttt{Math.ceil(Math.sqrt(n))} (\(\lceil \sqrt{n} \rceil\)) als Obergrenze für die äußere Schleife und beginnt die innere Schleife bei $j=i$, um redundante Prüfungen zu vermeiden.
 \Needspace{19\baselineskip}
 \begin{minted}{typescript}
  let n = 10000;
  // Initialisiere Array mit Werten 0 bis n
- let primes = Array.from({length: n + 1}, (_, i) => i);
+ let primes = ({length: n + 1}, (_, i) => i);
  let limit = Math.ceil(Math.sqrt(n));
  for (let i = 2; i <= limit; i++) {
      // Wenn i bereits markiert (0) ist, überspringen
@@ -531,7 +539,7 @@ Eine optimierte Version nutzt zudem \texttt{Math.sqrt(n)} als Obergrenze für di
      // Streiche alle Vielfachen von i (beginnend bei i*i)
      while (i * j <= n) {
          primes[i * j] = 0;
-             j++;
+         j++;
      }
  }
  // Filtere alle Nicht-Null-Werte (Primzahlen)
@@ -562,7 +570,7 @@ Für die Umwandlung von Gleitkommazahlen in Ganzzahlen stehen drei spezifische M
 \textbf{Trigonometrische Funktionen}\\
 Das \texttt{Math}-Objekt umfasst auch die Standard-Trigonometriefunktionen wie \texttt{Math.sin}, \texttt{Math.cos} und \texttt{Math.tan} sowie deren Arkusfunktionen (\texttt{asin}, \texttt{acos}, \texttt{atan}). Es ist zu beachten, dass diese Funktionen Winkel im Bogenmaß (Radiant) erwarten bzw. zurückgeben.\\\\
 \textbf{Exponential- und Logarithmusfunktionen}\\
-Die Exponentialfunktion $e^x$ wird über \texttt{Math.exp(x)} berechnet. Das Inverse, der natürliche Logarithmus $\ln(x)$, wird in TypeScript (wie in vielen C-basierten Sprachen) als \texttt{Math.log(x)} bezeichnet.\\\\
+Die Exponentialfunktion $e^x$ wird über \texttt{Math.exp(x)} berechnet. Das Inverse, der natürliche Logarithmus $\ln(x)$, wird in TypeScript als \texttt{Math.log(x)} bezeichnet.\\\\
 \textbf{Konstanten}\\
 Wichtige mathematische Konstanten sind direkt zugänglich:
 \begin{itemize}
