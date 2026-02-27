@@ -56,3 +56,7 @@
 \contentsline {listing}{\numberline {56}{\ignorespaces Python: CNF-Konstruktion mit Set Comprehensions}}{49}{listing.56}%
 \contentsline {listing}{\numberline {57}{\ignorespaces TypeScript: CNF-Konstruktion mit expliziten Schleifen}}{50}{listing.57}%
 \contentsline {listing}{\numberline {58}{\ignorespaces Duplikateliminierung in der Praxis}}{52}{listing.58}%
+\contentsline {listing}{\numberline {59}{\ignorespaces Python Beispiel Power}}{54}{listing.59}%
+\contentsline {listing}{\numberline {60}{\ignorespaces TypeScript Beispiel Power}}{54}{listing.60}%
+\contentsline {listing}{\numberline {61}{\ignorespaces Python Beispiel shortest\_path}}{55}{listing.61}%
+\contentsline {listing}{\numberline {62}{\ignorespaces TypeScript Beispiel shortest\_path}}{56}{listing.62}%

@@ -2,13 +2,102 @@
 In diesem Kapitel werden wir auf den Erfolg der Übersetzung vergleichen.
 
 
-\subsection{Laufzeit}
-...
-
-
 \subsection{Lesbarkeit}
-...
+ Hier würde ich mich gerne zuerst auf ein einfaches Beispiel beziehen (um genauer zu sein, zuerst auf das Beispiel "Power.ipynb" also https://github.com/zLeoll/TS-Translation-for-TheoInf/blob/main/Algorithms/Chapter-03/Power.ipynb
+ 
+ Hier möchte ich zuerst das Python-Beispiel zeigen und dann das TypeScript-Beispiel. 
+ Der Python Code:
+ Bitte den Code zuerst erklären
+\Needspace{5\baselineskip}
+\begin{minted}{python}
+ def power(m, n):
+     r = 1
+     for i in range(n):
+         r *= m
+     return r
+\end{minted}
+\captionof{listing}{Python Beispiel Power}
+ 
+Der TypeScript Code:
+ Bitte den Code zuerst erklären
+\Needspace{5\baselineskip}
+\begin{minted}{typescript}
+ function power(m: bigint, n: bigint): bigint {
+     let r  = 1n;
+     for (let i = 0; i < n; i++) {
+         r *=  m;
+     }
+     return r;
+ }
+ \end{minted}
+ \captionof{listing}{TypeScript Beispiel Power}
+ 
+Diese beiden Code Snippets sollen bitte im Hinbezug auf der Lesbarkeit basierend verglichen werden. Also vor- und nachteile. Also auch dabei die Python Syntax und TS Syntax vergleichen
 
-\subsection{Effizienz}
+Zu einem Komplexeren Beispiel:
+Dieses Beispiel kommt aus dem Notebook "Dijkstra.ipynb" mit dem Link https://github.com/zLeoll/TS-Translation-for-TheoInf/blob/main/Algorithms/Chapter-11/Dijkstra.ipynb
+
+Auch hier wieder das Python Beispiel:
+ Bitte den Code zuerst erklären
+\Needspace{17\baselineskip}
+\begin{minted}{python}
+ def shortest_path(source, Edges):
+ 	Distance = { source: 0 }
+ 	Visited  = { source }
+ 	Fringe   = Set()
+ 	Fringe.insert( (0, source) )
+ 	while not Fringe.isEmpty():
+ 		d, u = Fringe.pop() # get and remove smallest element
+ 		for v, l in Edges[u]:
+ 			dv = Distance.get(v, None)
+ 			if dv == None or d + l < dv:
+ 				if dv != None:
+ 					Fringe.delete( (dv, v) )
+ 				Distance[v] = d + l
+ 				Fringe.insert( (d + l, v) )
+ 		Visited.add(u)
+ 	return Distance
+\end{minted}
+\captionof{listing}{Python Beispiel shortest\_path}
+
+Der TypeScript Code:
+Bitte den Code zuerst erklären
+\Needspace{31\baselineskip}
+\begin{minted}{typescript}
+	function shortestPath(
+	source: string,
+	Edges: Record<string, Array<[string, number]>>
+	): Record<string, number> {
+		const Distance: Record<string, number> = { [source]: 0 };
+		const visited: Record<string, boolean> = {};
+		const Fringe = new AVLSet<[number, string]>();
+		Fringe.insert([0, source]);
+		while (!Fringe.isEmpty()) {
+			const [d, u] = Fringe.pop();
+			if (visited[u]) {
+				continue; 
+			}
+			visited[u] = true;
+			
+			for (const [v, l] of Edges[u]) {
+				const dv = Distance[v];
+				if (dv === undefined || d + l < dv) {
+					if (dv !== undefined) {
+						Fringe.delete([dv, v]);
+					}
+					Distance[v] = d + l;
+					Fringe.insert([d + l, v]);
+				}
+			}
+		}
+		return Distance;
+	}
+\end{minted}
+\captionof{listing}{TypeScript Beispiel shortest\_path}
+
+Oft sind Funktionien schwieriger lesbar, weil bestimmte vordefinierte Funktionen nicht existieren
+
+\subsection{Laufzeit}
 -> z.B. 8 Damen Problem
 -> Code-Snipppets (so, dass sie relevant sind); allgemeine Suchalgorithmen)
+
