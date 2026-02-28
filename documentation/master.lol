@@ -41,29 +41,29 @@
 \contentsline {listing}{\numberline {41}{\ignorespaces for...of-Schleife}}{31}{listing.41}%
 \contentsline {listing}{\numberline {42}{\ignorespaces while-Schleife}}{32}{listing.42}%
 \contentsline {listing}{\numberline {43}{\ignorespaces Optimiertes Sieb des Eratosthenes}}{33}{listing.43}%
-\contentsline {listing}{\numberline {44}{\ignorespaces Importieren des Parsers und recurisve-set}}{42}{listing.44}%
-\contentsline {listing}{\numberline {45}{\ignorespaces Python: Typalias-Set für Variablen, Formeln, Literale, Klauseln und \ac {KNF}}}{43}{listing.45}%
-\contentsline {listing}{\numberline {46}{\ignorespaces TypeScript: Strukturell präzise Union-Typen und wertbasierte Mengen über \texttt {recursive-set}}}{43}{listing.46}%
-\contentsline {listing}{\numberline {47}{\ignorespaces Python: \texttt {Formula} ist flexibel, aber typseitig kaum restriktiv}}{44}{listing.47}%
-\contentsline {listing}{\numberline {48}{\ignorespaces TypeScript: \texttt {Formula} erzwingt Operator-Menge und Stelligkeit über Union-Typen}}{44}{listing.48}%
-\contentsline {listing}{\numberline {49}{\ignorespaces Python: \texttt {Literal} ist typseitig zu allgemein für das Negationssymbol}}{45}{listing.49}%
-\contentsline {listing}{\numberline {50}{\ignorespaces TypeScript: Negierte Literale sind als Tupel mit festem Präfix \texttt {'¬'} typisiert}}{45}{listing.50}%
-\contentsline {listing}{\numberline {51}{\ignorespaces Python: \texttt {frozenset} ermöglicht Mengen-von-Mengen mit Wertgleichheit}}{46}{listing.51}%
-\contentsline {listing}{\numberline {52}{\ignorespaces TypeScript: \texttt {RecursiveSet} als Ersatz für \texttt {frozenset}/\texttt {set} bei wertbasierter Gleichheit}}{46}{listing.52}%
-\contentsline {listing}{\numberline {53}{\ignorespaces Iteratives Type Narrowing der Formeln}}{47}{listing.53}%
-\contentsline {listing}{\numberline {54}{\ignorespaces Python: \texttt {eliminateBiconditional} mit Pattern Matching und einheitlichem \texttt {Formula}-Typ}}{47}{listing.54}%
-\contentsline {listing}{\numberline {55}{\ignorespaces TypeScript: \texttt {eliminateBiconditional} mit Type Guards und Rückgabetyp \texttt {Formula1} (ohne \texttt {↔})}}{48}{listing.55}%
-\contentsline {listing}{\numberline {56}{\ignorespaces TypeScript: \texttt {nnf} mit Eingabetyp \texttt {Formula2} und Rückgabetyp \texttt {NNF}}}{50}{listing.56}%
-\contentsline {listing}{\numberline {57}{\ignorespaces Python: Vorwärtsdeklaration von \texttt {neg} und \texttt {nnf} mit generischem Rückgabetyp \texttt {Formula}}}{51}{listing.57}%
-\contentsline {listing}{\numberline {58}{\ignorespaces TypeScript: \texttt {isTrivial} als Prädikat über \texttt {some} (funktionale Schreibweise)}}{52}{listing.58}%
-\contentsline {listing}{\numberline {59}{\ignorespaces Python: \texttt {isTrivial} über \texttt {any(...)} und Generatorausdruck}}{52}{listing.59}%
-\contentsline {listing}{\numberline {60}{\ignorespaces TypeScript: \texttt {simplify} durch Filtern der Klauselmenge}}{53}{listing.60}%
-\contentsline {listing}{\numberline {61}{\ignorespaces Python: \texttt {simplify} als Set-Comprehension}}{53}{listing.61}%
-\contentsline {listing}{\numberline {62}{\ignorespaces TypeScript: \texttt {normalize} als Pipeline bis zur vereinfachten \ac {KNF}}}{53}{listing.62}%
-\contentsline {listing}{\numberline {63}{\ignorespaces Python: \texttt {normalize} als analoge Pipeline bis zur vereinfachten \ac {KNF}}}{54}{listing.63}%
-\contentsline {listing}{\numberline {64}{\ignorespaces Python: \texttt {test} parst den String und gibt die normalisierte \ac {KNF} aus}}{54}{listing.64}%
-\contentsline {listing}{\numberline {65}{\ignorespaces TypeScript: \texttt {test} als Test-Hilfsfunktion mit Konsolenausgabe}}{54}{listing.65}%
-\contentsline {listing}{\numberline {66}{\ignorespaces Python Beispiel Power}}{56}{listing.66}%
-\contentsline {listing}{\numberline {67}{\ignorespaces TypeScript Beispiel Power}}{56}{listing.67}%
-\contentsline {listing}{\numberline {68}{\ignorespaces Python Beispiel shortest\_path}}{57}{listing.68}%
-\contentsline {listing}{\numberline {69}{\ignorespaces TypeScript Beispiel shortest\_path}}{58}{listing.69}%
+\contentsline {listing}{\numberline {44}{\ignorespaces Importieren des Parsers und recurisve-set}}{43}{listing.44}%
+\contentsline {listing}{\numberline {45}{\ignorespaces Python: Typalias-Set für Variablen, Formeln, Literale, Klauseln und \ac {KNF}}}{44}{listing.45}%
+\contentsline {listing}{\numberline {46}{\ignorespaces TypeScript: Strukturell präzise Union-Typen und wertbasierte Mengen über \texttt {recursive-set}}}{44}{listing.46}%
+\contentsline {listing}{\numberline {47}{\ignorespaces Python: \texttt {Formula} ist flexibel, aber typseitig kaum restriktiv}}{45}{listing.47}%
+\contentsline {listing}{\numberline {48}{\ignorespaces TypeScript: \texttt {Formula} erzwingt Operator-Menge und Stelligkeit über Union-Typen}}{45}{listing.48}%
+\contentsline {listing}{\numberline {49}{\ignorespaces Python: \texttt {Literal} ist typseitig zu allgemein für das Negationssymbol}}{46}{listing.49}%
+\contentsline {listing}{\numberline {50}{\ignorespaces TypeScript: Negierte Literale sind als Tupel mit festem Präfix \texttt {'¬'} typisiert}}{46}{listing.50}%
+\contentsline {listing}{\numberline {51}{\ignorespaces Python: \texttt {frozenset} ermöglicht Mengen-von-Mengen mit Wertgleichheit}}{47}{listing.51}%
+\contentsline {listing}{\numberline {52}{\ignorespaces TypeScript: \texttt {RecursiveSet} als Ersatz für \texttt {frozenset}/\texttt {set} bei wertbasierter Gleichheit}}{47}{listing.52}%
+\contentsline {listing}{\numberline {53}{\ignorespaces Iteratives Type Narrowing der Formeln}}{48}{listing.53}%
+\contentsline {listing}{\numberline {54}{\ignorespaces Python: \texttt {eliminateBiconditional} mit Pattern Matching und einheitlichem \texttt {Formula}-Typ}}{48}{listing.54}%
+\contentsline {listing}{\numberline {55}{\ignorespaces TypeScript: \texttt {eliminateBiconditional} mit Type Guards und Rückgabetyp \texttt {Formula1} (ohne \texttt {↔})}}{49}{listing.55}%
+\contentsline {listing}{\numberline {56}{\ignorespaces TypeScript: \texttt {nnf} mit Eingabetyp \texttt {Formula2} und Rückgabetyp \texttt {NNF}}}{51}{listing.56}%
+\contentsline {listing}{\numberline {57}{\ignorespaces Python: Vorwärtsdeklaration von \texttt {neg} und \texttt {nnf} mit generischem Rückgabetyp \texttt {Formula}}}{52}{listing.57}%
+\contentsline {listing}{\numberline {58}{\ignorespaces TypeScript: \texttt {isTrivial} als Prädikat über \texttt {some} (funktionale Schreibweise)}}{53}{listing.58}%
+\contentsline {listing}{\numberline {59}{\ignorespaces Python: \texttt {isTrivial} über \texttt {any(...)} und Generatorausdruck}}{53}{listing.59}%
+\contentsline {listing}{\numberline {60}{\ignorespaces TypeScript: \texttt {simplify} durch Filtern der Klauselmenge}}{54}{listing.60}%
+\contentsline {listing}{\numberline {61}{\ignorespaces Python: \texttt {simplify} als Set-Comprehension}}{54}{listing.61}%
+\contentsline {listing}{\numberline {62}{\ignorespaces TypeScript: \texttt {normalize} als Pipeline bis zur vereinfachten \ac {KNF}}}{54}{listing.62}%
+\contentsline {listing}{\numberline {63}{\ignorespaces Python: \texttt {normalize} als analoge Pipeline bis zur vereinfachten \ac {KNF}}}{55}{listing.63}%
+\contentsline {listing}{\numberline {64}{\ignorespaces Python: \texttt {test} parst den String und gibt die normalisierte \ac {KNF} aus}}{55}{listing.64}%
+\contentsline {listing}{\numberline {65}{\ignorespaces TypeScript: \texttt {test} als Test-Hilfsfunktion mit Konsolenausgabe}}{55}{listing.65}%
+\contentsline {listing}{\numberline {66}{\ignorespaces Python Beispiel Power}}{57}{listing.66}%
+\contentsline {listing}{\numberline {67}{\ignorespaces TypeScript Beispiel Power}}{57}{listing.67}%
+\contentsline {listing}{\numberline {68}{\ignorespaces Python Beispiel shortest\_path}}{58}{listing.68}%
+\contentsline {listing}{\numberline {69}{\ignorespaces TypeScript Beispiel shortest\_path}}{59}{listing.69}%
