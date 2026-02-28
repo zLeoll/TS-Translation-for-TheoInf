@@ -95,7 +95,49 @@ Bitte den Code zuerst erklären
 \end{minted}
 \captionof{listing}{TypeScript Beispiel shortest\_path}
 
-Oft sind Funktionien schwieriger lesbar, weil bestimmte vordefinierte Funktionen nicht existieren
+Oft sind Funktionen schwieriger lesbar, weil bestimmte vordefinierte Funktionen nicht existieren. Bspw Vergleich Davis Putnam solveRecursive Funktion
+
+Typescript: (Zusätzliche Union Funktion von RecursiveSet nötig)
+\Needspace{5\baselineskip}
+\begin{minted}{typescript}
+	const nextUsedVars = UsedVars.union(new RecursiveSet<Variable>(p));
+\end{minted}
+
+Python: (vordefinierter Union Operator)
+\Needspace{5\baselineskip}
+\begin{minted}{python}
+	newUsed = UsedVars | { p }
+\end{minted}
+
+
+\textbf{@zLeoll}
+Oft hat die KI auch sehr viel komplizierteren Code generiert als nötig, was die Lesbarkeit erschwert, wie zum Beispiel hier:
+
+\Needspace{5\baselineskip}
+\begin{minted}{typescript}
+	let allUnits = true;
+	for (const C of S) {
+		if (C.size !== 1) {
+			allUnits = false;
+			break;
+		}
+	}
+	
+	if (allUnits) {
+		return S;
+	}
+\end{minted}
+
+statt der deutlich kürzeren Variante:
+
+\Needspace{5\baselineskip}
+\begin{minted}{typescript}
+	if (S.every(C => C.size === 1)) {
+		return S;
+	}
+\end{minted}
+
+ 
 
 \subsection{Laufzeit}
 -> z.B. 8 Damen Problem
