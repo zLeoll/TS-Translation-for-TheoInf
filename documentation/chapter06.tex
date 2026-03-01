@@ -1,14 +1,14 @@
 \section{Evaluierung und Ergebnisse}
-In diesem Kapitel werden wir auf den Erfolg der Übersetzung vergleichen.
+In diesem Kapitel wird der Erfolg der Code-Portierung analysiert. Dabei steht insbesondere der Vergleich zwischen der ursprünglichen Python-Implementierung und der neuen TypeScript-Version im Fokus. Ein wesentliches Kriterium hierfür ist die Lesbarkeit und Nachvollziehbarkeit des Codes für Studierende.
 
+\subsection{Lesbarkeit und syntaktischer Vergleich}
+Ein zentrales Ziel der Übersetzung ist es, den Code so zu gestalten, dass dieser didaktisch wertvoll bleibt. Die Lesbarkeit von TypeScript im Vergleich zu Python hängt stark von den Vorkenntnissen der Betrachtenden ab. Für Studierende, die bereits Erfahrungen mit C-basierten Sprachen (wie C, C++ oder Java) gesammelt haben, wirkt die Syntax von TypeScript durch die explizite Typisierung und die Klammerstruktur oft vertrauter. Im Gegensatz dazu besticht Python durch seine minimalistische und pseudocode-artige Syntax, die besonders für absolute Programmieranfänger intuitiver sein kann \cite{objective-comparison}. Ein weiterer Aspekt ist, dass Python über eine Vielzahl eingebauter Datenstrukturen und Funktionen verfügt, die in TypeScript teilweise manuell nachgebildet oder über externe Bibliotheken eingebunden werden müssen.
 
-\subsection{Lesbarkeit}
- Hier würde ich mich gerne zuerst auf ein einfaches Beispiel beziehen (um genauer zu sein, zuerst auf das Beispiel "Power.ipynb" also https://github.com/zLeoll/TS-Translation-for-TheoInf/blob/main/Algorithms/Chapter-03/Power.ipynb
- 
- Hier möchte ich zuerst das Python-Beispiel zeigen und dann das TypeScript-Beispiel. 
- Der Python Code:
- Bitte den Code zuerst erklären
-\Needspace{5\baselineskip}
+\subsubsection{Vergleich anhand einfacher Kontrollstrukturen}
+Zur Veranschaulichung wird zunächst eine einfache Funktion zur Potenzberechnung aus dem Notebook \href{https://github.com/zLeoll/TS-Translation-for-TheoInf/blob/main/Algorithms/Chapter-03/Power.ipynb}{\textit{Power.ipynb}} betrachtet.
+
+In der Python-Version (siehe Listing \ref{lst:python-power}) wird eine einfache \texttt{for}-Schleife in Kombination mit der \texttt{range()}-Funktion verwendet, um die Multiplikation $n$-mal durchzuführen. Die Syntax ist äußerst kompakt und verzichtet auf Typdeklarationen.
+\Needspace{7\baselineskip}
 \begin{minted}{python}
  def power(m, n):
      r = 1
@@ -16,11 +16,11 @@ In diesem Kapitel werden wir auf den Erfolg der Übersetzung vergleichen.
          r *= m
      return r
 \end{minted}
-\captionof{listing}{Python Beispiel Power}
- 
-Der TypeScript Code:
- Bitte den Code zuerst erklären
-\Needspace{5\baselineskip}
+\captionof{listing}{Python-Beispiel: Potenzberechnung}
+\label{lst:python-power}
+
+Die äquivalente TypeScript-Implementierung (siehe Listing \ref{lst:ts-power}) zeigt die klassische, C-ähnliche \texttt{for}-Schleife. Zudem wird hier die explizite Typisierung mit \texttt{bigint} sichtbar.
+\Needspace{9\baselineskip}
 \begin{minted}{typescript}
  function power(m: bigint, n: bigint): bigint {
      let r  = 1n;
@@ -29,91 +29,95 @@ Der TypeScript Code:
      }
      return r;
  }
- \end{minted}
- \captionof{listing}{TypeScript Beispiel Power}
- 
-Diese beiden Code Snippets sollen bitte im Hinbezug auf der Lesbarkeit basierend verglichen werden. Also vor- und nachteile. Also auch dabei die Python Syntax und TS Syntax vergleichen
+\end{minted}
+\captionof{listing}{TypeScript-Beispiel: Potenzberechnung}
+\label{lst:ts-power}
 
-Zu einem Komplexeren Beispiel:
-Dieses Beispiel kommt aus dem Notebook "Dijkstra.ipynb" mit dem Link https://github.com/zLeoll/TS-Translation-for-TheoInf/blob/main/Algorithms/Chapter-11/Dijkstra.ipynb
+Während die Python-Variante kürzer ist, bietet die TypeScript-Version durch die Typannotationen (\texttt{bigint}) einen klaren semantischen Mehrwert: Es ist sofort ersichtlich, dass diese Funktion für beliebig große Ganzzahlen ausgelegt ist, was in der theoretischen Informatik oft von Bedeutung ist. Die \texttt{for}-Schleife in TypeScript erfordert zwar mehr \href{https://de.wikipedia.org/wiki/Boilerplate-Code}{Boilerplate-Code}, ist jedoch für Entwickler mit C-Hintergrund unmittelbar verständlich.
 
-Auch hier wieder das Python Beispiel:
- Bitte den Code zuerst erklären
+\subsubsection{Vergleich komplexerer Algorithmen}
+Die strukturellen Unterschiede werden bei komplexeren Algorithmen noch deutlicher. Als Beispiel dient die Implementierung des \href{https://de.wikipedia.org/wiki/Dijkstra-Algorithmus}{Dijkstra-Algorithmus} zur Berechnung kürzester Pfade \href{https://github.com/zLeoll/TS-Translation-for-TheoInf/blob/main/Algorithms/Chapter-11/Dijkstra.ipynb}{\textit{Dijkstra.ipynb}}.
+
+Das Python-Listing \ref{lst:python-dijkstra} nutzt stark die eingebauten Datenstrukturen \texttt{dict} (für \texttt{Distance}) und \texttt{set} (für \texttt{Visited}). Der Code ist kompakt und profitiert von Pythons dynamischer Typisierung, was schnelle Prototypisierung ermöglicht, aber zur Laufzeit zu Fehlern führen kann, wenn unerwartete Typen übergeben werden.
 \Needspace{17\baselineskip}
 \begin{minted}{python}
  def shortest_path(source, Edges):
- 	Distance = { source: 0 }
- 	Visited  = { source }
- 	Fringe   = Set()
- 	Fringe.insert( (0, source) )
- 	while not Fringe.isEmpty():
- 		d, u = Fringe.pop() # get and remove smallest element
- 		for v, l in Edges[u]:
- 			dv = Distance.get(v, None)
- 			if dv == None or d + l < dv:
- 				if dv != None:
- 					Fringe.delete( (dv, v) )
- 				Distance[v] = d + l
- 				Fringe.insert( (d + l, v) )
- 		Visited.add(u)
- 	return Distance
+     Distance = { source: 0 }
+     Visited  = { source }
+     Fringe   = Set()
+     Fringe.insert( (0, source) )
+     while not Fringe.isEmpty():
+         d, u = Fringe.pop() # get and remove smallest element
+         for v, l in Edges[u]:
+             dv = Distance.get(v, None)
+             if dv == None or d + l < dv:
+                 if dv != None:
+                     Fringe.delete( (dv, v) )
+                 Distance[v] = d + l
+                 Fringe.insert( (d + l, v) )
+         Visited.add(u)
+     return Distance
 \end{minted}
-\captionof{listing}{Python Beispiel shortest\_path}
+\captionof{listing}{Python-Beispiel: shortest\_path}
+\label{lst:python-dijkstra}
 
-Der TypeScript Code:
-Bitte den Code zuerst erklären
+Die TypeScript-Umsetzung in Listing \ref{lst:ts-dijkstra} erfordert deutlich mehr strukturellen Aufwand. Die Signaturen der Übergabeparameter (\texttt{Record<string, Array<[string, number]>>}) dokumentieren exakt die erwartete Graphenstruktur. Das Set \texttt{Visited} aus Python wurde hier durch ein \texttt{Record<string, boolean>} (ein Objekt, das als Map fungiert) ersetzt. Dies zeigt, dass TypeScript-Entwickler oft auf Objekte oder spezielle Map-Klassen zurückgreifen müssen, da die nativen Sets in TypeScript in bestimmten Anwendungsfällen weniger performant oder flexibel sind als ihre Python-Pendants.
 \Needspace{31\baselineskip}
 \begin{minted}{typescript}
-	function shortestPath(
-	source: string,
-	Edges: Record<string, Array<[string, number]>>
-	): Record<string, number> {
-		const Distance: Record<string, number> = { [source]: 0 };
-		const visited: Record<string, boolean> = {};
-		const Fringe = new AVLSet<[number, string]>();
-		Fringe.insert([0, source]);
-		while (!Fringe.isEmpty()) {
-			const [d, u] = Fringe.pop();
-			if (visited[u]) {
-				continue; 
-			}
-			visited[u] = true;
-			
-			for (const [v, l] of Edges[u]) {
-				const dv = Distance[v];
-				if (dv === undefined || d + l < dv) {
-					if (dv !== undefined) {
-						Fringe.delete([dv, v]);
-					}
-					Distance[v] = d + l;
-					Fringe.insert([d + l, v]);
-				}
-			}
-		}
-		return Distance;
-	}
+ function shortestPath(
+ source: string,
+ Edges: Record<string, Array<[string, number]>>
+ ): Record<string, number> {
+     const Distance: Record<string, number> = { [source]: 0 };
+     const visited: Record<string, boolean> = {};
+     const Fringe = new AVLSet<[number, string]>();
+     Fringe.insert([0, source]);
+     while (!Fringe.isEmpty()) {
+         const [d, u] = Fringe.pop();
+         if (visited[u]) {
+             continue; 
+         }
+         visited[u] = true;
+         for (const [v, l] of Edges[u]) {
+             const dv = Distance[v];
+             if (dv === undefined || d + l < dv) {
+                 if (dv !== undefined) {
+                     Fringe.delete([dv, v]);
+                 }
+                 Distance[v] = d + l;
+                 Fringe.insert([d + l, v]);
+             }
+         }
+     }
+     return Distance;
+ }
 \end{minted}
-\captionof{listing}{TypeScript Beispiel shortest\_path}
+\captionof{listing}{TypeScript-Beispiel: shortestPath}
+\label{lst:ts-dijkstra}
 
-Oft sind Funktionen schwieriger lesbar, weil bestimmte vordefinierte Funktionen nicht existieren. Bspw Vergleich Davis Putnam solveRecursive Funktion
+\subsubsection{Fehlende eingebaute Operatoren und Funktionen}
+Ein weiterer Faktor, der die Lesbarkeit beeinflusst, ist das Fehlen bestimmter vordefinierter Operatoren in TypeScript, die in Python standardmäßig vorhanden sind. Ein relevantes Beispiel hierfür findet sich im Notebook \href{https://github.com/zLeoll/TS-Translation-for-TheoInf/blob/main/Logic/Chapter-4/06-Davis-Putnam.ipynb}{06-Davis-Putnam.ipynb}. 
 
-Typescript: (Zusätzliche Union Funktion von RecursiveSet nötig)
-\Needspace{5\baselineskip}
-\begin{minted}{typescript}
-	const nextUsedVars = UsedVars.union(new RecursiveSet<Variable>(p));
-\end{minted}
-
-Python: (vordefinierter Union Operator)
-\Needspace{5\baselineskip}
+In Python können Mengen (\texttt{Sets}) sehr elegant und lesbar mit dem Bitwise-OR-Operator (\texttt{|}) vereinigt werden. Dieser Operator fasst die Menge \texttt{UsedVars} und ein neues Set, das lediglich das Element \texttt{p} enthält, in einer neuen Menge zusammen:
+\Needspace{3\baselineskip}
 \begin{minted}{python}
-	newUsed = UsedVars | { p }
+ newUsed = UsedVars | { p }
 \end{minted}
+\captionof{listing}{Mengenvereinigung in Python}
 
+Da TypeScript kein Operator Overloading (Überladung von Operatoren) für komplexe Objekte unterstützt, muss dieses Verhalten methodisch nachgebildet werden. In der TypeScript-Version wurde dafür eine spezifische \texttt{RecursiveSet}-Klasse implementiert, die eine \texttt{union}-Methode bereitstellt:
+\Needspace{3\baselineskip}
+\begin{minted}{typescript}
+ const nextUsedVars = UsedVars.union(new RecursiveSet<Variable>(p));
+\end{minted}
+\captionof{listing}{Mengenvereinigung in TypeScript mittels \textit{.union()}}
+Dieser Code erfüllt denselben Zweck, ist jedoch syntaktisch strukturierter und erfordert vom Leser das Wissen über die Existenz und Funktionsweise der spezifischen \texttt{union}-Methode auf der Klasse \texttt{RecursiveSet}.
 
-\textbf{@zLeoll}
-Oft hat die KI auch sehr viel komplizierteren Code generiert als nötig, was die Lesbarkeit erschwert, wie zum Beispiel hier:
+\subsubsection{KI-generierte Code-Komplexität}
+Bei der Betrachtung der Lesbarkeit muss zudem kritisch betrachtet werden, wie die verwendeten KI-Modelle den Code übersetzt haben. Ein häufig beobachtetes Phänomen war die Generierung von unnötig komplexem oder imperativem Code, wo deklarative Ansätze lesbarer gewesen wären. 
 
-\Needspace{5\baselineskip}
+Ein Code-Ausschnitt aus dem Notebook \href{https://github.com/zLeoll/TS-Translation-for-TheoInf/blob/main/Logic/Chapter-4/06-Davis-Putnam.ipynb}{06-Davis-Putnam.ipynb} zeigt, wie die KI eine einfache Bedingung zunächst sehr iterativ und fehleranfällig übersetzte:
+\Needspace{10\baselineskip}
 \begin{minted}{typescript}
 	let allUnits = true;
 	for (const C of S) {
@@ -122,24 +126,78 @@ Oft hat die KI auch sehr viel komplizierteren Code generiert als nötig, was die
 			break;
 		}
 	}
-	
 	if (allUnits) {
 		return S;
 	}
 \end{minted}
+\captionof{listing}{Imperative (KI-generierte) Überprüfung}
 
-statt der deutlich kürzeren Variante:
-
-\Needspace{5\baselineskip}
+Dieser Code iteriert manuell über die Menge \texttt{S}, um zu prüfen, ob alle Elemente \texttt{C} die Größe 1 haben. Diese Logik lässt sich in TypeScript durch die Nutzung höherer Array-Methoden (\texttt{every}) deutlich kürzer und semantisch klarer formulieren. Erst durch manuelles Refactoring entstand die präferierte, deklarative Variante:
+\Needspace{6\baselineskip}
 \begin{minted}{typescript}
 	if (S.every(C => C.size === 1)) {
 		return S;
 	}
 \end{minted}
+\captionof{listing}{Deklarative (optimierte) Überprüfung in TypeScript}
 
- 
+Als Referenz ist hier die ursprüngliche Python-Version von \href{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-4/06-Davis-Putnam.ipynb}{06-Davis-Putnam} zu sehen, die durch die \texttt{all()}-Funktion und List Comprehension eine ähnlich hohe Lesbarkeit wie die optimierte TypeScript-Variante aufweist:
+\Needspace{5\baselineskip}
+\begin{minted}{python}
+	if all(len(C) == 1 for C in S): # S is trivial
+	return S
+\end{minted}
+\captionof{listing}{Python-Referenz der Überprüfung}
 
-\subsection{Laufzeit}
--> z.B. 8 Damen Problem
--> Code-Snipppets (so, dass sie relevant sind); allgemeine Suchalgorithmen)
+
+\subsection{Laufzeit und Performance}
+Neben der Lesbarkeit spielt die Ausführungsgeschwindigkeit der übersetzten Code-Basis eine entscheidende Rolle. Dies gilt insbesondere für rechenintensive Such- und Sortieralgorithmen, wie sie im Modul \textit{Theoretische Informatik II: Algorithmen und Datenstrukturen} behandelt werden. 
+
+\subsubsection{Grundsätzliche Performance-Unterschiede}
+Um die gemessenen Laufzeiten einordnen zu können, muss die zugrunde liegende Architektur der beiden Sprachen betrachtet werden. Python wird in seiner Standard-Implementierung (CPython) zeilenweise zur Laufzeit interpretiert. Dies führt zu einem vergleichsweise hohen Overhead, da jede Instruktion bei der Ausführung in Maschinencode übersetzt werden muss. 
+
+TypeScript hingegen wird zunächst in JavaScript kompiliert, welches dann von einer Laufzeitumgebung wie Node.js (basierend auf der V8-Engine) ausgeführt wird. Die V8-Engine nutzt einen sogenannten \textit{Just-in-Time (JIT) Compiler} \cite{v8-jit}. Dieser beobachtet den Code während der Ausführung und kompiliert häufig durchlaufene Pfade direkt in hochoptimierten Maschinencode. Zudem hilft die strikte Typisierung von TypeScript indirekt dabei, den Code so zu schreiben, dass die V8-Engine Optimierungen wie \textit{Hidden Classes} besser anwenden kann. Folglich ist Node.js bei reinen Berechnungsaufgaben (CPU-bound tasks), die nicht auf externe, in C/C++ geschriebene Bibliotheken wie \href{https://numpy.org/}{NumPy} ausgelagert werden, in der Regel deutlich schneller als reines Python.
+
+\subsubsection{Laufzeitvergleich: Merge-Sort}
+Um diese theoretischen Grundlagen in der Praxis zu überprüfen, wurden Laufzeitmessungen an den portierten Algorithmen vorgenommen. Alle nachfolgenden Tests wurden auf einem Microsoft Surface 8 mit einem \textit{11th Gen Intel(R) Core(TM) i5-1135G7 @ 2.40GHz} durchgeführt.
+
+Als exemplarisches Testobjekt dient die Implementierung des Merge-Sort-Algorithmus \href{https://github.com/zLeoll/TS-Translation-for-TheoInf/blob/main/Algorithms/Chapter-06/Merge-Sort.ipynb}{\textit{Merge-Sort.ipynb}}. Da sich der übersetzte TypeScript-Code in seiner Struktur und Logik kaum vom Python-Original unterscheidet, ist ein direkter Performance-Vergleich aussagekräftig.
+
+Für die Messung in Python wurde die integrierte Jupyter-Notebook-\href{https://ipython.readthedocs.io/en/stable/interactive/magics.html}{\textit{Magic-Command}} \texttt{\%\%time} verwendet:
+\Needspace{4\baselineskip}
+\begin{minted}{python}
+	%%time
+	testSort(100, 2000)
+\end{minted}
+\caption{Time-Funktion in Python}
+
+\textbf{Ausgabe (Python):}
+\begin{verbatim}
+	....................................................................................................
+	All tests successful!
+	CPU times: total: 8.91 s
+	Wall time: 18.2 s
+\end{verbatim}
+
+Für die korrekte Interpretation der Python-Ausgabe muss zwischen \textit{CPU time} (der reinen Rechenzeit der Prozessorkerne) und \textit{Wall time} (der real verstrichenen Zeit vom Start bis zum Ende der Zelle) unterschieden werden \cite{jupyter-walltime}. Maßgeblich für das Empfinden des Nutzers ist die \textit{Wall time} von 18,2 Sekunden.
+
+Die Messung in der TypeScript-Version erfolgte mithilfe der nativen \texttt{console.time()}-API, welche die real verstrichene Zeit misst (entspricht der \textit{Wall time} in Python):
+\Needspace{5\baselineskip}
+\begin{minted}{typescript}
+	console.time();
+	testSort(100, 2000);
+	console.timeEnd();
+\end{minted}
+
+\textbf{Ausgabe (TypeScript):}
+\begin{verbatim}
+	....................................................................................................
+	All tests successful!
+	default: 10.618s
+\end{verbatim}
+
+\subsubsection{Analyse der Ergebnisse}
+Der Vergleich zeigt einen signifikanten Performance-Vorteil der TypeScript-Implementierung. Mit einer Laufzeit von rund 10,6 Sekunden ist die Ausführung in Node.js/TypeScript etwa 42\,\% schneller als die Python-Variante mit 18,2 Sekunden (\textit{Wall time}). 
+
+Dieser deutliche Unterschied lässt sich direkt auf die JIT-Kompilierung der V8-Engine zurückführen. Bei einem rekursiven Sortieralgorithmus wie Merge-Sort werden dieselben Funktionen und Code-Pfade tausendfach mit ähnlichen Datentypen aufgerufen. Während der Python-Interpreter diese wiederholten Aufrufe immer wieder neu verarbeiten muss, erkennt die V8-Engine diese Muster schnell und generiert optimierten Maschinencode. Dieser Performance-Gewinn ist besonders im Kontext von Lehrmaterialien vorteilhaft, da Studierende bei der Ausführung komplexer Testfälle in den Notebooks weniger Wartezeiten in Kauf nehmen müssen.
 
