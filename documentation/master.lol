@@ -57,17 +57,18 @@
 \contentsline {listing}{\numberline {57}{\ignorespaces Python: \texttt {isTrivial} über \texttt {any(...)} und Generatorausdruck}}{51}{listing.57}%
 \contentsline {listing}{\numberline {58}{\ignorespaces TypeScript: \texttt {simplify} durch Filtern der Klauselmenge}}{52}{listing.58}%
 \contentsline {listing}{\numberline {59}{\ignorespaces Python: \texttt {simplify} als Set-Comprehension}}{52}{listing.59}%
-\contentsline {listing}{\numberline {60}{\ignorespaces TypeScript: \texttt {normalize} als Pipeline bis zur vereinfachten \ac {KNF}}}{52}{listing.60}%
-\contentsline {listing}{\numberline {61}{\ignorespaces Python: \texttt {normalize} als analoge Pipeline bis zur vereinfachten \ac {KNF}}}{53}{listing.61}%
-\contentsline {listing}{\numberline {62}{\ignorespaces Python: \texttt {test} parst den String und gibt die normalisierte \ac {KNF} aus}}{53}{listing.62}%
-\contentsline {listing}{\numberline {63}{\ignorespaces TypeScript: \texttt {test} als Test-Hilfsfunktion mit Konsolenausgabe}}{53}{listing.63}%
-\contentsline {listing}{\numberline {64}{\ignorespaces Python-Beispiel: Potenzberechnung}}{55}{listing.64}%
-\contentsline {listing}{\numberline {65}{\ignorespaces TypeScript-Beispiel: Potenzberechnung}}{56}{listing.65}%
-\contentsline {listing}{\numberline {66}{\ignorespaces Python-Beispiel: shortest\_path}}{57}{listing.66}%
-\contentsline {listing}{\numberline {67}{\ignorespaces TypeScript-Beispiel: shortestPath}}{58}{listing.67}%
-\contentsline {listing}{\numberline {68}{\ignorespaces Mengenvereinigung in Python}}{59}{listing.68}%
-\contentsline {listing}{\numberline {69}{\ignorespaces Mengenvereinigung in TypeScript mittels \textit {.union()}}}{59}{listing.69}%
-\contentsline {listing}{\numberline {70}{\ignorespaces Imperative (KI-generierte) Überprüfung}}{60}{listing.70}%
-\contentsline {listing}{\numberline {71}{\ignorespaces Deklarative (optimierte) Überprüfung in TypeScript}}{60}{listing.71}%
-\contentsline {listing}{\numberline {72}{\ignorespaces Python-Referenz der Überprüfung}}{60}{listing.72}%
-\contentsline {listing}{\numberline {73}{\ignorespaces Time-Funktion in Python}}{62}{listing.73}%
+\contentsline {listing}{\numberline {60}{\ignorespaces TypeScript: \texttt {normalize} als Pipeline bis zur vereinfachten \ac {KNF}}}{53}{listing.60}%
+\contentsline {listing}{\numberline {61}{\ignorespaces Python: \texttt {test} parst den String und gibt die normalisierte \ac {KNF} aus}}{53}{listing.61}%
+\contentsline {listing}{\numberline {62}{\ignorespaces TypeScript: \texttt {test} als Test-Hilfsfunktion mit Konsolenausgabe}}{53}{listing.62}%
+\contentsline {listing}{\numberline {63}{\ignorespaces Python-Beispiel: Potenzberechnung}}{55}{listing.63}%
+\contentsline {listing}{\numberline {64}{\ignorespaces TypeScript-Beispiel: Potenzberechnung}}{56}{listing.64}%
+\contentsline {listing}{\numberline {65}{\ignorespaces Python-Beispiel: shortest\_path}}{57}{listing.65}%
+\contentsline {listing}{\numberline {66}{\ignorespaces TypeScript-Beispiel: shortestPath}}{58}{listing.66}%
+\contentsline {listing}{\numberline {67}{\ignorespaces Mengenvereinigung in Python}}{59}{listing.67}%
+\contentsline {listing}{\numberline {68}{\ignorespaces Mengenvereinigung in TypeScript mittels \textit {.union()}}}{59}{listing.68}%
+\contentsline {listing}{\numberline {69}{\ignorespaces Imperative (KI-generierte) Überprüfung}}{60}{listing.69}%
+\contentsline {listing}{\numberline {70}{\ignorespaces Deklarative (optimierte) Überprüfung in TypeScript}}{60}{listing.70}%
+\contentsline {listing}{\numberline {71}{\ignorespaces Python-Referenz der Überprüfung}}{60}{listing.71}%
+\contentsline {listing}{\numberline {72}{\ignorespaces Time-Funktion in Python}}{62}{listing.72}%
+\contentsline {listing}{\numberline {73}{\ignorespaces Zeitmessung in Python (16-Damen)}}{63}{listing.73}%
+\contentsline {listing}{\numberline {74}{\ignorespaces Zeitmessung in TypeScript (16-Damen)}}{64}{listing.74}%

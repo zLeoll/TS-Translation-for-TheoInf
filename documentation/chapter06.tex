@@ -33,10 +33,10 @@ Die äquivalente TypeScript-Implementierung (siehe Listing \ref{lst:ts-power}) z
 \captionof{listing}{TypeScript-Beispiel: Potenzberechnung}
 \label{lst:ts-power}
 
-Während die Python-Variante kürzer ist, bietet die TypeScript-Version durch die Typannotationen (\texttt{bigint}) einen klaren semantischen Mehrwert: Es ist sofort ersichtlich, dass diese Funktion für beliebig große Ganzzahlen ausgelegt ist, was in der theoretischen Informatik oft von Bedeutung ist. Die \texttt{for}-Schleife in TypeScript erfordert zwar mehr \href{https://de.wikipedia.org/wiki/Boilerplate-Code}{Boilerplate-Code}, ist jedoch für Entwickler mit C-Hintergrund unmittelbar verständlich.
+Während die Python-Variante kürzer ist, bietet die TypeScript-Version durch die Typannotationen (\texttt{bigint}) einen klaren semantischen Mehrwert: Es ist sofort ersichtlich, dass diese Funktion für beliebig große Ganzzahlen ausgelegt ist, was in der theoretischen Informatik oft von Bedeutung ist. Die TypeScript-Variante ist zwar syntaktisch ausführlicher, bietet durch die Typannotationen aber einen klaren semantischen Mehrwert.
 
 \subsubsection{Vergleich komplexerer Algorithmen}
-Die strukturellen Unterschiede werden bei komplexeren Algorithmen noch deutlicher. Als Beispiel dient die Implementierung des \href{https://de.wikipedia.org/wiki/Dijkstra-Algorithmus}{Dijkstra-Algorithmus} zur Berechnung kürzester Pfade \href{https://github.com/zLeoll/TS-Translation-for-TheoInf/blob/main/Algorithms/Chapter-11/Dijkstra.ipynb}{\textit{Dijkstra.ipynb}}.
+Die strukturellen Unterschiede werden bei komplexeren Algorithmen noch deutlicher. Als Beispiel dient die Implementierung des \href{https://de.wikipedia.org/wiki/Dijkstra-Algorithmus}{Dijkstra-Algorithmus} zur Berechnung kürzester Pfade in \href{https://github.com/zLeoll/TS-Translation-for-TheoInf/blob/main/Algorithms/Chapter-11/Dijkstra.ipynb}{\textit{Dijkstra.ipynb}}.
 
 Das Python-Listing \ref{lst:python-dijkstra} nutzt stark die eingebauten Datenstrukturen \texttt{dict} (für \texttt{Distance}) und \texttt{set} (für \texttt{Visited}). Der Code ist kompakt und profitiert von Pythons dynamischer Typisierung, was schnelle Prototypisierung ermöglicht, aber zur Laufzeit zu Fehlern führen kann, wenn unerwartete Typen übergeben werden.
 \Needspace{17\baselineskip}
@@ -98,14 +98,14 @@ Die TypeScript-Umsetzung in Listing \ref{lst:ts-dijkstra} erfordert deutlich meh
 \subsubsection{Fehlende eingebaute Operatoren und Funktionen}
 Ein weiterer Faktor, der die Lesbarkeit beeinflusst, ist das Fehlen bestimmter vordefinierter Operatoren in TypeScript, die in Python standardmäßig vorhanden sind. Ein relevantes Beispiel hierfür findet sich im Notebook \href{https://github.com/zLeoll/TS-Translation-for-TheoInf/blob/main/Logic/Chapter-4/06-Davis-Putnam.ipynb}{06-Davis-Putnam.ipynb}. 
 
-In Python können Mengen (\texttt{Sets}) sehr elegant und lesbar mit dem Bitwise-OR-Operator (\texttt{|}) vereinigt werden. Dieser Operator fasst die Menge \texttt{UsedVars} und ein neues Set, das lediglich das Element \texttt{p} enthält, in einer neuen Menge zusammen:
+In Python können \texttt{Sets} sehr elegant und lesbar mit dem Operator (\texttt{|}) vereinigt werden. Dieser Operator fasst die Menge \texttt{UsedVars} und ein neues Set, das lediglich das Element \texttt{p} enthält, in einer neuen Menge zusammen:
 \Needspace{3\baselineskip}
 \begin{minted}{python}
  newUsed = UsedVars | { p }
 \end{minted}
 \captionof{listing}{Mengenvereinigung in Python}
 
-Da TypeScript kein Operator Overloading (Überladung von Operatoren) für komplexe Objekte unterstützt, muss dieses Verhalten methodisch nachgebildet werden. In der TypeScript-Version wurde dafür eine spezifische \texttt{RecursiveSet}-Klasse implementiert, die eine \texttt{union}-Methode bereitstellt:
+Da TypeScript kein Operator Overloading (Überladung von Operatoren) für komplexe Objekte unterstützt, muss dieses Verhalten methodisch nachgebildet werden. In der TypeScript-Version wurde dafür eine spezifische Methode \texttt{union} in der \texttt{RecursiveSet}-Klasse implementiert, welche die Vereinigungs-Funktionalität bereitstellt:
 \Needspace{3\baselineskip}
 \begin{minted}{typescript}
  const nextUsedVars = UsedVars.union(new RecursiveSet<Variable>(p));
@@ -114,38 +114,38 @@ Da TypeScript kein Operator Overloading (Überladung von Operatoren) für komple
 Dieser Code erfüllt denselben Zweck, ist jedoch syntaktisch strukturierter und erfordert vom Leser das Wissen über die Existenz und Funktionsweise der spezifischen \texttt{union}-Methode auf der Klasse \texttt{RecursiveSet}.
 
 \subsubsection{KI-generierte Code-Komplexität}
-Bei der Betrachtung der Lesbarkeit muss zudem kritisch betrachtet werden, wie die verwendeten KI-Modelle den Code übersetzt haben. Ein häufig beobachtetes Phänomen war die Generierung von unnötig komplexem oder imperativem Code, wo deklarative Ansätze lesbarer gewesen wären. 
+Bei der Betrachtung der Lesbarkeit muss zudem kritisch betrachtet werden, wie die verwendeten \ac{KI}-Modelle den Code übersetzt haben. Ein häufig beobachtetes Phänomen war die Generierung von unnötig komplexem oder imperativem Code, wo deklarative Ansätze lesbarer gewesen wären. 
 
-Ein Code-Ausschnitt aus dem Notebook \href{https://github.com/zLeoll/TS-Translation-for-TheoInf/blob/main/Logic/Chapter-4/06-Davis-Putnam.ipynb}{06-Davis-Putnam.ipynb} zeigt, wie die KI eine einfache Bedingung zunächst sehr iterativ und fehleranfällig übersetzte:
+Ein Code-Ausschnitt aus dem Notebook \href{https://github.com/zLeoll/TS-Translation-for-TheoInf/blob/main/Logic/Chapter-4/06-Davis-Putnam.ipynb}{06-Davis-Putnam.ipynb} zeigt, wie die \ac{KI} eine einfache Bedingung zunächst sehr iterativ und fehleranfällig übersetzte:
 \Needspace{10\baselineskip}
 \begin{minted}{typescript}
-	let allUnits = true;
-	for (const C of S) {
-		if (C.size !== 1) {
-			allUnits = false;
-			break;
-		}
-	}
-	if (allUnits) {
-		return S;
-	}
+ let allUnits = true;
+ for (const C of S) {
+     if (C.size !== 1) {
+         allUnits = false;
+	     break;
+     }
+ }
+ if (allUnits) {
+     return S;
+ }
 \end{minted}
 \captionof{listing}{Imperative (KI-generierte) Überprüfung}
 
 Dieser Code iteriert manuell über die Menge \texttt{S}, um zu prüfen, ob alle Elemente \texttt{C} die Größe 1 haben. Diese Logik lässt sich in TypeScript durch die Nutzung höherer Array-Methoden (\texttt{every}) deutlich kürzer und semantisch klarer formulieren. Erst durch manuelles Refactoring entstand die präferierte, deklarative Variante:
 \Needspace{6\baselineskip}
 \begin{minted}{typescript}
-	if (S.every(C => C.size === 1)) {
-		return S;
-	}
+ if (S.every(C => C.size === 1)) {
+     return S;
+ }
 \end{minted}
 \captionof{listing}{Deklarative (optimierte) Überprüfung in TypeScript}
 
 Als Referenz ist hier die ursprüngliche Python-Version von \href{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-4/06-Davis-Putnam.ipynb}{06-Davis-Putnam} zu sehen, die durch die \texttt{all()}-Funktion und List Comprehension eine ähnlich hohe Lesbarkeit wie die optimierte TypeScript-Variante aufweist:
 \Needspace{5\baselineskip}
 \begin{minted}{python}
-	if all(len(C) == 1 for C in S): # S is trivial
-	return S
+ if all(len(C) == 1 for C in S):
+     return S
 \end{minted}
 \captionof{listing}{Python-Referenz der Überprüfung}
 
@@ -154,9 +154,9 @@ Als Referenz ist hier die ursprüngliche Python-Version von \href{https://github
 Neben der Lesbarkeit spielt die Ausführungsgeschwindigkeit der übersetzten Code-Basis eine entscheidende Rolle. Dies gilt insbesondere für rechenintensive Such- und Sortieralgorithmen, wie sie im Modul \textit{Theoretische Informatik II: Algorithmen und Datenstrukturen} behandelt werden. 
 
 \subsubsection{Grundsätzliche Performance-Unterschiede}
-Um die gemessenen Laufzeiten einordnen zu können, muss die zugrunde liegende Architektur der beiden Sprachen betrachtet werden. Python wird in seiner Standard-Implementierung (CPython) zeilenweise zur Laufzeit interpretiert. Dies führt zu einem vergleichsweise hohen Overhead, da jede Instruktion bei der Ausführung in Maschinencode übersetzt werden muss. 
+Um die gemessenen Laufzeiten einordnen zu können, muss die zugrunde liegende Architektur der beiden Sprachen betrachtet werden. Python wird in seiner Standard-Implementierung (\href{https://en.wikipedia.org/wiki/CPython}{CPython}) zeilenweise zur Laufzeit interpretiert. Dies führt zu einem vergleichsweise hohen Overhead, da jede Instruktion bei der Ausführung in Maschinencode übersetzt werden muss. 
 
-TypeScript hingegen wird zunächst in JavaScript kompiliert, welches dann von einer Laufzeitumgebung wie Node.js (basierend auf der V8-Engine) ausgeführt wird. Die V8-Engine nutzt einen sogenannten \textit{Just-in-Time (JIT) Compiler} \cite{v8-jit}. Dieser beobachtet den Code während der Ausführung und kompiliert häufig durchlaufene Pfade direkt in hochoptimierten Maschinencode. Zudem hilft die strikte Typisierung von TypeScript indirekt dabei, den Code so zu schreiben, dass die V8-Engine Optimierungen wie \textit{Hidden Classes} besser anwenden kann. Folglich ist Node.js bei reinen Berechnungsaufgaben (CPU-bound tasks), die nicht auf externe, in C/C++ geschriebene Bibliotheken wie \href{https://numpy.org/}{NumPy} ausgelagert werden, in der Regel deutlich schneller als reines Python.
+TypeScript hingegen wird zunächst in JavaScript kompiliert, welches dann von einer Laufzeitumgebung wie Node.js (basierend auf der V8-Engine) ausgeführt wird. Die V8-Engine nutzt einen sogenannten \textit{Just-in-Time (JIT) Compiler} \cite{v8-jit}. Dieser beobachtet den Code während der Ausführung und kompiliert häufig durchlaufene Pfade in hochoptimierten Maschinencode. Zudem hilft die strikte Typisierung von TypeScript indirekt dabei, den Code so zu schreiben, dass die V8-Engine Optimierungen wie \textit{Hidden Classes} besser anwenden kann. Folglich ist Node.js bei reinen Berechnungsaufgaben, die nicht auf externe, in C/C++ geschriebene Bibliotheken wie \href{https://numpy.org/}{NumPy} ausgelagert werden, in der Regel deutlich schneller als reines Python.
 
 \subsubsection{Laufzeitvergleich: Merge-Sort}
 Um diese theoretischen Grundlagen in der Praxis zu überprüfen, wurden Laufzeitmessungen an den portierten Algorithmen vorgenommen. Alle nachfolgenden Tests wurden auf einem Microsoft Surface 8 mit einem \textit{11th Gen Intel(R) Core(TM) i5-1135G7 @ 2.40GHz} durchgeführt.
@@ -166,38 +166,107 @@ Als exemplarisches Testobjekt dient die Implementierung des Merge-Sort-Algorithm
 Für die Messung in Python wurde die integrierte Jupyter-Notebook-\href{https://ipython.readthedocs.io/en/stable/interactive/magics.html}{\textit{Magic-Command}} \texttt{\%\%time} verwendet:
 \Needspace{4\baselineskip}
 \begin{minted}{python}
-	%%time
-	testSort(100, 2000)
+ %%time
+ testSort(100, 2000)
 \end{minted}
 \caption{Time-Funktion in Python}
 
 \textbf{Ausgabe (Python):}
 \begin{verbatim}
-	....................................................................................................
-	All tests successful!
-	CPU times: total: 8.91 s
-	Wall time: 18.2 s
+ All tests successful!
+ CPU times: total: 8.91 s
+ Wall time: 18.2 s
 \end{verbatim}
 
-Für die korrekte Interpretation der Python-Ausgabe muss zwischen \textit{CPU time} (der reinen Rechenzeit der Prozessorkerne) und \textit{Wall time} (der real verstrichenen Zeit vom Start bis zum Ende der Zelle) unterschieden werden \cite{jupyter-walltime}. Maßgeblich für das Empfinden des Nutzers ist die \textit{Wall time} von 18,2 Sekunden.
+Für die korrekte Interpretation der Python-Ausgabe muss zwischen CPU time, der reinen Rechenzeit der Prozessorkerne, und Wall time, der real verstrichenen Zeit vom Start bis zum Ende der Zelle, unterschieden werden \cite{jupyter-walltime}. Maßgeblich für das Empfinden des Nutzers ist die Wall time von 18,2 Sekunden.
 
-Die Messung in der TypeScript-Version erfolgte mithilfe der nativen \texttt{console.time()}-API, welche die real verstrichene Zeit misst (entspricht der \textit{Wall time} in Python):
+Die Messung in der TypeScript-Version erfolgte mithilfe der nativen console.time()-API. Sie misst die real verstrichene Zeit und entspricht damit der Wall time in Python:
 \Needspace{5\baselineskip}
 \begin{minted}{typescript}
-	console.time();
-	testSort(100, 2000);
-	console.timeEnd();
+ console.time();
+ testSort(100, 2000);
+ console.timeEnd();
 \end{minted}
 
 \textbf{Ausgabe (TypeScript):}
 \begin{verbatim}
-	....................................................................................................
 	All tests successful!
 	default: 10.618s
 \end{verbatim}
 
 \subsubsection{Analyse der Ergebnisse}
-Der Vergleich zeigt einen signifikanten Performance-Vorteil der TypeScript-Implementierung. Mit einer Laufzeit von rund 10,6 Sekunden ist die Ausführung in Node.js/TypeScript etwa 42\,\% schneller als die Python-Variante mit 18,2 Sekunden (\textit{Wall time}). 
+Der Vergleich zeigt einen signifikanten Performance-Vorteil der TypeScript-Implementierung. Mit einer Laufzeit von rund 10,6 Sekunden ist die Ausführung in Node.js/TypeScript etwa 42\,\% schneller als die Python-Variante mit 18,2 Sekunden. 
 
 Dieser deutliche Unterschied lässt sich direkt auf die JIT-Kompilierung der V8-Engine zurückführen. Bei einem rekursiven Sortieralgorithmus wie Merge-Sort werden dieselben Funktionen und Code-Pfade tausendfach mit ähnlichen Datentypen aufgerufen. Während der Python-Interpreter diese wiederholten Aufrufe immer wieder neu verarbeiten muss, erkennt die V8-Engine diese Muster schnell und generiert optimierten Maschinencode. Dieser Performance-Gewinn ist besonders im Kontext von Lehrmaterialien vorteilhaft, da Studierende bei der Ausführung komplexer Testfälle in den Notebooks weniger Wartezeiten in Kauf nehmen müssen.
+
+\subsubsection{Laufzeitvergleich: \texorpdfstring{\(n\)}{n}-Damen (Davis--Putnam mit JW-Heuristik)}
+Das \emph{8-Damen-Problem} wird in beiden Versionen als SAT-Problem in KNF kodiert und anschließend mit dem Davis--Putnam-Verfahren gelöst, wobei die Literalwahl durch die Jeroslow--Wang-Heuristik gesteuert wird. % [file:78][file:80][file:77]
+Da \(n=8\) in der Praxis sehr schnell lösbar ist, wurde für eine aussagekräftigere Messung \(n=16\) gewählt, da hier die Heuristik und die Datenstrukturen deutlich stärker beansprucht werden. % [file:78][file:80]
+
+\paragraph{Messung in Python.}
+Analog zum Merge-Sort-Vergleich wurde im Python-Notebook die Jupyter-Messfunktion verwendet, die \emph{CPU time} und \emph{Wall time} ausgibt. % [file:78]
+\Needspace{5\baselineskip}
+\begin{minted}{python}
+	%%time
+	Solution = queens(16)
+\end{minted}
+\caption{Zeitmessung in Python (16-Damen)}
+
+\textbf{Ausgabe (Python):}
+\begin{verbatim}
+	CPU times: total: 23.6 s
+	Wall time: 24.8 s
+\end{verbatim}
+% [file:78]
+
+\paragraph{Messung in TypeScript (Node.js/V8).}
+In der TypeScript-Version wurde die Laufzeit mit \texttt{console.time()} und \texttt{console.timeEnd()} gemessen; diese Messung entspricht der real verstrichenen Zeit. % [file:80]
+\Needspace{6\baselineskip}
+\begin{minted}{typescript}
+	console.time("queens");
+	const Solution = queens(16);
+	console.timeEnd("queens");
+\end{minted}
+\caption{Zeitmessung in TypeScript (16-Damen)}
+
+\textbf{Ausgabe (TypeScript):}
+\begin{verbatim}
+	queens: 17.041s
+\end{verbatim}
+% [file:80]
+
+\subsubsection{Analyse der Ergebnisse (8/16-Damen)}
+Für \(n=16\) zeigt sich ein deutlicher Performance-Vorteil der TypeScript/Node.js-Ausführung: \(17{,}041\,\mathrm{s}\) gegenüber \(24{,}8\,\mathrm{s}\) in Python, also rund \(31\,\%\) weniger \emph{Wall time}. % [file:78][file:80]
+Der Unterschied ist bei \(n=8\) erwartungsgemäß weniger relevant, da das Problem bereits unter einem Zehntel einer Sekunde lösbar ist und damit Mess-Overhead dominiert. % [file:78][file:80]
+
+\paragraph{Einordnung über Laufzeitumgebungen.}
+Node.js führt den kompilierten JavaScript-Code auf der V8-Engine aus, die häufig ausgeführte Codepfade zur Laufzeit optimieren kann, während Python den Algorithmus primär im Interpreter ausführt. % [file:80][file:78]
+Gerade beim Davis--Putnam-Verfahren treten wiederkehrende Iterationsmuster auf (z.\,B.\ in \texttt{saturate} und \texttt{reduce}), wodurch V8 in „hot paths“ stärker profitieren kann als eine bytecode-interpretierte Ausführung. % [file:79][file:77]
+
+\paragraph{Hauptgrund: Hash-basierte \texttt{RecursiveSet}-Struktur.}
+Ein zentraler Beschleuniger in der TypeScript-Version ist die verwendete \texttt{recursive-set}-Bibliothek, die \emph{Value Semantics}, Deep-Equality und Hashing für rekursive Strukturen (z.\,B.\ Mengen von Mengen) bereitstellt. % [file:76]
+Die Datenstruktur implementiert Hash-Tabellen mit \emph{Open Addressing} und \emph{Linear Probing} sowie eine auf Performance ausgelegte Hash-Funktion; grundlegende Operationen wie \texttt{add}/\texttt{has}/\texttt{remove} sind damit amortisiert \(O(1)\). % [file:76]
+Zusätzlich nutzt \texttt{RecursiveSet} flache Arrays für bessere Cache-Lokalität und führt eine „Frozen“-Logik ein, sobald der Hashwert berechnet wurde, um die Hash-Stabilität sicherzustellen. % [file:76]
+
+\paragraph{Warum das hier besonders wirkt.}
+Der Davis--Putnam-Code erzeugt und verarbeitet sehr viele Klauselmengen und Unit-Klauseln; in beiden Implementierungen sind genau diese Mengenoperationen der dominierende Kostenfaktor (z.\,B.\ \texttt{reduceClauses} und die Schleife in \texttt{saturateClauses}). % [file:79][file:77]
+In TypeScript werden Klauseln/Literale dabei konsequent als \texttt{RecursiveSet} bzw.\ \texttt{Tuple} modelliert und über Hashing sowie strukturelle Gleichheit verglichen, was die vielen Membership-Checks und das Duplikat-Management effizient hält. % [file:79][file:76]
+In Python wird dieselbe Idee mit \texttt{frozenset} (Klausel) und \texttt{set}/\texttt{frozenset} (Klauselmenge) umgesetzt; dabei entsteht jedoch zusätzlicher Overhead durch die interpreterseitige Steuerlogik und das häufige Erzeugen neuer (frozen) Sets in Comprehensions und in der Rekursion. % [file:77][file:78]
+
+\paragraph{Bezug zu den Bibliotheks-Voraussetzungen.}
+Die im \texttt{recursive-set}-Modul formulierten Voraussetzungen (keine \texttt{NaN}/\texttt{Infinity}, keine „plain objects“, gute Hash-Verteilung, Unveränderlichkeit des Hashcodes nach dem Einfügen und keine Zyklen) sind in diesem SAT-Use-Case erfüllt, da Literale und Variablen als Strings bzw.\ \texttt{Tuple}-Objekte modelliert werden und die erzeugten Klauseln nach der Konstruktion nicht mutiert werden. % [file:76][file:79][file:80]
+Damit bleiben die zugesicherten Hash-basierten Laufzeiteigenschaften in der Praxis stabil und wirken sich insbesondere bei \(n=16\) sichtbar auf die Gesamtlaufzeit aus. % [file:76][file:78][file:80]
+
+\subsubsection{Warum der Unterschied hier kleiner ist als bei Merge-Sort}
+Im Vergleich zum Merge-Sort-Benchmark fällt der Performance-Abstand beim \(n\)-Damen-Problem geringer aus, weil sich die dominierenden Kosten stärker in Richtung Datenstruktur-Operationen und Speicherverwaltung verschieben.
+Bei Davis--Putnam entstehen in kurzer Zeit sehr viele temporäre Klauselmengen, Unit-Klauseln und Reduktionen, d.\,h.\ die Laufzeit wird weniger von „tight loops“ und stärker von \texttt{add}/\texttt{has}/\texttt{union} sowie dem Erzeugen kleiner Mengenobjekte geprägt. % [file:77][file:79]
+
+Ein wichtiger Punkt ist, dass Python bei diesem Workload nicht nur „reines Python“ ausführt, sondern massiv von hochoptimierten, in C implementierten Hash-Tabellen für \texttt{set} und \texttt{frozenset} profitiert.
+Insbesondere sind zentrale Operationen wie Membership-Checks und das Hashing von \texttt{frozenset} in CPython direkt in \texttt{setobject.c} implementiert; zudem wird der Hashwert eines \texttt{frozenset} intern gecacht, was wiederholte Hash-Berechnungen reduziert. % [web:85]
+
+Die TypeScript-Version verwendet zwar mit \texttt{RecursiveSet} ebenfalls eine hash-basierte Datenstruktur mit Open Addressing und Linear Probing, jedoch bleibt sie eine Bibliotheksimplementierung auf JavaScript-Ebene, die zusätzlich Deep-Equality und eigenes Hashing für rekursive Strukturen bereitstellt.
+Diese zusätzlichen Abstraktionen sind für die korrekte „Value Semantics“ entscheidend, können aber bei sehr vielen kurzlebigen Objekten (z.\,B.\ vielen kleinen Klauseln) den Anteil von Allokationen und damit den Druck auf den Garbage Collector erhöhen. % [file:76][web:87]
+
+Hinzu kommt, dass die JIT-Optimierung der V8-Engine bei stark verzweigtem, rekursivem Suchcode mit vielen kleinen Objekten und dynamischen Kontrollflüssen typischerweise weniger stark „durchschlägt“ als bei regelmäßigem, zahlenlastigem Code, wie er bei Sortierbenchmarks häufiger entsteht.
+Dadurch bleibt der Vorteil von Node.js/V8 zwar klar sichtbar, fällt aber im SAT-basierten \(n\)-Damen-Szenario insgesamt geringer aus als im Merge-Sort-Vergleich. % [web:87]
 
