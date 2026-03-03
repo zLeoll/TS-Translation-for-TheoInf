@@ -194,38 +194,88 @@ Die Messung in der TypeScript-Version erfolgte mithilfe der nativen console.time
 	default: 10.618s
 \end{verbatim}
 
-\subsubsection{Analyse der Ergebnisse}
+\subsubsection{Analyse der Ergebnisse (Merge-Sort)}
 Der Vergleich zeigt einen signifikanten Performance-Vorteil der TypeScript-Implementierung. Mit einer Laufzeit von rund 10,6 Sekunden ist die Ausführung in Node.js/TypeScript etwa 42\,\% schneller als die Python-Variante mit 18,2 Sekunden. 
 
 Dieser deutliche Unterschied lässt sich direkt auf die JIT-Kompilierung der V8-Engine zurückführen. Bei einem rekursiven Sortieralgorithmus wie Merge-Sort werden dieselben Funktionen und Code-Pfade tausendfach mit ähnlichen Datentypen aufgerufen. Während der Python-Interpreter diese wiederholten Aufrufe immer wieder neu verarbeiten muss, erkennt die V8-Engine diese Muster schnell und generiert optimierten Maschinencode. Dieser Performance-Gewinn ist besonders im Kontext von Lehrmaterialien vorteilhaft, da Studierende bei der Ausführung komplexer Testfälle in den Notebooks weniger Wartezeiten in Kauf nehmen müssen.
 
-\subsubsection{Laufzeitvergleich: \texorpdfstring{\(n\)}{n}-Damen (Davis--Putnam mit JW-Heuristik)}
-Das \emph{8-Damen-Problem} wird in beiden Versionen als SAT-Problem in KNF kodiert und anschließend mit dem Davis--Putnam-Verfahren gelöst, wobei die Literalwahl durch die Jeroslow--Wang-Heuristik gesteuert wird. % [file:78][file:80][file:77]
-Da \(n=8\) in der Praxis sehr schnell lösbar ist, wurde für eine aussagekräftigere Messung \(n=16\) gewählt, da hier die Heuristik und die Datenstrukturen deutlich stärker beansprucht werden. % [file:78][file:80]
+\subsubsection{\(8\)-Damen-Problem}
 
-\paragraph{Messung in Python.}
-Analog zum Merge-Sort-Vergleich wurde im Python-Notebook die Jupyter-Messfunktion verwendet, die \emph{CPU time} und \emph{Wall time} ausgibt. % [file:78]
-\Needspace{5\baselineskip}
+Das \emph{Davis--Putnam-Verfahren} ist ein klassischer Algorithmus zur Lösung von \href{https://en.wikipedia.org/wiki/Boolean_satisfiability_problem}{SAT-Problemen}, d.\,h.\ zur Entscheidung, ob eine aussagenlogische Formel in \ac{KNF} erfüllbar ist. Die Eingabe besteht dabei aus einer Menge von Klauseln. Der Algorithmus arbeitet in zwei Phasen: Zunächst wird in der \emph{Unit-Propagation} (\texttt{saturate}) jede Klausel, die nur ein einziges Literal enthält, sofort ausgewertet. Das Literal wird auf wahr gesetzt und alle betroffenen Klauseln werden entsprechend vereinfacht (\texttt{reduce}). Anschließend wählt der Algorithmus gesteuert durch eine Heuristik ein noch nicht belegtes Literal, setzt es probeweise auf wahr und ruft sich rekursiv auf. Führt ein Ast zu einem Widerspruch, wird zurückgesetzt und der andere Wahrheitswert versucht. Die \emph{Jeroslow--Wang-Heuristik} priorisiert dabei das Literal, das in möglichst vielen kurzen Klauseln vorkommt, um den Suchraum so früh wie möglich einzuschränken.
+
+Das \href{https://de.wikipedia.org/wiki/Damenproblem}{8-Damen-Problem} wird in beiden Sprachen zunächst als SAT-Problem in \ac{KNF} kodiert und anschließend mit dem Davis-Putnam-Verfahren gelöst. Da \(n=8\) in der Praxis sehr schnell lösbar ist, wurde für eine aussagekräftigere Messung \(n=16\) gewählt, da hier die Heuristik und die zugrunde liegenden Datenstrukturen deutlich stärker beansprucht werden.\\
+Der Davis--Putnam-Code erzeugt und verarbeitet in kurzer Zeit enorm viele temporäre Klauselmengen und Unit-Klauseln. In beiden Implementierungen sind genau diese ständigen Mengenoperationen und Duplikat-Prüfungen der dominierende Kostenfaktor, insbesondere in den Kernfunktionen \texttt{saturate} und \texttt{reduce}. Um diesen Architekturunterschied zu veranschaulichen, betrachten wir die \texttt{reduce}-Funktion in beiden Sprachen. Diese Funktion vereinfacht die Klauselmenge unter der Annahme, dass ein bestimmtes Literal $l$ wahr ist.
+
+\Needspace{6\baselineskip}
 \begin{minted}{python}
-	%%time
-	Solution = queens(16)
+ def reduce(Clauses: set[Clause], l: Literal) -> set[Clause]:
+     lBar = complement(l)  
+     return   { C - { lBar } for C in Clauses if lBar     in C                }  \
+            | { C            for C in Clauses if lBar not in C and l not in C }  \
+            | { frozenset({l}) }
+\end{minted}
+\caption{Reduktionsschritt in Python mit Set-Comprehensions}
+
+In Python wird die Logik extrem prägnant mit \texttt{frozenset} (Klausel) und \texttt{set} (Klauselmenge) umgesetzt. Der wesentliche Performance-Impact liegt hier in der intensiven Speicherallokation und redundanten Iterationen, die durch die kompakte Syntax verdeckt werden: Für die Reduktion muss der Interpreter drei separate Set-Comprehensions auswerten, was bedeutet, dass unter der Haube mehrfach über \texttt{Clauses} iteriert wird. Besonders teuer ist das ständige Erzeugen temporärer Objekte: Der Ausdruck \texttt{C - \{ lBar \}} zwingt Python dazu, in jedem Schleifendurchlauf ein neues Set für die Differenzbildung zu allokieren. Zudem generiert jede Comprehension eine eigene temporäre Mengen-Instanz, bevor der Vereinigungsoperator (\texttt{|}) diese Zwischenergebnisse in ein weiteres, komplett neues \texttt{set} zusammenkopiert. Dieser Overhead summiert sich bei tausenden Aufrufen in der Rekursion massiv auf.
+
+In TypeScript wird dieselbe algorithmische Idee deutlich imperativer abgebildet. Der Code greift auf die \texttt{recursive-set}-Bibliothek zurück, da TypeScript native Set-Comprehensions für tiefgreifende Wertvergleiche nicht unterstützt:
+
+\Needspace{22\baselineskip}
+\begin{minted}{typescript}
+ function reduce(Clauses: Clauses, l: Literal): Clauses {
+     const lBar = complement(l);
+     const result = new RecursiveSet<Clause>();
+     for (const clause of Clauses) {
+         let hasL = false, hasLBar = false;
+         for (const lit of clause) {
+             if (sameLiteral(lit, l)) hasL = true;
+             if (sameLiteral(lit, lBar)) hasLBar = true;
+         }
+         if (hasLBar) {
+             const newClause = new RecursiveSet<Literal>();
+             for (const lit of clause) {
+                 if (!sameLiteral(lit, lBar)) newClause.add(lit);
+			 }
+             result.add(newClause);
+         } else if (!hasL) {
+             result.add(clause);
+         }
+     }
+     result.add(new RecursiveSet<Literal>(l));
+     return result;
+ }
+\end{minted}
+\caption{Reduktionsschritt in TypeScript mit \texttt{RecursiveSet}}
+
+Der entscheidende Performance-Vorteil dieser textlastigeren Schreibweise liegt in der strikten Vermeidung unnötiger Allokationen. Anstatt temporäre Zwischenmengen zu erzeugen, wird initial genau eine einzige Zielmenge (\texttt{const result = new RecursiveSet<Clause>();}) allokiert, und es wird nur ein einziges Mal über \texttt{Clauses} iteriert. 
+Eine neue Klausel (\texttt{new RecursiveSet<Literal>()}) wird im Speicher ausschließlich dann instanziiert, wenn das Literal \texttt{lBar} tatsächlich entfernt werden muss (\texttt{if (hasLBar)}). Bleibt eine Klausel von der Reduktion unberührt (\texttt{else if (!hasL)}), wird lediglich ihre bestehende Speicherreferenz in das neue Set (\texttt{result.add(clause)}) übernommen wodurch ein teurer Kopiervorgang völlig entfällt.
+
+Ein zentraler Beschleuniger in der TypeScript-Version ist dabei die \texttt{recursive-set}-Datenstruktur selbst. Sie implementiert Hash-Tabellen mit \href{https://en.wikipedia.org/wiki/Open_addressing}{Open Addressing} und \href{https://en.wikipedia.org/wiki/Linear_probing}{Linear Probing} sowie eine auf Performance ausgelegte Hash-Funktion. Grundlegende Operationen wie \texttt{add}/\texttt{has} sind damit amortisiert $\mathcal{O}(1)$. 
+
+Die im \texttt{recursive-set}-Modul formulierten Voraussetzungen (keine \texttt{NaN}/\texttt{Infinity}, keine plain objects, gute Hash-Verteilung, Unveränderlichkeit des Hashcodes nach dem Einfügen und keine Zyklen) sind in diesem SAT-Use-Case voll erfüllt, da Literale und Variablen als Strings bzw.\ \texttt{Tuple}-Objekte modelliert und die erzeugten Klauseln nach der Konstruktion nicht mehr mutiert werden. Damit greifen die effizienten \texttt{add}-Operationen im TypeScript-Code extrem schnell, was den imperativen Ansatz für das ständige Erzeugen und Prüfen von Unit-Klauseln in der Gesamtlaufzeit überlegen macht.
+
+
+\subsubsection{Laufzeitvergleich: Davis--Putnam mit JW-Heuristik (\(n=16\))}
+Analog zum Merge-Sort-Vergleich wurden die gleichen Methoden zum Messen der Zeit verwendet.
+
+\Needspace{6\baselineskip}
+\begin{minted}{python}
+ %%time
+ Solution = queens(16)
 \end{minted}
 \caption{Zeitmessung in Python (16-Damen)}
 
 \textbf{Ausgabe (Python):}
 \begin{verbatim}
-	CPU times: total: 23.6 s
-	Wall time: 24.8 s
+ CPU times: total: 23.6 s
+ Wall time: 24.8 s
 \end{verbatim}
-% [file:78]
 
-\paragraph{Messung in TypeScript (Node.js/V8).}
-In der TypeScript-Version wurde die Laufzeit mit \texttt{console.time()} und \texttt{console.timeEnd()} gemessen; diese Messung entspricht der real verstrichenen Zeit. % [file:80]
 \Needspace{6\baselineskip}
 \begin{minted}{typescript}
-	console.time("queens");
-	const Solution = queens(16);
-	console.timeEnd("queens");
+ console.time("queens");
+ const Solution = queens(16);
+ console.timeEnd("queens");
 \end{minted}
 \caption{Zeitmessung in TypeScript (16-Damen)}
 
@@ -233,40 +283,15 @@ In der TypeScript-Version wurde die Laufzeit mit \texttt{console.time()} und \te
 \begin{verbatim}
 	queens: 17.041s
 \end{verbatim}
-% [file:80]
+
 
 \subsubsection{Analyse der Ergebnisse (8/16-Damen)}
-Für \(n=16\) zeigt sich ein deutlicher Performance-Vorteil der TypeScript/Node.js-Ausführung: \(17{,}041\,\mathrm{s}\) gegenüber \(24{,}8\,\mathrm{s}\) in Python, also rund \(31\,\%\) weniger \emph{Wall time}. % [file:78][file:80]
-Der Unterschied ist bei \(n=8\) erwartungsgemäß weniger relevant, da das Problem bereits unter einem Zehntel einer Sekunde lösbar ist und damit Mess-Overhead dominiert. % [file:78][file:80]
+Für \(n=16\) zeigt sich ein deutlicher Performance-Vorteil der TypeScript/Node.js-Ausführung: \(17{,}041\,\mathrm{s}\) gegenüber \(24{,}8\,\mathrm{s}\) in Python, also rund \(31\,\%\) weniger \emph{Wall time}. 
 
-\paragraph{Einordnung über Laufzeitumgebungen.}
-Node.js führt den kompilierten JavaScript-Code auf der V8-Engine aus, die häufig ausgeführte Codepfade zur Laufzeit optimieren kann, während Python den Algorithmus primär im Interpreter ausführt. % [file:80][file:78]
-Gerade beim Davis--Putnam-Verfahren treten wiederkehrende Iterationsmuster auf (z.\,B.\ in \texttt{saturate} und \texttt{reduce}), wodurch V8 in „hot paths“ stärker profitieren kann als eine bytecode-interpretierte Ausführung. % [file:79][file:77]
+Gerade beim Davis--Putnam-Verfahren treten wiederkehrende Iterationsmuster auf (z.\,B.\ in der Iteration durch Klauseln in \texttt{reduce}. Dadurch kann die V8-Engine in diesen Pfaden durch JIT-Kompilierung deutlich stärker profitieren als eine rein bytecode-interpretierte Ausführung in Python.
 
-\paragraph{Hauptgrund: Hash-basierte \texttt{RecursiveSet}-Struktur.}
-Ein zentraler Beschleuniger in der TypeScript-Version ist die verwendete \texttt{recursive-set}-Bibliothek, die \emph{Value Semantics}, Deep-Equality und Hashing für rekursive Strukturen (z.\,B.\ Mengen von Mengen) bereitstellt. % [file:76]
-Die Datenstruktur implementiert Hash-Tabellen mit \emph{Open Addressing} und \emph{Linear Probing} sowie eine auf Performance ausgelegte Hash-Funktion; grundlegende Operationen wie \texttt{add}/\texttt{has}/\texttt{remove} sind damit amortisiert \(O(1)\). % [file:76]
-Zusätzlich nutzt \texttt{RecursiveSet} flache Arrays für bessere Cache-Lokalität und führt eine „Frozen“-Logik ein, sobald der Hashwert berechnet wurde, um die Hash-Stabilität sicherzustellen. % [file:76]
+Im Vergleich zum Merge-Sort-Benchmark fällt der relative Performance-Abstand beim \(n\)-Damen-Problem jedoch spürbar geringer aus. Wie zuvor beschrieben, verlagern sich die Kosten bei Davis--Putnam stark in Richtung Speicherverwaltung (Aufrufe wie \texttt{add}/\texttt{has}/\texttt{union} sowie Objekterstellung). Die Laufzeit wird also weniger von engen numerischen Rechenschleifen bestimmt, in denen JIT-Compiler meist am stärksten glänzen.
 
-\paragraph{Warum das hier besonders wirkt.}
-Der Davis--Putnam-Code erzeugt und verarbeitet sehr viele Klauselmengen und Unit-Klauseln; in beiden Implementierungen sind genau diese Mengenoperationen der dominierende Kostenfaktor (z.\,B.\ \texttt{reduceClauses} und die Schleife in \texttt{saturateClauses}). % [file:79][file:77]
-In TypeScript werden Klauseln/Literale dabei konsequent als \texttt{RecursiveSet} bzw.\ \texttt{Tuple} modelliert und über Hashing sowie strukturelle Gleichheit verglichen, was die vielen Membership-Checks und das Duplikat-Management effizient hält. % [file:79][file:76]
-In Python wird dieselbe Idee mit \texttt{frozenset} (Klausel) und \texttt{set}/\texttt{frozenset} (Klauselmenge) umgesetzt; dabei entsteht jedoch zusätzlicher Overhead durch die interpreterseitige Steuerlogik und das häufige Erzeugen neuer (frozen) Sets in Comprehensions und in der Rekursion. % [file:77][file:78]
+Hier kommt Python ein entscheidender Architekturvorteil zugute: Bei diesem speicherintensiven Workload führt Python nicht nur reines Python aus, sondern profitiert massiv von seinen hochoptimierten, in C implementierten Hash-Tabellen für \texttt{set} und \texttt{frozenset}. Insbesondere sind zentrale Operationen wie Membership-Checks und das Hashing von \texttt{frozenset} in CPython direkt in C realisiert. Zudem wird der Hashwert eines \texttt{frozenset} nach der ersten Berechnung intern gecacht, was den Aufwand für wiederholte Hash-Berechnungen drastisch reduziert und den Performance-Nachteil des reinen Interpreters bei diesem spezifischen Problem stark abfedert.
 
-\paragraph{Bezug zu den Bibliotheks-Voraussetzungen.}
-Die im \texttt{recursive-set}-Modul formulierten Voraussetzungen (keine \texttt{NaN}/\texttt{Infinity}, keine „plain objects“, gute Hash-Verteilung, Unveränderlichkeit des Hashcodes nach dem Einfügen und keine Zyklen) sind in diesem SAT-Use-Case erfüllt, da Literale und Variablen als Strings bzw.\ \texttt{Tuple}-Objekte modelliert werden und die erzeugten Klauseln nach der Konstruktion nicht mutiert werden. % [file:76][file:79][file:80]
-Damit bleiben die zugesicherten Hash-basierten Laufzeiteigenschaften in der Praxis stabil und wirken sich insbesondere bei \(n=16\) sichtbar auf die Gesamtlaufzeit aus. % [file:76][file:78][file:80]
-
-\subsubsection{Warum der Unterschied hier kleiner ist als bei Merge-Sort}
-Im Vergleich zum Merge-Sort-Benchmark fällt der Performance-Abstand beim \(n\)-Damen-Problem geringer aus, weil sich die dominierenden Kosten stärker in Richtung Datenstruktur-Operationen und Speicherverwaltung verschieben.
-Bei Davis--Putnam entstehen in kurzer Zeit sehr viele temporäre Klauselmengen, Unit-Klauseln und Reduktionen, d.\,h.\ die Laufzeit wird weniger von „tight loops“ und stärker von \texttt{add}/\texttt{has}/\texttt{union} sowie dem Erzeugen kleiner Mengenobjekte geprägt. % [file:77][file:79]
-
-Ein wichtiger Punkt ist, dass Python bei diesem Workload nicht nur „reines Python“ ausführt, sondern massiv von hochoptimierten, in C implementierten Hash-Tabellen für \texttt{set} und \texttt{frozenset} profitiert.
-Insbesondere sind zentrale Operationen wie Membership-Checks und das Hashing von \texttt{frozenset} in CPython direkt in \texttt{setobject.c} implementiert; zudem wird der Hashwert eines \texttt{frozenset} intern gecacht, was wiederholte Hash-Berechnungen reduziert. % [web:85]
-
-Die TypeScript-Version verwendet zwar mit \texttt{RecursiveSet} ebenfalls eine hash-basierte Datenstruktur mit Open Addressing und Linear Probing, jedoch bleibt sie eine Bibliotheksimplementierung auf JavaScript-Ebene, die zusätzlich Deep-Equality und eigenes Hashing für rekursive Strukturen bereitstellt.
-Diese zusätzlichen Abstraktionen sind für die korrekte „Value Semantics“ entscheidend, können aber bei sehr vielen kurzlebigen Objekten (z.\,B.\ vielen kleinen Klauseln) den Anteil von Allokationen und damit den Druck auf den Garbage Collector erhöhen. % [file:76][web:87]
-
-Hinzu kommt, dass die JIT-Optimierung der V8-Engine bei stark verzweigtem, rekursivem Suchcode mit vielen kleinen Objekten und dynamischen Kontrollflüssen typischerweise weniger stark „durchschlägt“ als bei regelmäßigem, zahlenlastigem Code, wie er bei Sortierbenchmarks häufiger entsteht.
-Dadurch bleibt der Vorteil von Node.js/V8 zwar klar sichtbar, fällt aber im SAT-basierten \(n\)-Damen-Szenario insgesamt geringer aus als im Merge-Sort-Vergleich. % [web:87]
 

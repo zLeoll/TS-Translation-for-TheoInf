@@ -70,5 +70,7 @@
 \contentsline {listing}{\numberline {70}{\ignorespaces Deklarative (optimierte) Überprüfung in TypeScript}}{60}{listing.70}%
 \contentsline {listing}{\numberline {71}{\ignorespaces Python-Referenz der Überprüfung}}{60}{listing.71}%
 \contentsline {listing}{\numberline {72}{\ignorespaces Time-Funktion in Python}}{62}{listing.72}%
-\contentsline {listing}{\numberline {73}{\ignorespaces Zeitmessung in Python (16-Damen)}}{63}{listing.73}%
-\contentsline {listing}{\numberline {74}{\ignorespaces Zeitmessung in TypeScript (16-Damen)}}{64}{listing.74}%
+\contentsline {listing}{\numberline {73}{\ignorespaces Reduktionsschritt in Python mit Set-Comprehensions}}{64}{listing.73}%
+\contentsline {listing}{\numberline {74}{\ignorespaces Reduktionsschritt in TypeScript mit \texttt {RecursiveSet}}}{65}{listing.74}%
+\contentsline {listing}{\numberline {75}{\ignorespaces Zeitmessung in Python (16-Damen)}}{66}{listing.75}%
+\contentsline {listing}{\numberline {76}{\ignorespaces Zeitmessung in TypeScript (16-Damen)}}{66}{listing.76}%
