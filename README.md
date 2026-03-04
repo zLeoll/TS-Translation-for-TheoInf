@@ -22,7 +22,7 @@ npm install -g tslab
 tslab install
 
 npm install fraction.js mathjs logic-solver z3-solver
-npm install heap-js recursive-set@8.0.0
+npm install heap-js recursive-set
 npm install @hpcc-js/wasm pngjs
 npm install --save-dev @types/pngjs
 ```
