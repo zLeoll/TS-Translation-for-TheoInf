@@ -1,17 +1,13 @@
-\section{Case Studies}
-\textbf{@Leoll} Im Verlauf der Studienarbeit sind wir auf mehrere komplexe Problemstellungen/Hürden gestoßen. Im folgenden haben wir uns Fälle aus Notebooks herausgesucht, welche wir zum Verständnis genauer aufzeigen möchten.
-
-
-\subsection{Case Study: Übersetzung des Notebooks 04-CNF}
+\section{Case Study: Übersetzung des Notebooks 04-CNF}
 Das vorliegende Notebook \href{https://github.com/zLeoll/TS-Translation-for-TheoInf/blob/main/Logic/Chapter-4/04-CNF.ipynb}{04-CNF.ipynb} demonstriert die Überführung von aussagenlogischen Formeln in die \ac{KNF}. Anhand dieser Case Study werden die grundlegenden Unterschiede zwischen Python und TypeScript in Bezug auf Typisierung, Datenstrukturen und Kontrollfluss veranschaulicht.
 
 
-\subsubsection{Semantische Grundlagen der Modellierung} In der Aussagenlogik bilden atomare Aussagen, repräsentiert durch Variablen (z. B. $p$ oder $q$), das Fundament. Sie können lediglich die Wahrheitswerte \textit{wahr} ($\top$) oder \textit{falsch} ($\bot$) annehmen. Eine Formel entsteht durch die rekursive Verknüpfung dieser atomaren Bestandteile mittels logischer Junktoren: der Negation ($\neg$, NICHT), der Konjunktion ($\land$, UND), der Disjunktion ($\lor$, ODER) oder der Implikation ($\to$, WENN-DANN). Für die algorithmische Normalisierung sind spezialisierte Strukturen entscheidend: Ein Literal ist die kleinste Einheit und bezeichnet entweder eine Variable selbst (positives Literal wie z.\,B.\ p) oder deren Negation (negatives Literal wie z.\,B.\ \(\neg q\)). Eine Klausel fasst eine Menge solcher Literale zusammen, wobei diese logisch als Disjunktion (ODER-Verknüpfung) interpretiert werden. Die Klausel \(\{p,\neg q\}\) entspricht also dem Ausdruck \(p \lor \neg q\). Die \ac{KNF} schließlich besteht aus einer Menge von Klauseln, die als Konjunktion (UND-Verknüpfung) verstanden wird. Ein Beispiel für eine solche Menge von Klauseln mit den Variablen \(p\), \(q\) und \(r\) ist \(S = \{\{p, \neg q\}, \{q, r\}, \{\neg p, \neg r\}\}\). Diese Mengendarstellung entspricht der aussagenlogischen Formel: \((p \lor \neg q) \land (q \lor r) \land (\neg p \lor \neg r)\). Die gesamte Formel ist somit nur dann wahr, wenn jede einzelne Klausel für sich erfüllt ist. 
-Für die Transformation in diese Mengendarstellung werden im Notebook zwei weitere Normalformen genutzt, die ebenfalls eine klar definierte Struktur besitzen. Zunächst wird die \textit{Negationsnormalform} (NNF) gebildet: Dabei werden Negationen so weit nach innen geschoben, dass der Operator \(\neg\) ausschließlich noch unmittelbar vor Variablen steht, während die Formel ansonsten nur aus \(\land\), \(\lor\) und Variablen sowie ggf.\ den Konstanten \(\top\) und \(\bot\) besteht. 
-Anschaulich bedeutet dies beispielsweise, dass eine Negation über einer zusammengesetzten Teilformel aufgelöst wird, etwa \(\neg(p \land q)\) \(\leadsto\) \((\neg p \lor \neg q)\), sodass die Negation nicht mehr „über“ dem \(\land\)-Knoten steht, sondern direkt an die Variablen gebunden wird. Aufbauend auf dieser strukturell bereinigten Zwischenform wird anschließend die \ac{KNF} konstruiert. Ein typisches Vorher-Nachher-Beispiel ist die Verteilung einer Disjunktion über eine Konjunktion: \((p \land q) \lor r\) \(\leadsto\) \((p \lor r) \land (q \lor r)\), wodurch die Formel in eine Konjunktion von Disjunktionen überführt wird.  In der finalen Datenstruktur wird diese \ac{KNF} dann nicht mehr als Operatorbaum gespeichert, sondern unmittelbar als „Menge von Mengen“, z.\,B.\ \((p \lor \neg q) \land (q \lor r)\) \(\leadsto\) \(\{\{p,\neg q\},\{q,r\}\}\), wobei die äußere Menge die Konjunktion der Klauseln und jede innere Menge die Disjunktion der Literale repräsentiert. 
+\subsection{Semantische Grundlagen der Modellierung} In der Aussagenlogik bilden atomare Aussagen, repräsentiert durch Variablen (z. B. $p$ oder $q$), das Fundament. Sie können lediglich die Wahrheitswerte \textit{wahr} ($\top$) oder \textit{falsch} ($\bot$) annehmen. Eine Formel entsteht durch die rekursive Verknüpfung dieser atomaren Bestandteile mittels logischer Junktoren: der Negation ($\neg$, NICHT), der Konjunktion ($\land$, UND), der Disjunktion ($\lor$, ODER) oder der Implikation ($\to$, WENN-DANN).\\ Für die algorithmische Normalisierung sind spezialisierte Strukturen entscheidend: Ein Literal ist die kleinste Einheit und bezeichnet entweder eine Variable selbst (positives Literal wie z.\,B.\ p) oder deren Negation (negatives Literal wie z.\,B.\ \(\neg q\)). Eine Klausel fasst eine Menge solcher Literale zusammen, wobei diese logisch als Disjunktion (ODER-Verknüpfung) interpretiert werden. Die Klausel \(\{p,\neg q\}\) entspricht also dem Ausdruck \(p \lor \neg q\). Die \ac{KNF} schließlich besteht aus einer Menge von Klauseln, die als Konjunktion (UND-Verknüpfung) verstanden wird. Ein Beispiel für eine Menge S von Klauseln mit den Variablen \(p\), \(q\) und \(r\) ist \(S = \{\{p, \neg q\}, \{q, r\}, \{\neg p, \neg r\}\}\). Diese Mengendarstellung entspricht der aussagenlogischen Formel: \((p \lor \neg q) \land (q \lor r) \land (\neg p \lor \neg r)\). Die gesamte Formel ist somit nur dann wahr, wenn jede einzelne Klausel für sich erfüllt ist. 
+Für die Transformation in diese Mengendarstellung werden im Notebook zwei weitere Normalformen genutzt, die ebenfalls eine klar definierte Struktur besitzen. Zunächst wird die \ac{NNF} gebildet: Dabei werden Negationen so weit nach innen geschoben, dass der Operator \(\neg\) ausschließlich noch unmittelbar vor Variablen steht, während die Formel ansonsten nur aus \(\land\), \(\lor\) und Variablen sowie ggf.\ den Konstanten \(\top\) und \(\bot\) besteht. 
+Anschaulich bedeutet dies beispielsweise, dass eine Negation über einer zusammengesetzten Teilformel aufgelöst wird, etwa \(\neg(p \land q)\) \(\leadsto\) \((\neg p \lor \neg q)\), sodass die Negation nicht mehr „über“ dem \(\land\)-Knoten steht, sondern direkt an die Variablen gebunden wird. Aufbauend auf dieser strukturell bereinigten Zwischenform wird anschließend die \ac{KNF} konstruiert. Ein typisches Vorher-Nachher-Beispiel ist die Verteilung einer Disjunktion über eine Konjunktion: \((p \land q) \lor r\) \(\leadsto\) \((p \lor r) \land (q \lor r)\), wodurch die Formel in eine Konjunktion von Disjunktionen überführt wird.  In der finalen Datenstruktur wird diese \ac{KNF} dann nicht mehr als Operatorbaum gespeichert, sondern unmittelbar als Menge von Mengen, z.\,B.\ \((p \lor \neg q) \land (q \lor r)\) \(\leadsto\) \(\{\{p,\neg q\},\{q,r\}\}\), wobei die äußere Menge die Konjunktion der Klauseln und jede innere Menge die Disjunktion der Literale repräsentiert. 
 
-\subsubsection{Importe und Abhängigkeiten}
-Zunächst werden der \texttt{LogicParser} sowie spezielle Datenstrukturen aus der Bibliothek \texttt{recursive-set} importiert:
+\subsection{Importe und Abhängigkeiten}
+Zunächst werden im TypeScript Notebook der \texttt{LogicParser} sowie spezielle Datenstrukturen aus der Bibliothek \texttt{recursive-set} importiert:
 \Needspace{7\baselineskip}
 \begin{minted}{typescript}
  import { LogicParser } from './PropositionalLogicParser';
@@ -22,7 +18,7 @@ Zunächst werden der \texttt{LogicParser} sowie spezielle Datenstrukturen aus de
 
 Ein Parser ist in diesem Kontext zwingend erforderlich, da die aussagenlogischen Formeln zunächst als einfache Strings vorliegen (bspw. \texttt{'(p \(\land\) q) \(\rightarrow\) r'})
 und erst in eine strukturierte, maschinenlesbare Form, wie einen abstrakten Syntaxbaum, überführt werden müssen, bevor die anschließenden algorithmischen Transformationen zur \ac{KNF} auf sie angewendet werden können. Die Python-Version bindet den Parser komfortabel per \texttt{\%run Propositional-Logic-Parser.ipynb} ein ohne zusätzliche Bibliothek. 
-Dies markiert einen der fundamentalsten Unterschiede zur Python-Welt: Während Python für herkömmliche Tupel (\texttt{tuple}) und unveränderliche Mengen (\texttt{frozenset}) standardmäßig eine inhaltliche Wertgleichheit überprüft, vergleicht TypeScript Objekte und Arrays lediglich über ihre Speicherreferenz. Um das Verhalten von Pythons \texttt{frozenset} in TypeScript nachzubilden, muss zwingend auf die Bibliothek \texttt{recursive-set} zurückgegriffen werden, welche die Klassen \texttt{RecursiveSet} und \texttt{Tuple} für genau diesen Zweck bereitstellt.
+Dies markiert einen der fundamentalsten Unterschiede zur Python-Welt: Während Python für herkömmliche Tupel und unveränderliche Mengen (\texttt{frozenset}) standardmäßig eine inhaltliche Wertgleichheit überprüft, vergleicht TypeScript Objekte und Arrays lediglich über ihre Speicherreferenz. Um das Verhalten von Pythons \texttt{frozenset} in TypeScript nachzubilden, muss zwingend auf die Bibliothek \texttt{recursive-set} zurückgegriffen werden, welche die Klassen \texttt{RecursiveSet} und \texttt{Tuple} für genau diesen Zweck bereitstellt.
 
 
 
@@ -30,8 +26,8 @@ Dies markiert einen der fundamentalsten Unterschiede zur Python-Welt: Während P
 
 
 
-\subsubsection{Typdefinitionen in Python vs.\ TypeScript (präziser Vergleich)}
-Die Typdefinitionen in beiden Implementierungen verfolgen das gleiche fachliche Ziel (Formel, Literal, Klausel, \ac{KNF}), unterscheiden sich jedoch grundlegend in ihrer \textit{Präzision} und damit in der Fähigkeit, fehlerhafte Strukturen frühzeitig auszuschließen. In Python dienen die Annotationen primär der Dokumentation, während TypeScript die zulässige Struktur des Syntaxbaums und der Mengenkonstrukte deutlich enger über Union-Typen und fest geformte Tupel beschreibt.
+\subsection{Typdefinitionen}
+Die Typdefinitionen in beiden Implementierungen verfolgen das gleiche fachliche Ziel (Formel, Literal, Klausel, \ac{KNF}), unterscheiden sich jedoch grundlegend in ihrer \textit{Präzision} und damit in der Fähigkeit, fehlerhafte Strukturen frühzeitig auszuschließen. In Python dienen die Annotationen primär der Dokumentation, während TypeScript die zulässige Struktur des Syntaxbaums und der Mengenkonstrukte deutlich enger über Union-Typen und fest geformte Tupel beschreibt:
 
 \Needspace{7\baselineskip}
 \begin{minted}{python}
@@ -55,7 +51,33 @@ Die Typdefinitionen in beiden Implementierungen verfolgen das gleiche fachliche 
 \end{minted}
 \captionof{listing}{TypeScript: Strukturell präzise Union-Typen und wertbasierte Mengen über \texttt{recursive-set}}
 
-In Python ist \texttt{Formula} sehr allgemein als Variable oder beliebiges Tupel rekursiver Formeln modelliert (\texttt{tuple[Formula, ...]}). Dadurch lässt sich zwar jede baumartige Repräsentation typisieren, jedoch werden weder die erlaubten Operatoren noch die korrekte Stelligkeit (z.\,B. binär für \(\land\), \(\lor\), \(\to\), \(\leftrightarrow\)) durch den Typ erzwungen.
+
+In Python ist ein Literal entweder eine Variable (\texttt{str}) oder ein Tupel \texttt{tuple[str, Variable]}. Diese Definition ist bewusst knapp, aber sie lässt rein vom Typ her auch ungültige Konstruktionen zu, da das erste Tupel-Element nur als \texttt{str} und nicht als festes Symbol \texttt{'¬'} beschrieben ist.
+
+\Needspace{7\baselineskip}
+\begin{minted}{python}
+ l1: Literal = 'p'          # positives Literal
+ l2: Literal = ('¬', 'p')   # negatives Literal
+ # Typseitig ebenfalls möglich, semantisch jedoch falsch:
+ l3: Literal = ('not', 'p')
+ l4: Literal = ('∧', 'p')
+\end{minted}
+\captionof{listing}{Python: \texttt{Literal} ist typseitig zu allgemein für das Negationssymbol}
+
+In TypeScript wird das negative Literal als \texttt{Tuple<['¬', Variable]>} modelliert. Ein Ausdruck der Form \texttt{X<...>} ist eine Parametrisierung eines Typs. Dadurch ist festgelegt, dass das Tupel exakt die Form \([\texttt{'¬'}, \texttt{Variable}]\) besitzt, wodurch falsche Operator-Tupel bereits auf Typ-Ebene verhindert werden.
+
+\Needspace{7\baselineskip}
+\begin{minted}{typescript}
+ const l1: Literal = 'p';
+ const l2: Literal = new Tuple('¬', 'p');
+ // Strukturell falsche Literale wären nicht mit dem Typ vereinbar:
+ const l3: Literal = new Tuple('not', 'p');
+\end{minted}
+\captionof{listing}{TypeScript: Negierte Literale sind als Tupel mit festem Präfix \texttt{'¬'} typisiert}
+
+Python nutzt \texttt{frozenset[Literal]} als unveränderliche Menge von Literalen für Klauseln und \texttt{set[Clause]} für die \ac{KNF} als Menge von Klauseln. Die Unveränderlichkeit der Klauseln ist entscheidend, weil nur unveränderliche Objekte in Python als Elemente einer äußeren Menge (Set) auftreten können.
+
+Ebenso ist in Python \texttt{Formula} sehr allgemein als Variable oder beliebiges Tupel rekursiver Formeln modelliert (\texttt{tuple[Formula, ...]}). Dadurch lässt sich zwar jede baumartige Repräsentation typisieren, jedoch werden weder die erlaubten Operatoren noch die korrekte Stelligkeit (z.\,B. binär für \(\land\), \(\lor\), \(\to\), \(\leftrightarrow\)) durch den Typ erzwungen.
 
 \Needspace{7\baselineskip}
 \begin{minted}{python}
@@ -80,33 +102,8 @@ TypeScript beschreibt \texttt{Formula} dagegen als Union aus exakt vier Formen: 
 \end{minted}
 \captionof{listing}{TypeScript: \texttt{Formula} erzwingt Operator-Menge und Stelligkeit über Union-Typen}
 
-In Python ist ein Literal entweder eine Variable (\texttt{str}) oder ein Tupel \texttt{tuple[str, Variable]}. Diese Definition ist bewusst knapp, aber sie lässt rein vom Typ her auch ungültige Konstruktionen zu, da das erste Tupel-Element nur als \texttt{str} und nicht als festes Symbol \texttt{'¬'} beschrieben ist.
 
-\Needspace{7\baselineskip}
-\begin{minted}{python}
- l1: Literal = 'p'          # positives Literal
- l2: Literal = ('¬', 'p')   # negatives Literal
- # Typseitig ebenfalls möglich, semantisch jedoch falsch:
- l3: Literal = ('not', 'p')
- l4: Literal = ('∧', 'p')
-\end{minted}
-\captionof{listing}{Python: \texttt{Literal} ist typseitig zu allgemein für das Negationssymbol}
-
-In TypeScript wird das negative Literal als \texttt{Tuple<['¬', Variable]>} modelliert. Ein Ausdruck der Form \texttt{X<...>} ist eine \textit{Parametrisierung} eines Typs. Dadurch ist festgelegt, dass das Tupel exakt die Form \([\texttt{'¬'}, \texttt{Variable}]\) besitzt, wodurch falsche Operator-Tupel bereits auf Typ-Ebene verhindert werden.
-
-\Needspace{7\baselineskip}
-\begin{minted}{typescript}
- const l1: Literal = 'p';
- const l2: Literal = new Tuple('¬', 'p');
- // Strukturell falsche Literale wären nicht mit dem Typ vereinbar:
- const l3: Literal = new Tuple('not', 'p');
-\end{minted}
-\captionof{listing}{TypeScript: Negierte Literale sind als Tupel mit festem Präfix \texttt{'¬'} typisiert}
-
-Python nutzt \texttt{frozenset[Literal]} als unveränderliche Menge von Literalen für Klauseln und \texttt{set[Clause]} für die \ac{KNF} als Menge von Klauseln. Die Unveränderlichkeit der Klauseln ist entscheidend, weil nur unveränderliche Objekte in Python als Elemente einer äußeren Menge (Set) auftreten können.
-
-
-Ein besonderes Merkmal der TypeScript-Version ist das iterative Einschränken des Typensystems (Type Narrowing). Im folgenden werden spezifischere Formel-Typen deklariert, bei denen sukzessive Operatoren wie \texttt{'↔'} und \texttt{'→'} aus dem Union-Typ entfernt werden. Der \texttt{NNF}-Typ geht noch weiter und beschränkt die Negation explizit auf atomare Literale, sodass nachfolgende Funktionen statisch wissen, dass keine verschachtelten \(\neg\)-Knoten mehr auftreten. Dies erhöht die statische Typsicherheit in den nachfolgenden Transformationsschritten signifikant, während Python für alle Zwischenzustände durchgehend denselben \texttt{Formula}-Typ verwendet.
+Ein besonderes Merkmal der TypeScript-Version ist das iterative Einschränken des Typensystems (Type Narrowing). Im folgenden werden spezifischere Formel-Typen deklariert, bei denen sukzessive Operatoren wie \texttt{'↔'} und \texttt{'→'} aus dem Union-Typ entfernt werden. Der \texttt{NNF}-Typ geht noch weiter und beschränkt die Negation explizit auf atomare Literale, sodass nachfolgende Funktionen statisch wissen, dass keine verschachtelten NOT-Knoten mehr auftreten. Dies erhöht die statische Typsicherheit in den nachfolgenden Transformationsschritten signifikant, während Python für alle Zwischenzustände durchgehend denselben \texttt{Formula}-Typ verwendet.
 
 
 \Needspace{7\baselineskip}
@@ -115,15 +112,15 @@ Ein besonderes Merkmal der TypeScript-Version ist das iterative Einschränken de
                  ['→' | '∧' | '∨', Formula1, Formula1];
  type Formula2 = Variable | ['⊤' | '⊥'] | ['¬', Formula2] | 
                  ['∧' | '∨', Formula2, Formula2];
- type NNF =      Variable | ['⊤'] | ['⊥'] | ['¬', Variable] | 
+ type NNF      = Variable | ['⊤'] | ['⊥'] | ['¬', Variable] | 
                  ['∧' | '∨', NNF, NNF];
 \end{minted}
 \captionof{listing}{Iteratives Type Narrowing der Formeln}
 
 
-\subsubsection{Eliminierung von \texttt{↔}}
+\subsection{Eliminierung von \texttt{↔}}
 Die Funktionen \texttt{eliminateBiconditional} und \texttt{eliminateConditional} markieren den Übergang von einer allgemeinen Formelrepräsentation hin zu einer strukturell eingeschränkten Zwischenform, in der die Operatoren '↔' und '→' nicht mehr auftreten. 
-In der TypeScript-Version wird dieser Schritt nicht nur algorithmisch, sondern zusätzlich \textit{typseitig} abgesichert: \texttt{eliminateBiconditional} liefert den engeren Typ \texttt{Formula1}.
+In der TypeScript-Version wird dieser Schritt nicht nur algorithmisch, sondern zusätzlich \textit{typseitig} abgesichert: \texttt{eliminateBiconditional} liefert den engeren Typ \texttt{Formula1}. 
 
 \Needspace{7\baselineskip}
 \begin{minted}{python}
@@ -144,7 +141,7 @@ def eliminateBiconditional(f: Formula) -> Formula:
 \end{minted}
 \captionof{listing}{Python: \texttt{eliminateBiconditional} mit Pattern Matching und einheitlichem \texttt{Formula}-Typ}
 
-\Needspace{7\baselineskip}
+\Needspace{27\baselineskip}
 \begin{minted}{typescript}
  function eliminateBiconditional(f: Formula): Formula1 {
      'Eliminate the logical operator "↔" from f.'
@@ -170,198 +167,246 @@ def eliminateBiconditional(f: Formula) -> Formula:
          case '∨': {
              const [, g, h] = f;
              return [op, eliminateBiconditional(g), eliminateBiconditional(h)];
-		 }
-	 }
+         }
+     }
  }
 \end{minted}
 \captionof{listing}{TypeScript: \texttt{eliminateBiconditional} mit Type Guards und Rückgabetyp \texttt{Formula1}}
 
 Der Ausdruck \texttt{typeof f === 'string'} ist ein Type Guard.
-Ein \textit{Type Guard} ist in TypeScript eine Laufzeitprüfung, die dem Compiler gleichzeitig als Hinweis dient, einen Union-Typ in einem Kontrollflusszweig auf einen spezifischeren Typ zu \textit{verengen}. Innerhalb des \texttt{if}-Zweigs weiß der Compiler, dass \texttt{f} nur noch ein \texttt{string} sein kann. Im \texttt{else}-Zweig ist \texttt{f} entsprechend alles außer einem \texttt{string} aus dem ursprünglichen Union-Typ.
+Ein Type Guard ist in TypeScript eine Laufzeitprüfung, die dem Compiler gleichzeitig als Hinweis dient, einen Union-Typ in einem Kontrollflusszweig auf einen spezifischeren Typ zu verengen. Innerhalb des \texttt{if}-Zweigs weiß der Compiler, dass \texttt{f} nur noch ein \texttt{string} sein kann. Da die Funktion im \texttt{if}-Zweig durch ein \texttt{return} zwingend vorzeitig verlassen wird, schließt TypeScript den Typ \texttt{string} für den weiteren Verlauf des Codes sicher aus. Im impliziten \texttt{else}-Zweig bleibt vom ursprünglichen Union-Typ daher nur noch folgender Typ übrig:
 
+\Needspace{2\baselineskip}
+\begin{minted}{typescript}
+ f: ["⊤" | "⊥"] | ["¬", Formula] | ["↔" | "→" | "∧" | "∨", Formula, Formula]
+\end{minted}
+\captionof{listing}{Eingeschränkter Union Type}
 
-Python nutzt Pattern Matching (\texttt{match}/\texttt{case}), um die Baumform direkt über Muster wie \texttt{('↔', g, h)} zu zerlegen. TypeScript hingegen kombiniert zunächst den Type Guard mit einer \textit{kontrollflussbasierten Typanalyse}: Nach dem frühen \texttt{return} im \texttt{if}-Zweig ist im restlichen Code garantiert, dass \texttt{f} kein \texttt{string} mehr ist, wodurch Destructuring wie \texttt{const [op] = f;} typseitig zulässig wird. Anschließend wirkt \texttt{switch (op)} als zweite Verengung: Da \texttt{op} in \texttt{Formula} ein \textit{Literal-Typ} (z.\,B.\ genau \texttt{'↔'} oder \texttt{'¬'}) ist, kann der Compiler in jedem \texttt{case} die konkrete Tupel-/Array-Form von \texttt{f} ableiten.
+In Zelle 6 wird der erste Operator aus der Formel extrahiert. Dabei wird der Datentyp der Variable \texttt{op} auf eine feste Menge von Zeichenketten eingeschränkt. Die Variable \texttt{op} besitzt somit den folgenden Typ:
 
-In Python ist das abschließende \texttt{return None \# type: ignore} ein praktischer Hinweis darauf, dass der Typchecker die Vollständigkeit der Fallunterscheidung nicht sicher ableiten kann. In TypeScript wird die erreichbare Typpräzision hingegen durch Type Guards und die kontrollflussbasierte Verengung wesentlich stärker ausgenutzt.
+\Needspace{2\baselineskip}
+\begin{minted}{typescript}
+ op: "⊤" | "⊥" | "↔" | "→" | "∧" | "∨" | "¬"
+\end{minted}
+\captionof{listing}{Eingeschränkter Union Type von \texttt{op}}
 
-\subsubsection{Negationsnormalform: \texttt{nnf} in Python vs.\ TypeScript}
-Die Funktion \texttt{nnf} transformiert eine Formel in \textit{Negationsnormalform} und bildet damit die Schnittstelle zwischen den vorherigen Operator-Eliminierungen und der anschließenden \ac{KNF}-Konstruktion. % [file:2][file:3]
-Der zentrale Unterschied der beiden Implementierungen liegt weniger im rekursiven Kontrollfluss, sondern in der \textit{typseitigen Spezifikation} des Ergebnisses: In TypeScript wird das Ziel explizit durch den eigenständigen Typ \texttt{NNF} modelliert, während Python auch nach der Transformation weiterhin den generischen Typ \texttt{Formula} verwendet. % [file:2][file:3]
+Durch diese strikte Typisierung kann der TypeScript-Compiler statisch überprüfen und sicherstellen, dass das anschließende \texttt{switch}-Statement alle möglichen Fälle vollständig abdeckt.
+
+Während Python auf Pattern Matching mittels \texttt{match}/\texttt{case} setzt, um die Baumstruktur direkt über Muster wie \texttt{('↔', g, h)} zu zerlegen, verwendet TypeScript eine Kombination aus Type Guards und Type Narrowing. Durch das frühe \texttt{return} im \texttt{if}-Zweig ist im nachfolgenden Code garantiert, dass \texttt{f} kein \texttt{string} mehr sein kann. Dies macht die Destructuring-Zuweisung \texttt{const [op] = f;} überhaupt erst typsicher möglich. Das anschließende \texttt{switch (op)} fungiert als weitere Ebene der Typverengung: Da der Operator \texttt{op} auf diskrete \texttt{string}-Literal-Typen (wie etwa \texttt{'↔'} oder \texttt{'¬'}) beschränkt ist, leitet der Compiler für jeden \texttt{case} die exakte Array-Struktur von \texttt{f} sicher ab.
+
+Dieser wesentliche Unterschied zeigt sich in der statischen Code-Analyse: Das abschließende \texttt{return None \#type: ignore} in der Python-Variante offenbart, dass der dortige Typchecker die Vollständigkeit der Fallunterscheidung nicht eigenständig beweisen kann. TypeScript nutzt die etablierten Type Guards und die kontrollflussbasierte Verengung hingegen so effektiv, dass der Compiler eine fehlende Fallabdeckung im \texttt{switch}-Block sofort erkennen würde. Dadurch wird eine durchgängig höhere Typpräzision gewährleistet.
+
+\subsection{Negationsnormalform}
+Die Funktion \texttt{nnf} transformiert eine Formel in \textit{Negationsnormalform} und bildet damit die Schnittstelle zwischen den vorherigen Operator-Eliminierungen und der anschließenden \ac{KNF}-Konstruktion. 
+Der zentrale Unterschied der beiden Implementierungen liegt weniger im rekursiven Kontrollfluss, sondern in der typseitigen Spezifikation des Ergebnisses: In TypeScript wird das Ziel explizit durch den eigenständigen Typ \texttt{NNF} modelliert, während Python auch nach der Transformation weiterhin den generischen Typ \texttt{Formula} verwendet. % [file:2][file:3]
 
 \Needspace{7\baselineskip}
 \begin{minted}{typescript}
-	type NNF = Variable | ['⊤'] | ['⊥'] | ['¬', Variable] | ['∧' | '∨', NNF, NNF];
-	
-	export function nnf(f: Formula2): NNF {
-		"Compute the negation normal form of f."
-		if (typeof f === 'string') {
-			return f;
-		}
-		const [op] = f;
-		switch (op) {
-			case '⊤':
-			return ['⊤']
-			case '⊥':
-			return ['⊥'];
-			case '¬': {
-				const [, g] = f;
-				return neg(g);
-			}
-			case '∧':
-			case '∨': {
-				const [, g, h] = f;
-				return [op, nnf(g), nnf(h)];
-			}
-		}
-	}
+ function nnf(f: Formula2): NNF {
+     "Compute the negation normal form of f."
+     if (typeof f === 'string') {
+         return f;
+     }
+     const [op] = f;
+     switch (op) {
+         case '⊤':
+             return ['⊤']
+         case '⊥':
+             return ['⊥'];
+         case '¬': {
+             const [, g] = f;
+             return neg(g);
+         }
+         case '∧':
+         case '∨': {
+             const [, g, h] = f;
+             return [op, nnf(g), nnf(h)];
+         }
+      }
+ }
 \end{minted}
 \captionof{listing}{TypeScript: \texttt{nnf} mit Eingabetyp \texttt{Formula2} und Rückgabetyp \texttt{NNF}} % [file:2]
 
 Der Typ \texttt{NNF} kodiert die strukturelle Invariante „Negation nur vor Variablen“ direkt im Typsystem, da negative Literale ausschließlich als \texttt{['¬', Variable]} zugelassen sind und \texttt{['¬', NNF]} gerade \textit{nicht} existiert. % [file:2]
-Damit können nachfolgende Transformationsschritte (insbesondere die \ac{KNF}-Konstruktion) statisch davon ausgehen, dass sie nie einen Negationsknoten über einer zusammengesetzten Teilformel behandeln müssen. % [file:2]
-Zusätzlich ist der Eingabetyp bereits \texttt{Formula2}; dadurch sind Operatoren wie \texttt{'↔'} und \texttt{'→'} in \texttt{nnf} typseitig ausgeschlossen, was den \texttt{switch}-Block auf genau die verbleibenden Fälle reduziert. % [file:2]
+Damit können nachfolgende Transformationsschritte (insbesondere die \ac{KNF}-Konstruktion) statisch davon ausgehen, dass sie nie einen Negationsknoten über einer zusammengesetzten Teilformel behandeln müssen. 
+Zusätzlich ist der Eingabetyp bereits \texttt{Formula2}. Dadurch sind Operatoren wie \texttt{'↔'} und \texttt{'→'} in \texttt{nnf} typseitig ausgeschlossen, was den \texttt{switch}-Block auf genau die verbleibenden Fälle reduziert.
 
 \Needspace{7\baselineskip}
 \begin{minted}{python}
-	def neg(f: Formula) -> Formula:
-	return None # type: ignore
-	
-	def nnf(f: Formula) -> Formula:
-	'Compute the negation normal form of f.'
-	match f:
-	case str(p):
-	return p
-	case ('⊤', ) | ('⊥', ):
-	return f
-	case ('¬', g):
-	return neg(g)
-	case (op, g, h):
-	return (op, nnf(g), nnf(h))
-	return None # type: ignore
+ def nnf(f: Formula) -> Formula:
+     'Compute the negation normal form of f.'
+     match f:
+         case str(p):
+             return p
+         case ('⊤', ) | ('⊥', ):
+             return f
+         case ('¬', g):
+             return neg(g)
+         case (op, g, h):
+             return (op, nnf(g), nnf(h))
+     return None # type: ignore
 \end{minted}
-\captionof{listing}{Python: Vorwärtsdeklaration von \texttt{neg} und \texttt{nnf} mit generischem Rückgabetyp \texttt{Formula}} % [file:3]
+\captionof{listing}{Python: \texttt{nnf} mit generischem Rückgabetyp \texttt{Formula}} 
 
-In Python ist die Funktionalität algorithmisch äquivalent, jedoch bleibt die Rückgabe weiterhin vom Typ \texttt{Formula}, sodass die Eigenschaft „NNF-Struktur“ nicht als Typinvariante festgehalten wird. % [file:3]
-Auffällig ist außerdem die \textit{Vorwärtsdeklaration} von \texttt{neg}: Da \texttt{nnf} \texttt{neg} verwendet, dieses aber im Notebook erst später definiert wird, wird zunächst ein Platzhalter deklariert, um die (optionale) Typprüfung im Notebook-Kontext zu ermöglichen. % [file:3]
-Diese Hilfskonstruktion ist in der TypeScript-Version nicht erforderlich, da Funktionssignaturen und Export-Reihenfolge im Modulkontext unabhängig von der Textposition statisch verfügbar sind und der Rückgabetyp \texttt{NNF} die Zielstruktur unmittelbar festschreibt. % [file:2]
-Auf die \texttt{nnf}-Transformation folgt direkt die Funktion \texttt{cnf}, die explizit eine Eingabe in Negationsnormalform voraussetzt und daraus die \ac{KNF} als „Menge von Mengen“ (Klauselmenge) konstruiert, indem sie Disjunktionen über Konjunktionen verteilt. % [file:2][file:3]
-In der TypeScript-Version ist diese Vorbedingung zusätzlich in der Funktionssignatur sichtbar, da \texttt{cnf} den Typ \texttt{NNF} als Eingabe erhält und eine \texttt{CNF} zurückliefert, während Python die gleiche Annahme lediglich konzeptionell trifft, aber weiterhin über den allgemeinen Typ \texttt{Formula} typisiert. % [file:2][file:3]
+In Python ist die Funktionalität algorithmisch äquivalent, jedoch bleibt die Rückgabe weiterhin vom Typ \texttt{Formula}, sodass die \ac{NNF}-Struktur nicht als Typinvariante festgehalten wird. Deshalb muss dem Typchecker hier wieder mit \texttt{\#type ignore} unterdrückt werden.
 
 
-\subsubsection{Triviale Klauseln und Vereinfachung: \texttt{isTrivial} und \texttt{simplify} im Vergleich}
-Die Funktionen \texttt{isTrivial} und \texttt{simplify} realisieren in beiden Sprachen denselben semantischen Schritt: Triviale Klauseln (d.\,h.\ Klauseln, die ein Literal und sein Komplement enthalten) werden erkannt und aus der Klauselmenge entfernt. 
-In der TypeScript-Version wird dies nun konsequent in einer funktionalen Schreibweise formuliert, während Python idiomatisch \texttt{any(...)} sowie Set-Comprehensions verwendet.
+\subsection{Transformation in Konjunktive Normalform}
+
+Die Funktion \texttt{cnf} transformiert eine logische Formel, die sich bereits in \ac{NNF} befindet, in die Konjunktive Normalform. Das Ergebnis wird als Menge von Klauseln repräsentiert, wobei jede Klausel wiederum eine Menge von Literalen darstellt. 
+
+\Needspace{10\baselineskip}
+\begin{minted}{python}
+ def cnf(f: Formula) -> CNF:
+     match f:
+         case str(p):         
+             return { frozenset({p}) }
+         #weitere Fälle ...
+         case ('∧', g, h):
+             return cnf(g) | cnf(h)
+         case ('∨', g, h):
+             return { k1 | k2 for k1 in cnf(g) for k2 in cnf(h) }
+     return None # type: ignore
+\end{minted}
+\captionof{listing}{Python: \texttt{cnf} mit Pattern Matching und nativen Sets}
+
+\Needspace{23\baselineskip}
+\begin{minted}{typescript}
+ const RS = RecursiveSet
+ function cnf(f: NNF): CNF {
+     if (typeof f == 'string') { 
+         return new RS<Clause>(new RS<Literal>(f));
+     }
+     switch (f[0]) {
+         // weitere Fälle ...         
+         case '∧': {
+             return cnf(f[1]).union(cnf(f[2]));
+         }
+         case '∨': {
+             const Pairs = cnf(f[1]).cartesianProduct(cnf(f[2]));
+             return Pairs.map(([c1, c2]) => c1.union(c2));
+         }
+     }
+ }
+\end{minted}
+\captionof{listing}{TypeScript: \texttt{cnf} mit Type Guards und \texttt{RecursiveSet}}
+
+Ähnlich wie bei der Funktion \texttt{eliminateBiconditional} zeigen sich hier grundlegende Unterschiede in der Datenmodellierung und im Kontrollfluss. Python nutzt erneut Pattern Matching zur direkten Destrukturierung der Formel. Für Mengenoperationen kommen überladene Operatoren wie \texttt{|} für die Vereinigung zum Einsatz. Ein überladener Operator in Python ist ein Symbol, das je nach Datentyp eine unterschiedliche Bedeutung erhält. Während \texttt{|} bei Zahlen traditionell als bitweises ODER fungiert, ist es für Set-Objekte so definiert, dass es die Vereinigungsmenge bildet:
+
+
+\Needspace{2\baselineskip}
+\begin{minted}{python}
+ 1 | 2               # bitweises ODER (01 | 10), ergibt 3 (11)
+ {1, 2} | {2, 3}     # Vereinigungsmenge, ergibt {1, 2, 3}
+\end{minted}
+\captionof{listing}{Operator Overloading}
+
+In TypeScript wird der Kontrollfluss stattdessen wieder durch einen Type Guard und anschließende kontrollflussbasierte Typanalyse über \texttt{switch (f[0])} realisiert. Anstelle der in Python genutzten nativen \texttt{set}- und \texttt{frozenset}-Strukturen kommt hier die Klasse \texttt{RecursiveSet} (abgekürzt als \texttt{RS}) zum Einsatz.
+
+Dieser Unterschied im Datenmodell tritt besonders im Fall der Disjunktion deutlich hervor. In Python wird das Distributivgesetz durch das kartesische Produkt der beiden Klauselmengen und die anschließende paarweise Vereinigung umgesetzt. Dies geschieht äußerst kompakt mittels Set-Comprehension: \texttt{\{ k1 | k2 for k1 in cnf(g) for k2 in cnf(h) \}}. Eine Set-Comprehension ermöglicht es über alle möglichen Paare (k1, k2) zu iterieren und deren Vereinigungen direkt als neue Menge zu sammeln.
+
+In TypeScript wird diese Logik explizit über die Methodenaufrufe der \texttt{RecursiveSet}-Klasse ausformuliert:
+
+\Needspace{3\baselineskip}
+\begin{minted}{typescript}
+ const Pairs = cnf(f[1]).cartesianProduct(cnf(f[2]));
+ return Pairs.map(([c1, c2]) => c1.union(c2));
+\end{minted}
+
+Zunächst wird durch den Aufruf von \texttt{cartesianProduct} das Kreuzprodukt der Klauselmengen \texttt{cnf(f[1])} und \texttt{cnf(f[2])} gebildet. Das Ergebnis ist eine iterierbare Struktur von Paaren. Anschließend iteriert die \texttt{map}-Methode über diese Menge von Paaren und destrukuriert jedes Paar in die beiden Klauseln \texttt{c1} und \texttt{c2}. Diese werden dann mittels der klasseneigenen \texttt{union}-Methode vereinigt. 
+
+Während in Python das mathematische Konzept also implizit in seine Sprachkonstrukte eingebettet ist, sind in TypeScript die zugrunde liegenden Mengenoperationen durch einen klaren, funktionalen Methodenketten-Aufruf auf dem \texttt{RecursiveSet}-Objekt transparent.
+
+
+\subsection{Triviale Klauseln und Vereinfachung}
+Die Funktionen \texttt{isTrivial} und \texttt{simplify} realisieren in beiden Sprachen denselben semantischen Schritt. Triviale Klauseln (d.\,h.\ Klauseln, die ein Literal und sein Komplement enthalten) werden erkannt und aus der Klauselmenge entfernt. 
+In der TypeScript-Version wird dies nun konsequent in einer funktionalen Schreibweise formuliert:
 
 \Needspace{7\baselineskip}
 \begin{minted}{typescript}
-	function isTrivial(clause: Clause): boolean {
-		return clause.some(
-		lit => typeof lit === 'string' && clause.has(new Tuple('¬', lit))
-		);
-	}
+ function isTrivial(clause: Clause): boolean {
+     return clause.some(
+         lit => typeof lit === 'string' && clause.has(new Tuple('¬', lit))
+     );
+ }
 \end{minted}
-\captionof{listing}{TypeScript: \texttt{isTrivial} als Prädikat über \texttt{some} (funktionale Schreibweise)} % [file:5]
+\captionof{listing}{TypeScript: \texttt{isTrivial} als Prädikat über \texttt{some} (funktionale Schreibweise)} 
 
+
+Python verwendet hingegen idiomatisch \texttt{any(...)} sowie Set-Comprehensions:
 \Needspace{7\baselineskip}
 \begin{minted}{python}
-	def isTrivial(Clause: Clause) -> bool:
-	return any(('¬', p) in Clause for p in Clause)
+ def isTrivial(Clause: Clause) -> bool:
+     return any(('¬', p) in Clause for p in Clause)
 \end{minted}
-\captionof{listing}{Python: \texttt{isTrivial} über \texttt{any(...)} und Generatorausdruck} % [file:3]
+\captionof{listing}{Python: \texttt{isTrivial} über \texttt{any(...)} und Generatorausdruck}
 
-Der Ausdruck \texttt{clause.some(...)} ist dabei die direkte Entsprechung zu Pythons \texttt{any(...)}: Beide brechen frühzeitig ab, sobald ein Element gefunden wurde, das das Prädikat erfüllt. 
+Der Ausdruck \texttt{clause.some(...)} ist dabei die direkte Entsprechung zu Pythons \texttt{any(...)}: Beide brechen frühzeitig ab, sobald ein Element gefunden wurde, welches das Prädikat innerhalb der Klammern erfüllt. 
 Die zusätzliche Bedingung \texttt{typeof lit === 'string'} ist in TypeScript erforderlich, weil \texttt{Literal} als Union-Typ sowohl positive Literale (Variablen als Strings) als auch negative Literale (Tupelstruktur) zulässt und die Komplementprüfung hier bewusst nur für die positive Richtung \(p \mapsto \neg p\) durchgeführt wird.
-Genau diese „einseitige“ Prüfung ist auch in Python implizit enthalten: Für negative Literale ist \texttt{p} kein Variablenname, sondern selbst ein Tupel, weshalb \texttt{('¬', p)} dann strukturell nicht als Komplement im Sinne eines Literals passt und die Mitgliedschaftsprüfung fehlschlägt.
+Genau diese einseitige Prüfung ist auch in Python implizit enthalten: Für negative Literale ist \texttt{p} kein Variablenname, sondern selbst ein Tupel, weshalb nach \texttt{('¬', p)} für jedes Literal p gesucht wird.\\
+Die Funktion \texttt{simplify} wendet diese Logik anschließend auf die gesamte Klauselmenge an. Sie dient dazu, alle zuvor als trivial erkannten Klauseln herauszufiltern und eine bereinigte Menge zurückzugeben, die ausschließlich aus nicht-trivialen Klauseln besteht.
 
 \Needspace{7\baselineskip}
 \begin{minted}{typescript}
-	function simplify(clauses: CNF): CNF {
-		return clauses.filter(c => !isTrivial(c));
-	}
+ function simplify(clauses: CNF): CNF {
+     return clauses.filter(c => !isTrivial(c));
+ }
 \end{minted}
-\captionof{listing}{TypeScript: \texttt{simplify} durch Filtern der Klauselmenge} % [file:5]
+\captionof{listing}{TypeScript: \texttt{simplify} durch Filtern der Klauselmenge} %
 
 \Needspace{7\baselineskip}
 \begin{minted}{python}
-	def simplify(Clauses: set[Clause]) -> set[Clause]:
-	return { C for C in Clauses if not isTrivial(C) }
+ def simplify(Clauses: set[Clause]) -> set[Clause]:
+     return { C for C in Clauses if not isTrivial(C) }
 \end{minted}
-\captionof{listing}{Python: \texttt{simplify} als Set-Comprehension} % [file:3]
+\captionof{listing}{Python: \texttt{simplify} als Set-Comprehension} 
 
-Auch \texttt{filter} entspricht semantisch der Python-Set-Comprehension: In beiden Fällen wird eine neue Menge konstruiert, die exakt diejenigen Klauseln enthält, für die das Prädikat \texttt{not isTrivial(...)} gilt.
-In TypeScript ist hierbei zentral, dass die verwendete Mengenstruktur diese funktionalen Operationen (u.\,a.\ \texttt{some} und \texttt{filter}) bereitstellt und zugleich die Mitgliedschaftsprüfung \texttt{has} auf wertbasierter Gleichheit für verschachtelte Tupel stützt. % [file:5]
-
+Auch \texttt{filter} entspricht semantisch der Python-Set-Comprehension. In beiden Fällen wird eine neue Menge konstruiert, die exakt diejenigen Klauseln enthält, für die das Prädikat \texttt{not isTrivial(...)} gilt.
 
 
 
 
-\subsubsection{Gesamtpipeline und Ausgabetests: \texttt{normalize}, \texttt{test} und \texttt{prettify}}
-Die Funktion \texttt{normalize} fasst die zuvor eingeführten Transformationsschritte zu einer linearen Pipeline zusammen: Zunächst werden \texttt{↔} und \texttt{→} eliminiert, anschließend wird die Negationsnormalform berechnet, daraus die \ac{KNF} konstruiert und abschließend vereinfacht. % [file:2][file:3]
-Damit bildet \texttt{normalize} den zentralen Einstiegspunkt für die algorithmische Verarbeitung, da alle Zwischenresultate in einer klar definierten Reihenfolge erzeugt werden. % [file:2][file:3]
+
+\subsection{Gesamtpipeline und Ausgabetests}
+Die Funktion \texttt{normalize} fasst die zuvor eingeführten Transformationsschritte zu einer linearen Pipeline zusammen. Zunächst werden \texttt{↔} und \texttt{→} eliminiert, anschließend wird die Negationsnormalform berechnet, daraus die \ac{KNF} konstruiert und abschließend vereinfacht.
+Damit bildet \texttt{normalize} den zentralen Einstiegspunkt für die algorithmische Verarbeitung, da alle Zwischenresultate in einer klar definierten Reihenfolge erzeugt werden. Die Implementierung in beiden Versionen ist hier semantisch gleich.
 
 \Needspace{7\baselineskip}
 \begin{minted}{typescript}
-	export function normalize(f: Formula): CNF {
-		const n1 = eliminateBiconditional(f);
-		const n2 = eliminateConditional(n1);
-		const n3 = nnf(n2);
-		const n4 = cnf(n3);
-		return simplify(n4);
-	}
+ function normalize(f: Formula): CNF {
+     const n1 = eliminateBiconditional(f);
+     const n2 = eliminateConditional(n1);
+     const n3 = nnf(n2);
+     const n4 = cnf(n3);
+     return simplify(n4);
+ }
 \end{minted}
-\captionof{listing}{TypeScript: \texttt{normalize} als Pipeline bis zur vereinfachten \ac{KNF}} % [file:2]
+\captionof{listing}{TypeScript: \texttt{normalize} als Pipeline bis zur vereinfachten \ac{KNF}} 
+
+Für die Validierung wird im Notebook zusätzlich eine Funktion \texttt{test} bereitgestellt, die einen Eingabestring verarbeitet und das Ergebnis ausgibt. 
+In der Python-Version wird der String dabei explizit mittels \texttt{parse} in einen Syntaxbaum überführt, bevor \texttt{normalize} aufgerufen wird.
+Die TypeScript-Version protokolliert die Eingabe ebenfalls und ruft anschließend \texttt{normalize} auf, wobei hier ebenfalls ein \texttt{parse}-Aufruf vorangeht, der die Eingabe in die erwartete \texttt{Formula}-Struktur umwandelt.
 
 \Needspace{7\baselineskip}
 \begin{minted}{python}
-	def normalize(f: Formula) -> CNF:
-	n1 = eliminateBiconditional(f)
-	n2 = eliminateConditional(n1)
-	n3 = nnf(n2)
-	n4 = cnf(n3)
-	return simplify(n4)
+ def test(s: str) -> str:
+     f = parse(s)
+     print(f'The knf of {s} is:')
+     return prettify(normalize(f))
 \end{minted}
-\captionof{listing}{Python: \texttt{normalize} als analoge Pipeline bis zur vereinfachten \ac{KNF}} % [file:3]
-
-Für die Validierung wird im Notebook zusätzlich eine Funktion \texttt{test} bereitgestellt, die einen Eingabestring verarbeitet und das Ergebnis ausgibt. % [file:2][file:3]
-In der Python-Version wird der String dabei explizit mittels \texttt{parse} in einen Syntaxbaum überführt, bevor \texttt{normalize} aufgerufen wird, wodurch ein vollständiger End-to-End-Test (String \(\rightarrow\) Baum \(\rightarrow\) \ac{KNF}) entsteht. % [file:3]
-Die TypeScript-Version protokolliert die Eingabe ebenfalls und ruft anschließend \texttt{normalize} auf, wobei hier zu beachten ist, dass \texttt{normalize} eine Formelstruktur (\texttt{Formula}) erwartet und daher bei komplexen Formeln typischerweise ein vorgelagerter \texttt{parse}-Aufruf sinnvoll ist. % [file:2]
-
-\Needspace{7\baselineskip}
-\begin{minted}{python}
-	def test(s: str) -> str:
-	f = parse(s)
-	print(f'The knf of {s} is:')
-	return prettify(normalize(f))
-\end{minted}
-\captionof{listing}{Python: \texttt{test} parst den String und gibt die normalisierte \ac{KNF} aus} % [file:3]
+\captionof{listing}{Python: \texttt{test} parst den String und gibt die normalisierte \ac{KNF} aus} 
 
 \Needspace{7\baselineskip}
 \begin{minted}{typescript}
-	export function test(s: string): string {
-		console.log(`The knf of ${s} is:`);
-		const result = normalize(s);
-		return prettify(result);
-	}
+ function test(s: string): string {
+    const f = parse(s);
+    console.log(`The knf of ${s} is:`);
+    return normalize(f).toString();
+ }
 \end{minted}
-\captionof{listing}{TypeScript: \texttt{test} als Test-Hilfsfunktion mit Konsolenausgabe} % [file:2]
+\captionof{listing}{TypeScript: \texttt{test} als Test-Hilfsfunktion mit Konsolenausgabe} 
 
-Zur Ausgabeformatierung existiert in beiden Versionen eine Hilfsfunktion \texttt{prettify}, die die interne „Menge-von-Mengen“-Struktur in eine lesbare Stringdarstellung überführt. % [file:2][file:3]
-In TypeScript ist hierbei hervorzuheben, dass \texttt{RecursiveSet} bereits eine eigene Stringrepräsentation über \texttt{toString} bereitstellt (inklusive deterministischer Darstellung für die Ausgabe), sodass eine Ausgabe prinzipiell auch ohne eigene \texttt{prettify}-Funktion möglich wäre. % [file:5]
-Im Notebook wird dennoch \texttt{prettify} eingesetzt, um die Darstellung gezielt an das gewünschte Set-Layout (geschweifte Klammern, Literale wie \texttt{¬p}) anzupassen. % [file:2]
-
-
-
-
-
-\subsection{Graphviz}
-...
-
-
-\subsection{Wiederverwendung von Notebooks}
-...
-
-
-\subsection{Recursive Set}
-Erläuterung und Nutzen
+Zur Ausgabeformatierung existiert in der Python Versionen eine Hilfsfunktion \texttt{prettify}, die die interne „Menge-von-Mengen“-Struktur in eine lesbare Stringdarstellung überführt. 
+In TypeScript ist hierbei hervorzuheben, dass \texttt{RecursiveSet} bereits eine eigene Stringrepräsentation über \texttt{toString} bereitstellt, sodass eine Ausgabe auch ohne eigene \texttt{prettify}-Funktion möglich ist.
 
 

@@ -44,33 +44,38 @@
 \contentsline {listing}{\numberline {44}{\ignorespaces Importieren des Parsers und recurisve-set}}{43}{listing.44}%
 \contentsline {listing}{\numberline {45}{\ignorespaces Python: Typalias-Set für Variablen, Formeln, Literale, Klauseln und \ac {KNF}}}{44}{listing.45}%
 \contentsline {listing}{\numberline {46}{\ignorespaces TypeScript: Strukturell präzise Union-Typen und wertbasierte Mengen über \texttt {recursive-set}}}{44}{listing.46}%
-\contentsline {listing}{\numberline {47}{\ignorespaces Python: \texttt {Formula} ist flexibel, aber typseitig kaum restriktiv}}{45}{listing.47}%
-\contentsline {listing}{\numberline {48}{\ignorespaces TypeScript: \texttt {Formula} erzwingt Operator-Menge und Stelligkeit über Union-Typen}}{45}{listing.48}%
-\contentsline {listing}{\numberline {49}{\ignorespaces Python: \texttt {Literal} ist typseitig zu allgemein für das Negationssymbol}}{45}{listing.49}%
-\contentsline {listing}{\numberline {50}{\ignorespaces TypeScript: Negierte Literale sind als Tupel mit festem Präfix \texttt {'¬'} typisiert}}{46}{listing.50}%
+\contentsline {listing}{\numberline {47}{\ignorespaces Python: \texttt {Literal} ist typseitig zu allgemein für das Negationssymbol}}{44}{listing.47}%
+\contentsline {listing}{\numberline {48}{\ignorespaces TypeScript: Negierte Literale sind als Tupel mit festem Präfix \texttt {'¬'} typisiert}}{45}{listing.48}%
+\contentsline {listing}{\numberline {49}{\ignorespaces Python: \texttt {Formula} ist flexibel, aber typseitig kaum restriktiv}}{45}{listing.49}%
+\contentsline {listing}{\numberline {50}{\ignorespaces TypeScript: \texttt {Formula} erzwingt Operator-Menge und Stelligkeit über Union-Typen}}{46}{listing.50}%
 \contentsline {listing}{\numberline {51}{\ignorespaces Iteratives Type Narrowing der Formeln}}{46}{listing.51}%
 \contentsline {listing}{\numberline {52}{\ignorespaces Python: \texttt {eliminateBiconditional} mit Pattern Matching und einheitlichem \texttt {Formula}-Typ}}{47}{listing.52}%
 \contentsline {listing}{\numberline {53}{\ignorespaces TypeScript: \texttt {eliminateBiconditional} mit Type Guards und Rückgabetyp \texttt {Formula1}}}{48}{listing.53}%
-\contentsline {listing}{\numberline {54}{\ignorespaces TypeScript: \texttt {nnf} mit Eingabetyp \texttt {Formula2} und Rückgabetyp \texttt {NNF}}}{49}{listing.54}%
-\contentsline {listing}{\numberline {55}{\ignorespaces Python: Vorwärtsdeklaration von \texttt {neg} und \texttt {nnf} mit generischem Rückgabetyp \texttt {Formula}}}{50}{listing.55}%
-\contentsline {listing}{\numberline {56}{\ignorespaces TypeScript: \texttt {isTrivial} als Prädikat über \texttt {some} (funktionale Schreibweise)}}{51}{listing.56}%
-\contentsline {listing}{\numberline {57}{\ignorespaces Python: \texttt {isTrivial} über \texttt {any(...)} und Generatorausdruck}}{51}{listing.57}%
-\contentsline {listing}{\numberline {58}{\ignorespaces TypeScript: \texttt {simplify} durch Filtern der Klauselmenge}}{52}{listing.58}%
-\contentsline {listing}{\numberline {59}{\ignorespaces Python: \texttt {simplify} als Set-Comprehension}}{52}{listing.59}%
-\contentsline {listing}{\numberline {60}{\ignorespaces TypeScript: \texttt {normalize} als Pipeline bis zur vereinfachten \ac {KNF}}}{53}{listing.60}%
-\contentsline {listing}{\numberline {61}{\ignorespaces Python: \texttt {test} parst den String und gibt die normalisierte \ac {KNF} aus}}{53}{listing.61}%
-\contentsline {listing}{\numberline {62}{\ignorespaces TypeScript: \texttt {test} als Test-Hilfsfunktion mit Konsolenausgabe}}{53}{listing.62}%
-\contentsline {listing}{\numberline {63}{\ignorespaces Python-Beispiel: Potenzberechnung}}{55}{listing.63}%
-\contentsline {listing}{\numberline {64}{\ignorespaces TypeScript-Beispiel: Potenzberechnung}}{56}{listing.64}%
-\contentsline {listing}{\numberline {65}{\ignorespaces Python-Beispiel: shortest\_path}}{57}{listing.65}%
-\contentsline {listing}{\numberline {66}{\ignorespaces TypeScript-Beispiel: shortestPath}}{58}{listing.66}%
-\contentsline {listing}{\numberline {67}{\ignorespaces Mengenvereinigung in Python}}{59}{listing.67}%
-\contentsline {listing}{\numberline {68}{\ignorespaces Mengenvereinigung in TypeScript mittels \textit {.union()}}}{59}{listing.68}%
-\contentsline {listing}{\numberline {69}{\ignorespaces Imperative (KI-generierte) Überprüfung}}{60}{listing.69}%
-\contentsline {listing}{\numberline {70}{\ignorespaces Deklarative (optimierte) Überprüfung in TypeScript}}{60}{listing.70}%
-\contentsline {listing}{\numberline {71}{\ignorespaces Python-Referenz der Überprüfung}}{60}{listing.71}%
-\contentsline {listing}{\numberline {72}{\ignorespaces Time-Funktion in Python}}{62}{listing.72}%
-\contentsline {listing}{\numberline {73}{\ignorespaces Reduktionsschritt in Python mit Set-Comprehensions}}{64}{listing.73}%
-\contentsline {listing}{\numberline {74}{\ignorespaces Reduktionsschritt in TypeScript mit \texttt {RecursiveSet}}}{65}{listing.74}%
-\contentsline {listing}{\numberline {75}{\ignorespaces Zeitmessung in Python (16-Damen)}}{66}{listing.75}%
-\contentsline {listing}{\numberline {76}{\ignorespaces Zeitmessung in TypeScript (16-Damen)}}{66}{listing.76}%
+\contentsline {listing}{\numberline {54}{\ignorespaces Eingeschränkter Union Type}}{49}{listing.54}%
+\contentsline {listing}{\numberline {55}{\ignorespaces Eingeschränkter Union Type von \texttt {op}}}{49}{listing.55}%
+\contentsline {listing}{\numberline {56}{\ignorespaces TypeScript: \texttt {nnf} mit Eingabetyp \texttt {Formula2} und Rückgabetyp \texttt {NNF}}}{50}{listing.56}%
+\contentsline {listing}{\numberline {57}{\ignorespaces Python: \texttt {nnf} mit generischem Rückgabetyp \texttt {Formula}}}{51}{listing.57}%
+\contentsline {listing}{\numberline {58}{\ignorespaces Python: \texttt {cnf} mit Pattern Matching und nativen Sets}}{51}{listing.58}%
+\contentsline {listing}{\numberline {59}{\ignorespaces TypeScript: \texttt {cnf} mit Type Guards und \texttt {RecursiveSet}}}{52}{listing.59}%
+\contentsline {listing}{\numberline {60}{\ignorespaces Operator Overloading}}{52}{listing.60}%
+\contentsline {listing}{\numberline {61}{\ignorespaces TypeScript: \texttt {isTrivial} als Prädikat über \texttt {some} (funktionale Schreibweise)}}{53}{listing.61}%
+\contentsline {listing}{\numberline {62}{\ignorespaces Python: \texttt {isTrivial} über \texttt {any(...)} und Generatorausdruck}}{54}{listing.62}%
+\contentsline {listing}{\numberline {63}{\ignorespaces TypeScript: \texttt {simplify} durch Filtern der Klauselmenge}}{54}{listing.63}%
+\contentsline {listing}{\numberline {64}{\ignorespaces Python: \texttt {simplify} als Set-Comprehension}}{54}{listing.64}%
+\contentsline {listing}{\numberline {65}{\ignorespaces TypeScript: \texttt {normalize} als Pipeline bis zur vereinfachten \ac {KNF}}}{55}{listing.65}%
+\contentsline {listing}{\numberline {66}{\ignorespaces Python: \texttt {test} parst den String und gibt die normalisierte \ac {KNF} aus}}{55}{listing.66}%
+\contentsline {listing}{\numberline {67}{\ignorespaces TypeScript: \texttt {test} als Test-Hilfsfunktion mit Konsolenausgabe}}{56}{listing.67}%
+\contentsline {listing}{\numberline {68}{\ignorespaces Python-Beispiel: Potenzberechnung}}{57}{listing.68}%
+\contentsline {listing}{\numberline {69}{\ignorespaces TypeScript-Beispiel: Potenzberechnung}}{58}{listing.69}%
+\contentsline {listing}{\numberline {70}{\ignorespaces Python-Beispiel: shortest\_path}}{59}{listing.70}%
+\contentsline {listing}{\numberline {71}{\ignorespaces TypeScript-Beispiel: shortestPath}}{60}{listing.71}%
+\contentsline {listing}{\numberline {72}{\ignorespaces Mengenvereinigung in Python}}{61}{listing.72}%
+\contentsline {listing}{\numberline {73}{\ignorespaces Mengenvereinigung in TypeScript mittels \textit {.union()}}}{61}{listing.73}%
+\contentsline {listing}{\numberline {74}{\ignorespaces Imperative (KI-generierte) Überprüfung}}{62}{listing.74}%
+\contentsline {listing}{\numberline {75}{\ignorespaces Deklarative (optimierte) Überprüfung in TypeScript}}{62}{listing.75}%
+\contentsline {listing}{\numberline {76}{\ignorespaces Python-Referenz der Überprüfung}}{62}{listing.76}%
+\contentsline {listing}{\numberline {77}{\ignorespaces Time-Funktion in Python}}{64}{listing.77}%
+\contentsline {listing}{\numberline {78}{\ignorespaces Reduktionsschritt in Python mit Set-Comprehensions}}{66}{listing.78}%
+\contentsline {listing}{\numberline {79}{\ignorespaces Reduktionsschritt in TypeScript mit \texttt {RecursiveSet}}}{67}{listing.79}%
+\contentsline {listing}{\numberline {80}{\ignorespaces Zeitmessung in Python (16-Damen)}}{68}{listing.80}%
+\contentsline {listing}{\numberline {81}{\ignorespaces Zeitmessung in TypeScript (16-Damen)}}{68}{listing.81}%
