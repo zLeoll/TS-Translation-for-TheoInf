@@ -1,0 +1,15 @@
+{
+  "dependencies": {
+    "@hpcc-js/wasm": "2.26.3",
+    "fraction.js": "5.3.4",
+    "heap-js": "1.3.0",
+    "logic-solver": "2.0.1",
+    "mathjs": "14.8.2",
+    "pngjs": "7.0.0",
+    "recursive-set": "8.1.0",
+    "z3-solver": "4.15.4"
+  },
+  "devDependencies": {
+    "@types/pngjs": "6.0.5"
+  }
+}

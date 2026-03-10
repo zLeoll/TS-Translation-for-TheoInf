@@ -10,7 +10,7 @@ Before you begin, make sure the following programs are installed:
 
 
 ## Setup
-To setup your environment, the tslab kernel and required libraries, execute the following commands in the anaconda terminal:
+To setup your environment and the tslab kernel, execute the following commands in the anaconda terminal:
 
 ```bash
 conda activate logic-algo
@@ -20,7 +20,11 @@ conda install -c conda-forge nbclassic
 npm init -y
 npm install -g tslab
 tslab install
+```
+## Libraries
+To install all required libraries you can execute the following commands. Alternatively you can open the current folder in a terminal and run `npm install`.
 
+```bash
 npm install fraction.js mathjs logic-solver z3-solver
 npm install heap-js recursive-set
 npm install @hpcc-js/wasm pngjs
