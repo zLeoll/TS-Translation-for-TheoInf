@@ -1,14 +1,24 @@
 \section{Fazit und Ausblick}
 
-\textbf{Allgemein}\\
-- Notebooks alle prinzipiell übersetzt, lassen sich aber an vielen Stellen noch vereinfachen wegen zu komplexer Code-Generierung\\
-- Bis auf 11-Prover funktional korrekt und lassen sich alle ausführen\\
-- Notebooks können in Vorlesung verwendet werden und von Studenten verstanden werden, Syntax zum Typing erfordert jedoch mehr Einarbeitung\\
-- deutlich sicherer Code durch striktes Typing\\
+Die vorliegende Studienarbeit hatte zum Ziel, das bestehende Lehrmaterial für die Vorlesungen der Theoretischen Informatik und Algorithmen und Datenstrukturen von Python nach TypeScript zu portieren. Nach Abschluss der Projektphase lässt sich festhalten, dass die Kernziele erfolgreich erreicht wurden, wenngleich der Prozess sowohl inhaltliche als auch technische Herausforderungen offenbarte. 
 
-\textbf{Lesbarkeit}\\
-- Syntax durch Typing komplizierter\\
+\subsection{Allgemeine Bewertung des Übersetzungsprozesses}
+Insgesamt wurden annähernd 80 Jupyter Notebooks erfolgreich in TypeScript übersetzt. Mit Ausnahme des Notebooks \href{https://github.com/zLeoll/TS-Translation-for-TheoInf/blob/main/Logic/Chapter-5/11-Prover.ipynb}{11-Prover.ipynb}, was mit dem Dozenten abgesprochen wurde, sind alle Dokumente funktional korrekt, lassen sich im TypeScript-Kernel ausführen und können in der aktuellen Form in Vorlesungen eingesetzt werden. 
 
-\textbf{Performance}\\
-- oft sehr viel schneller bei for-Schleifen und mathematischen Berechnungen\\
-- bei Sets/RecursiveSet nur etwas schneller und nicht viel schneller
+Der initiale Aufwand für die Konvertierung erwies sich jedoch als immens und nahm die gesamte Kapazität eines Studiensemesters in Anspruch. Dieser Aufwand resultierte nicht nur aus der reinen Menge an Dokumenten, sondern vor allem aus der Notwendigkeit, sich tiefgehend in neue Bibliotheken, die TypeScript-spezifische Typisierung und die fachlichen Details der teilweise hochkomplexen Algorithmen einzuarbeiten. Zudem unterlag der Projektrahmen folgender Dynamik: Änderungen an den Anforderungen während und nach der initialen Übersetzungsphase erforderten eine kontinuierliche Anpassung und Wartung der Notebooks. 
+
+Daraus resultiert auch der aktuelle Stand der Dokumente: Während die grundlegende Funktionalität gegeben ist, besteht weiterhin Optimierungspotenzial. Dies zeigt sich insbesondere im Modul Logik, wo \textit{Chapter 5} aufgrund des massiven Zeitaufwands für das vorhergehende Kapitel noch nicht den gleichen Präzisionsgrad aufweist wie \textit{Chapter 4}. An vielen Stellen ließe sich der generierte Code, teils Resultat der noch imperfekten KI-Unterstützung, weiter vereinfachen und refaktorieren. Angesichts des auf sechs Monate begrenzten Zeitrahmens war eine lückenlose, tiefgreifende Optimierung jedes einzelnen Notebooks jedoch nicht realisierbar.
+
+\subsection{Lesbarkeit und Didaktik}
+Ein zentraler Aspekt von Lehrmaterialien ist deren Verständlichkeit für Studierende. Die Einführung der strikten Typisierung in TypeScript macht den Code im Vergleich zu Python auf den ersten Blick syntaktisch anspruchsvoller. Dies erfordert von den Studierenden eine gewisse Einarbeitungszeit in die Typ-Syntax. 
+
+Die Bewertung, ob TypeScript schwerer lesbar ist als Python, unterliegt jedoch teilweise einer subjektiven Verzerrung (\textit{Bias}), da unser Wissen in diesen Fächern ursprünglich anhand der kompakten Python-Syntax erworben wurde. Objektiv betrachtet gilt TypeScript als eine sehr gut strukturierte und lesbare Sprache. Eine verringerte Lesbarkeit in den aktuellen Notebooks ist oft weniger der Sprache an sich geschuldet, sondern vielmehr der Tatsache, dass Code-Qualität stark von der Erfahrung der Entwickler abhängt. Da die Übersetzung aus der Perspektive von Junior-Entwicklern in TypeScript erfolgte, besteht hier noch Spielraum für eine elegantere und idiomatischere Gestaltung des Codes. 
+Dennoch bietet das statische Typsystem einen massiven didaktischen Vorteil: Es zwingt die Studierenden, sich explizit mit den Datentypen und Signaturen von Algorithmen auseinanderzusetzen, was zu einem deutlich sichereren Code und einem tieferen Verständnis der Datenstrukturen führt. Die endgültige Evaluation der didaktischen Eignung wird jedoch erst durch das direkte Feedback der Studierenden in kommenden Semestern möglich sein, wobei deren programmiertechnische Vorerfahrungen eine entscheidende Rolle spielen werden.
+
+\subsection{Performance-Betrachtung}
+Im Bereich der Laufzeit zeigte die Portierung nach TypeScript (bzw. Node.js) größtenteils positive Ergebnisse. Insbesondere bei rechenintensiven Algorithmen, die stark auf \texttt{for}-Schleifen und klassische mathematische Berechnungen setzen (wie etwa Sortieralgorithmen), übertrifft die Ausführungsgeschwindigkeit durch die JIT-Kompilierung der V8-Engine die interpretierte Python-Version deutlich. 
+
+Bei komplexeren, abstrakten Datenstrukturen zeigte sich ein differenzierteres Bild. Algorithmen, die intensiv Gebrauch von Sets oder der eigens implementierten \texttt{RecursiveSet}-Struktur machen, profitierten weniger stark von der Node.js-Umgebung. Hier waren die Performance-Gewinne gegenüber Python zwar messbar, fielen jedoch geringer aus als bei rein iterativen Berechnungen.
+
+\subsection{Ausblick}
+Die portierten Notebooks bilden ein solides Fundament für die zukünftige Lehre in TypeScript. Für Folgeprojekte oder künftige Überarbeitungen wird empfohlen, den Code schrittweise weiter zu vereinfachen und an TypeScript-spezifische Design-Pattern anzupassen. Sobald das Material im regulären Vorlesungsbetrieb eingesetzt wird, wird eine gezielte Evaluation durch die Studierenden essenziell sein, um die Balance zwischen Typ-Sicherheit und didaktischer Komplexität weiter zu optimieren.
