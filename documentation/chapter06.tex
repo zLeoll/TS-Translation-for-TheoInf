@@ -7,33 +7,34 @@ Ein zentrales Ziel der Übersetzung ist es, den Code so zu gestalten, dass diese
 \subsubsection{Vergleich anhand einfacher Kontrollstrukturen}
 Zur Veranschaulichung wird zunächst eine einfache Funktion zur Potenzberechnung aus dem Notebook \href{https://github.com/zLeoll/TS-Translation-for-TheoInf/blob/main/Algorithms/Chapter-03/Power.ipynb}{\textit{Power.ipynb}} betrachtet.
 
-In der Python-Version (siehe Listing \ref{lst:python-power}) wird eine einfache \texttt{for}-Schleife in Kombination mit der \texttt{range()}-Funktion verwendet, um die Multiplikation $n$-mal durchzuführen. Die Syntax ist äußerst kompakt und verzichtet auf Typdeklarationen.
-\Needspace{7\baselineskip}
+In der ursprünglichen Python-Version (siehe Listing \ref{lst:python-power}) wird eine einfache \texttt{for}-Schleife in Kombination mit der eingebauten \texttt{range()}-Funktion verwendet, um die Multiplikation $n$-mal durchzuführen. Die Syntax ist äußerst kompakt und verzichtet in ihrer Grundform auf Typdeklarationen. Für einen direkteren Vergleich mit TypeScript wurde die Signatur hier jedoch mit Python-Typ-Hinweisen (ähnlich dem \textit{mypy}-Standard) ergänzt.
+\Needspace{6\baselineskip}
 \begin{minted}{python}
- def power(m, n):
+ def power(m: int, n: int) -> int:
      r = 1
      for i in range(n):
          r *= m
      return r
 \end{minted}
-\captionof{listing}{Python-Beispiel: Potenzberechnung}
+\captionof{listing}{Python-Beispiel: Potenzberechnung mit Typ-Annotationen}
 \label{lst:python-power}
 
-Die äquivalente TypeScript-Implementierung (siehe Listing \ref{lst:ts-power}) zeigt die klassische, C-ähnliche \texttt{for}-Schleife. Zudem wird hier die explizite Typisierung mit \texttt{bigint} sichtbar.
+Die äquivalente TypeScript-Implementierung (siehe Listing \ref{lst:ts-power}) zeigt die klassische, C-ähnliche \texttt{for}-Schleife. Auffällig ist hier die Wahl der Typisierung: Während die Basis \texttt{m} und das Ergebnis \texttt{r} als \texttt{bigint} deklariert sind, um das bei Potenzen rasche Wachstum ohne Präzisionsverlust abzufangen, wird der Exponent \texttt{n} als reguläre \texttt{number} getypt. Dies ist eine bewusste Designentscheidung, da abgesehen von Basiswerten wie $-1$, $0$ oder $1$, ein Exponent, der den maximalen Wert des \texttt{number}-Typs überschreitet, rechnerisch ohnehin jede verfügbare Speichergrenze sprengen würde.
 \Needspace{9\baselineskip}
 \begin{minted}{typescript}
- function power(m: bigint, n: bigint): bigint {
-     let r  = 1n;
-     for (let i = 0; i < n; i++) {
-         r *=  m;
-     }
-     return r;
- }
+	function power(m: bigint, n: number): bigint {
+		let r = 1n;
+		for (let i = 0; i < n; i++) {
+			r *= m;
+		}
+		return r;
+	}
 \end{minted}
 \captionof{listing}{TypeScript-Beispiel: Potenzberechnung}
 \label{lst:ts-power}
 
-Während die Python-Variante kürzer ist, bietet die TypeScript-Version durch die Typannotationen (\texttt{bigint}) einen klaren semantischen Mehrwert: Es ist sofort ersichtlich, dass diese Funktion für beliebig große Ganzzahlen ausgelegt ist, was in der theoretischen Informatik oft von Bedeutung ist. Die TypeScript-Variante ist zwar syntaktisch ausführlicher, bietet durch die Typannotationen aber einen klaren semantischen Mehrwert.
+Beim strukturellen Vergleich fällt auf, dass die Python-Variante kompakter wirkt. Dies liegt primär an der eingebauten \texttt{range}-Funktion, die in TypeScript standardmäßig fehlt. Würde man in TypeScript eine vergleichbare \texttt{range}-Utility-Funktion implementieren und mit der Array-Methode \texttt{reduce} kombinieren, ließe sich die Logik noch deutlich kürzer fassen. Da diese Hilfsfunktion jedoch erst selbst definiert werden müsste, greift die direkte Portierung hier auf die ausführlichere, aber standardkonforme \texttt{for}-Schleife zurück, welche für Entwickler mit C-Hintergrund unmittelbar verständlich ist. Beide Versionen bieten durch ihre jeweiligen Typannotationen einen klaren semantischen Mehrwert, der die Fehleranfälligkeit bei der Nutzung reduziert.
+
 
 \subsubsection{Vergleich komplexerer Algorithmen}
 Die strukturellen Unterschiede werden bei komplexeren Algorithmen noch deutlicher. Als Beispiel dient die Implementierung des \href{https://de.wikipedia.org/wiki/Dijkstra-Algorithmus}{Dijkstra-Algorithmus} zur Berechnung kürzester Pfade in \href{https://github.com/zLeoll/TS-Translation-for-TheoInf/blob/main/Algorithms/Chapter-11/Dijkstra.ipynb}{\textit{Dijkstra.ipynb}}.
@@ -132,7 +133,7 @@ Ein Code-Ausschnitt aus dem Notebook \href{https://github.com/zLeoll/TS-Translat
 \end{minted}
 \captionof{listing}{Imperative (KI-generierte) Überprüfung}
 
-Dieser Code iteriert manuell über die Menge \texttt{S}, um zu prüfen, ob alle Elemente \texttt{C} die Größe 1 haben. Diese Logik lässt sich in TypeScript durch die Nutzung höherer Array-Methoden (\texttt{every}) deutlich kürzer und semantisch klarer formulieren. Erst durch manuelles Refactoring entstand die präferierte, deklarative Variante:
+Dieser Code iteriert manuell über die Menge \texttt{S}, um zu prüfen, ob alle Elemente \texttt{C} die Größe 1 haben. Diese Logik lässt sich in TypeScript durch die Nutzung von Funktionen höherer Ordnung deutlich kürzer und semantisch klarer formulieren. Erst durch manuelles Refactoring oder den expliziten Hinweis im Prompt, dass die KI wo immer möglich Konzepte der funktionalen Programmierung verwenden soll, entstand die präferierte, deklarative Variante:
 \Needspace{6\baselineskip}
 \begin{minted}{typescript}
  if (S.every(C => C.size === 1)) {
@@ -140,6 +141,7 @@ Dieser Code iteriert manuell über die Menge \texttt{S}, um zu prüfen, ob alle 
  }
 \end{minted}
 \captionof{listing}{Deklarative (optimierte) Überprüfung in TypeScript}
+
 
 Als Referenz ist hier die ursprüngliche Python-Version von \href{https://github.com/karlstroetmann/Logic/blob/master/Python/Chapter-4/06-Davis-Putnam.ipynb}{06-Davis-Putnam} zu sehen, die durch die \texttt{all()}-Funktion und List Comprehension eine ähnlich hohe Lesbarkeit wie die optimierte TypeScript-Variante aufweist:
 \Needspace{5\baselineskip}

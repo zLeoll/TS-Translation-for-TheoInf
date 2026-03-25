@@ -65,7 +65,7 @@
 \contentsline {listing}{\numberline {65}{\ignorespaces TypeScript: \texttt {normalize} als Pipeline bis zur vereinfachten \ac {KNF}}}{55}{listing.65}%
 \contentsline {listing}{\numberline {66}{\ignorespaces Python: \texttt {test} parst den String und gibt die normalisierte \ac {KNF} aus}}{55}{listing.66}%
 \contentsline {listing}{\numberline {67}{\ignorespaces TypeScript: \texttt {test} als Test-Hilfsfunktion mit Konsolenausgabe}}{56}{listing.67}%
-\contentsline {listing}{\numberline {68}{\ignorespaces Python-Beispiel: Potenzberechnung}}{57}{listing.68}%
+\contentsline {listing}{\numberline {68}{\ignorespaces Python-Beispiel: Potenzberechnung mit Typ-Annotationen}}{58}{listing.68}%
 \contentsline {listing}{\numberline {69}{\ignorespaces TypeScript-Beispiel: Potenzberechnung}}{58}{listing.69}%
 \contentsline {listing}{\numberline {70}{\ignorespaces Python-Beispiel: shortest\_path}}{59}{listing.70}%
 \contentsline {listing}{\numberline {71}{\ignorespaces TypeScript-Beispiel: shortestPath}}{60}{listing.71}%
