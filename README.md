@@ -13,6 +13,7 @@ Before you begin, make sure the following programs are installed:
 To setup your environment and the tslab kernel, execute the following commands in the anaconda terminal:
 
 ```bash
+conda create -n logic-algo python=3.10
 conda activate logic-algo
 conda install -c conda-forge nodejs
 conda install -c conda-forge nbclassic
