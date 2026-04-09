@@ -22,13 +22,13 @@ In der ursprünglichen Python-Version (siehe Listing \ref{lst:python-power}) wir
 Die äquivalente TypeScript-Implementierung (siehe Listing \ref{lst:ts-power}) zeigt die klassische, C-ähnliche \texttt{for}-Schleife. Auffällig ist hier die Wahl der Typisierung: Während die Basis \texttt{m} und das Ergebnis \texttt{r} als \texttt{bigint} deklariert sind, um das bei Potenzen rasche Wachstum ohne Präzisionsverlust abzufangen, wird der Exponent \texttt{n} als reguläre \texttt{number} getypt. Dies ist eine bewusste Designentscheidung, da abgesehen von Basiswerten wie $-1$, $0$ oder $1$, ein Exponent, der den maximalen Wert des \texttt{number}-Typs überschreitet, rechnerisch ohnehin jede verfügbare Speichergrenze sprengen würde.
 \Needspace{9\baselineskip}
 \begin{minted}{typescript}
-	function power(m: bigint, n: number): bigint {
-		let r = 1n;
-		for (let i = 0; i < n; i++) {
-			r *= m;
-		}
-		return r;
-	}
+ function power(m: bigint, n: number): bigint {
+     let r = 1n;
+     for (let i = 0; i < n; i++) {
+         r *= m;
+     }
+     return r;
+ }
 \end{minted}
 \captionof{listing}{TypeScript-Beispiel: Potenzberechnung}
 \label{lst:ts-power}
@@ -52,48 +52,48 @@ Das Python-Listing \ref{lst:python-dijkstra} nutzt stark die eingebauten Datenst
          for v, l in Edges[u]:
              dv = Distance.get(v, None)
              if dv == None or d + l < dv:
-                 if dv != None:
+                 if dv != None: 
                      Fringe.delete( (dv, v) )
-                 Distance[v] = d + l
-                 Fringe.insert( (d + l, v) )
-         Visited.add(u)
-     return Distance
+    Distance[v] = d + l
+    Fringe.insert( (d + l, v) )
+    Visited.add(u)
+    return Distance
 \end{minted}
 \captionof{listing}{Python-Beispiel: shortest\_path}
 \label{lst:python-dijkstra}
 
-Die TypeScript-Umsetzung in Listing \ref{lst:ts-dijkstra} erfordert deutlich mehr strukturellen Aufwand. Die Signaturen der Übergabeparameter (\texttt{Record<string, Array<[string, number]>>}) dokumentieren exakt die erwartete Graphenstruktur. Das Set \texttt{Visited} aus Python wurde hier durch ein \texttt{Record<string, boolean>} (ein Objekt, das als Map fungiert) ersetzt. Dies zeigt, dass TypeScript-Entwickler oft auf Objekte oder spezielle Map-Klassen zurückgreifen müssen, da die nativen Sets in TypeScript in bestimmten Anwendungsfällen weniger performant oder flexibel sind als ihre Python-Pendants.
-\Needspace{31\baselineskip}
+Die TypeScript-Umsetzung in Listing \ref{lst:ts-dijkstra} erfordert durch die explizite Typisierung auf den ersten Blick etwas mehr strukturellen Aufwand. Die Signaturen der Übergabeparameter (\texttt{Record<string, Array<[string, number]>>}) dokumentieren exakt die erwartete Graphenstruktur. Für die Menge der bereits besuchten Knoten (\texttt{visited}) wird der in TypeScript nativ vorhandene Datentyp \texttt{Set<string>} verwendet. Dies stellt die direkte und idiomatische Entsprechung zu Pythons \texttt{set} dar. Der Algorithmus bleibt somit in seiner Kernlogik sehr nah am Python-Original. Obwohl der syntaktische Schreibaufwand durch die strengen Typdeklarationen im Vergleich zur kompakten Python-Version leicht steigt, zahlt sich dies durch eine signifikant höhere statische Sicherheit aus.
+\Needspace{32\baselineskip}
 \begin{minted}{typescript}
  function shortestPath(
- source: string,
- Edges: Record<string, Array<[string, number]>>
+     source: string,
+     Edges: Record<string, Array<[string, number]>>
  ): Record<string, number> {
      const Distance: Record<string, number> = { [source]: 0 };
-     const visited: Record<string, boolean> = {};
+     const visited = new Set<string>();
      const Fringe = new AVLSet<[number, string]>();
      Fringe.insert([0, source]);
      while (!Fringe.isEmpty()) {
          const [d, u] = Fringe.pop();
-         if (visited[u]) {
-             continue; 
+         if (visited.has(u)) {
+             continue;
          }
-         visited[u] = true;
          for (const [v, l] of Edges[u]) {
              const dv = Distance[v];
              if (dv === undefined || d + l < dv) {
                  if (dv !== undefined) {
                      Fringe.delete([dv, v]);
                  }
-                 Distance[v] = d + l;
-                 Fringe.insert([d + l, v]);
+             Distance[v] = d + l;
+             Fringe.insert([d + l, v]);
              }
          }
-     }
-     return Distance;
+         visited.add(u);
+    }
+    return Distance;
  }
 \end{minted}
-\captionof{listing}{TypeScript-Beispiel: shortestPath}
+\captionof{listing}{TypeScript-Beispiel: shortestPath mit nativem Set}
 \label{lst:ts-dijkstra}
 
 \subsubsection{Fehlende eingebaute Operatoren und Funktionen}

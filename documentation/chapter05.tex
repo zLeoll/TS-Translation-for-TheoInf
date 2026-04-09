@@ -18,7 +18,7 @@ Zunächst werden im TypeScript Notebook der \texttt{LogicParser} sowie spezielle
 
 Ein Parser ist in diesem Kontext zwingend erforderlich, da die aussagenlogischen Formeln zunächst als einfache Strings vorliegen (bspw. \texttt{'(p \(\land\) q) \(\rightarrow\) r'})
 und erst in eine strukturierte, maschinenlesbare Form, wie einen abstrakten Syntaxbaum, überführt werden müssen, bevor die anschließenden algorithmischen Transformationen zur \ac{KNF} auf sie angewendet werden können. Die Python-Version bindet den Parser komfortabel per \texttt{\%run Propositional-Logic-Parser.ipynb} ein ohne zusätzliche Bibliothek. 
-Dies markiert einen der fundamentalsten Unterschiede zur Python-Welt: Während Python für herkömmliche Tupel und unveränderliche Mengen (\texttt{frozenset}) standardmäßig eine inhaltliche Wertgleichheit überprüft, vergleicht TypeScript Objekte und Arrays lediglich über ihre Speicherreferenz. Um das Verhalten von Pythons \texttt{frozenset} in TypeScript nachzubilden, muss zwingend auf die Bibliothek \texttt{recursive-set} zurückgegriffen werden, welche die Klassen \texttt{RecursiveSet} und \texttt{Tuple} für genau diesen Zweck bereitstellt.
+Dies markiert einen der fundamentalsten Unterschiede zur Python-Welt: Während Python für herkömmliche Tupel, Mengen und unveränderliche Mengen (\texttt{frozenset}) standardmäßig eine inhaltliche Wertgleichheit überprüft, vergleicht TypeScript Objekte und Arrays lediglich über ihre Speicherreferenz. Um das Verhalten von Pythons \texttt{set}, \texttt{frozenset} und \texttt{tuple} in TypeScript nachzubilden, muss zwingend auf die Bibliothek \texttt{recursive-set} zurückgegriffen werden, welche die Klassen \texttt{RecursiveSet} und \texttt{Tuple} für genau diesen Zweck bereitstellt.
 
 
 
@@ -367,46 +367,19 @@ Auch \texttt{filter} entspricht semantisch der Python-Set-Comprehension. In beid
 
 
 
-\subsection{Gesamtpipeline und Ausgabetests}
-Die Funktion \texttt{normalize} fasst die zuvor eingeführten Transformationsschritte zu einer linearen Pipeline zusammen. Zunächst werden \texttt{↔} und \texttt{→} eliminiert, anschließend wird die Negationsnormalform berechnet, daraus die \ac{KNF} konstruiert und abschließend vereinfacht.
-Damit bildet \texttt{normalize} den zentralen Einstiegspunkt für die algorithmische Verarbeitung, da alle Zwischenresultate in einer klar definierten Reihenfolge erzeugt werden. Die Implementierung in beiden Versionen ist hier semantisch gleich.
+\subsection{Zusammenfassung der Übersetzungsmuster}
+Die Funktion \texttt{normalize} fasst die zuvor eingeführten Transformationsschritte zu einer linearen Pipeline zusammen und bildet den zentralen Einstiegspunkt für die algorithmische Verarbeitung zur \ac{KNF}. Da die reine Verkettung der Funktionen sowie die Ausgabetests in beiden Sprachen konzeptionell identisch sind, werden an dieser Stelle abschließend die zentralen Übersetzungsmuster abstrahiert. 
 
-\Needspace{7\baselineskip}
-\begin{minted}{typescript}
- function normalize(f: Formula): CNF {
-     const n1 = eliminateBiconditional(f);
-     const n2 = eliminateConditional(n1);
-     const n3 = nnf(n2);
-     const n4 = cnf(n3);
-     return simplify(n4);
- }
-\end{minted}
-\captionof{listing}{TypeScript: \texttt{normalize} als Pipeline bis zur vereinfachten \ac{KNF}} 
+Bei der Überführung der Case Study von Python nach TypeScript hat sich gezeigt, dass bestimmte Python-Konstrukte keine direkten Sprachäquivalente in TypeScript besitzen. Diese müssen systematisch durch andere Paradigmen substituiert werden:
 
-Für die Validierung wird im Notebook zusätzlich eine Funktion \texttt{test} bereitgestellt, die einen Eingabestring verarbeitet und das Ergebnis ausgibt. 
-In der Python-Version wird der String dabei explizit mittels \texttt{parse} in einen Syntaxbaum überführt, bevor \texttt{normalize} aufgerufen wird.
-Die TypeScript-Version protokolliert die Eingabe ebenfalls und ruft anschließend \texttt{normalize} auf, wobei hier ebenfalls ein \texttt{parse}-Aufruf vorangeht, der die Eingabe in die erwartete \texttt{Formula}-Struktur umwandelt.
+\begin{itemize}
+	\item \textbf{Pattern Matching (\texttt{match/case}):} Pythons strukturelles Pattern Matching erlaubt die tiefgreifende Dekonstruktion von Bäumen und Tupeln in einem einzigen Schritt. In TypeScript wird dieses Verhalten durch die Kombination aus \textit{Type Guards} (z.\,B.\ \texttt{typeof f === 'string'}), kontrollflussbasiertem \textit{Type Narrowing} und \texttt{switch}-Anweisungen auf diskriminierten Union-Typen nachgebildet. Ergänzendes Destructuring (z.\,B.\ \texttt{const [op, g, h] = f;}) sorgt dabei für eine vergleichbare Lesbarkeit und bietet den Vorteil einer strikteren statischen Vollständigkeitsprüfung durch den Compiler.
+	
+	\item \textbf{Mengen-Komprehensionen (Set-Comprehensions):} Kompakte Konstrukte wie \texttt{\{ k1 | k2 for k1 in ... \}} oder bedingte Mengenbildungen wie \texttt{\{ C for C in Clauses if ... \}} sind in TypeScript syntaktisch nicht vorgesehen. Sie werden systematisch durch funktionale Programmierkonzepte auf iterierbaren Strukturen übersetzt. Dazu zählen insbesondere Methodenketten mit \texttt{map}, \texttt{filter} und \texttt{some} sowie spezialisierte Methodenaufrufe wie \texttt{cartesianProduct}.
+	
+	\item \textbf{Operator Overloading:} Python ermöglicht die Überladung von Operatoren, wodurch beispielsweise das logische ODER nativ für die Mengenvereinigung genutzt werden kann. Da TypeScript kein Operator Overloading unterstützt, müssen solche Operationen zwingend in benannte, explizite Methodenaufrufe (wie etwa \texttt{c1.union(c2)}) übersetzt werden.
+	
+	\item \textbf{Wertbasierte Gleichheit und native Sets:} Pythons native Unterstützung für die wertbasierte Gleichheitsprüfung tiefer, unveränderlicher Datenstrukturen (\texttt{frozenset}, \texttt{tuple}) existiert im TypeScript-Standard nicht. Da das native TS-\texttt{Set} bei Arrays und Objekten lediglich die Speicherreferenz (Reference Equality) vergleicht, erfordert die Übersetzung solcher Strukturen den Einsatz klassenbasierter Hilfsbibliotheken (wie hier \texttt{recursive-set}), die Hash- und Gleichheitsfunktionen explizit für baumartige Strukturen implementieren.
+\end{itemize}
 
-\Needspace{7\baselineskip}
-\begin{minted}{python}
- def test(s: str) -> str:
-     f = parse(s)
-     print(f'The knf of {s} is:')
-     return prettify(normalize(f))
-\end{minted}
-\captionof{listing}{Python: \texttt{test} parst den String und gibt die normalisierte \ac{KNF} aus} 
-
-\Needspace{7\baselineskip}
-\begin{minted}{typescript}
- function test(s: string): string {
-    const f = parse(s);
-    console.log(`The knf of ${s} is:`);
-    return normalize(f).toString();
- }
-\end{minted}
-\captionof{listing}{TypeScript: \texttt{test} als Test-Hilfsfunktion mit Konsolenausgabe} 
-
-Zur Ausgabeformatierung existiert in der Python Versionen eine Hilfsfunktion \texttt{prettify}, die die interne „Menge-von-Mengen“-Struktur in eine lesbare Stringdarstellung überführt. 
-In TypeScript ist hierbei hervorzuheben, dass \texttt{RecursiveSet} bereits eine eigene Stringrepräsentation über \texttt{toString} bereitstellt, sodass eine Ausgabe auch ohne eigene \texttt{prettify}-Funktion möglich ist.
-
-
+Diese abstrakten Muster veranschaulichen, dass die Portierung von Python nach TypeScript selten eine zeilenweise syntaktische Übersetzung darstellt. Vielmehr erfordert sie den bewussten Wechsel hin zu funktionalen Methodenketten und einer wesentlich strikteren, auf Typen fokussierten Datenmodellierung, um die dynamischen und sprachspezifischen Konzepte Pythons typsicher abzubilden.

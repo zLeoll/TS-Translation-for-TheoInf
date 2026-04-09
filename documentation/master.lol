@@ -62,20 +62,17 @@
 \contentsline {listing}{\numberline {62}{\ignorespaces Python: \texttt {isTrivial} über \texttt {any(...)} und Generatorausdruck}}{54}{listing.62}%
 \contentsline {listing}{\numberline {63}{\ignorespaces TypeScript: \texttt {simplify} durch Filtern der Klauselmenge}}{54}{listing.63}%
 \contentsline {listing}{\numberline {64}{\ignorespaces Python: \texttt {simplify} als Set-Comprehension}}{54}{listing.64}%
-\contentsline {listing}{\numberline {65}{\ignorespaces TypeScript: \texttt {normalize} als Pipeline bis zur vereinfachten \ac {KNF}}}{55}{listing.65}%
-\contentsline {listing}{\numberline {66}{\ignorespaces Python: \texttt {test} parst den String und gibt die normalisierte \ac {KNF} aus}}{55}{listing.66}%
-\contentsline {listing}{\numberline {67}{\ignorespaces TypeScript: \texttt {test} als Test-Hilfsfunktion mit Konsolenausgabe}}{56}{listing.67}%
-\contentsline {listing}{\numberline {68}{\ignorespaces Python-Beispiel: Potenzberechnung mit Typ-Annotationen}}{58}{listing.68}%
-\contentsline {listing}{\numberline {69}{\ignorespaces TypeScript-Beispiel: Potenzberechnung}}{58}{listing.69}%
-\contentsline {listing}{\numberline {70}{\ignorespaces Python-Beispiel: shortest\_path}}{59}{listing.70}%
-\contentsline {listing}{\numberline {71}{\ignorespaces TypeScript-Beispiel: shortestPath}}{60}{listing.71}%
-\contentsline {listing}{\numberline {72}{\ignorespaces Mengenvereinigung in Python}}{61}{listing.72}%
-\contentsline {listing}{\numberline {73}{\ignorespaces Mengenvereinigung in TypeScript mittels \textit {.union()}}}{61}{listing.73}%
-\contentsline {listing}{\numberline {74}{\ignorespaces Imperative (KI-generierte) Überprüfung}}{62}{listing.74}%
-\contentsline {listing}{\numberline {75}{\ignorespaces Deklarative (optimierte) Überprüfung in TypeScript}}{62}{listing.75}%
-\contentsline {listing}{\numberline {76}{\ignorespaces Python-Referenz der Überprüfung}}{62}{listing.76}%
-\contentsline {listing}{\numberline {77}{\ignorespaces Time-Funktion in Python}}{64}{listing.77}%
-\contentsline {listing}{\numberline {78}{\ignorespaces Reduktionsschritt in Python mit Set-Comprehensions}}{66}{listing.78}%
-\contentsline {listing}{\numberline {79}{\ignorespaces Reduktionsschritt in TypeScript mit \texttt {RecursiveSet}}}{67}{listing.79}%
-\contentsline {listing}{\numberline {80}{\ignorespaces Zeitmessung in Python (16-Damen)}}{68}{listing.80}%
-\contentsline {listing}{\numberline {81}{\ignorespaces Zeitmessung in TypeScript (16-Damen)}}{68}{listing.81}%
+\contentsline {listing}{\numberline {65}{\ignorespaces Python-Beispiel: Potenzberechnung mit Typ-Annotationen}}{58}{listing.65}%
+\contentsline {listing}{\numberline {66}{\ignorespaces TypeScript-Beispiel: Potenzberechnung}}{58}{listing.66}%
+\contentsline {listing}{\numberline {67}{\ignorespaces Python-Beispiel: shortest\_path}}{59}{listing.67}%
+\contentsline {listing}{\numberline {68}{\ignorespaces TypeScript-Beispiel: shortestPath mit nativem Set}}{60}{listing.68}%
+\contentsline {listing}{\numberline {69}{\ignorespaces Mengenvereinigung in Python}}{61}{listing.69}%
+\contentsline {listing}{\numberline {70}{\ignorespaces Mengenvereinigung in TypeScript mittels \textit {.union()}}}{61}{listing.70}%
+\contentsline {listing}{\numberline {71}{\ignorespaces Imperative (KI-generierte) Überprüfung}}{62}{listing.71}%
+\contentsline {listing}{\numberline {72}{\ignorespaces Deklarative (optimierte) Überprüfung in TypeScript}}{62}{listing.72}%
+\contentsline {listing}{\numberline {73}{\ignorespaces Python-Referenz der Überprüfung}}{62}{listing.73}%
+\contentsline {listing}{\numberline {74}{\ignorespaces Time-Funktion in Python}}{64}{listing.74}%
+\contentsline {listing}{\numberline {75}{\ignorespaces Reduktionsschritt in Python mit Set-Comprehensions}}{66}{listing.75}%
+\contentsline {listing}{\numberline {76}{\ignorespaces Reduktionsschritt in TypeScript mit \texttt {RecursiveSet}}}{67}{listing.76}%
+\contentsline {listing}{\numberline {77}{\ignorespaces Zeitmessung in Python (16-Damen)}}{68}{listing.77}%
+\contentsline {listing}{\numberline {78}{\ignorespaces Zeitmessung in TypeScript (16-Damen)}}{68}{listing.78}%
