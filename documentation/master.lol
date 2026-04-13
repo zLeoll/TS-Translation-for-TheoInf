@@ -74,5 +74,6 @@
 \contentsline {listing}{\numberline {74}{\ignorespaces Time-Funktion in Python}}{64}{listing.74}%
 \contentsline {listing}{\numberline {75}{\ignorespaces Reduktionsschritt in Python mit Set-Comprehensions}}{66}{listing.75}%
 \contentsline {listing}{\numberline {76}{\ignorespaces Reduktionsschritt in TypeScript mit \texttt {RecursiveSet}}}{67}{listing.76}%
-\contentsline {listing}{\numberline {77}{\ignorespaces Zeitmessung in Python (16-Damen)}}{68}{listing.77}%
-\contentsline {listing}{\numberline {78}{\ignorespaces Zeitmessung in TypeScript (16-Damen)}}{68}{listing.78}%
+\contentsline {listing}{\numberline {77}{\ignorespaces Reduktionsschritt in TypeScript mit \texttt {RecursiveSet}}}{68}{listing.77}%
+\contentsline {listing}{\numberline {78}{\ignorespaces Zeitmessung in Python (16-Damen)}}{68}{listing.78}%
+\contentsline {listing}{\numberline {79}{\ignorespaces Zeitmessung in TypeScript (16-Damen)}}{69}{listing.79}%

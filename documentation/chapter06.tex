@@ -54,10 +54,10 @@ Das Python-Listing \ref{lst:python-dijkstra} nutzt stark die eingebauten Datenst
              if dv == None or d + l < dv:
                  if dv != None: 
                      Fringe.delete( (dv, v) )
-    Distance[v] = d + l
-    Fringe.insert( (d + l, v) )
-    Visited.add(u)
-    return Distance
+     Distance[v] = d + l
+     Fringe.insert( (d + l, v) )
+     Visited.add(u)
+     return Distance
 \end{minted}
 \captionof{listing}{Python-Beispiel: shortest\_path}
 \label{lst:python-dijkstra}
@@ -216,11 +216,13 @@ Der Davis--Putnam-Code erzeugt und verarbeitet in kurzer Zeit enorm viele tempor
             | { C            for C in Clauses if lBar not in C and l not in C }  \
             | { frozenset({l}) }
 \end{minted}
+\label{pythonreduce}
 \caption{Reduktionsschritt in Python mit Set-Comprehensions}
 
 In Python wird die Logik extrem prägnant mit \texttt{frozenset} (Klausel) und \texttt{set} (Klauselmenge) umgesetzt. Der wesentliche Performance-Impact liegt hier in der intensiven Speicherallokation und redundanten Iterationen, die durch die kompakte Syntax verdeckt werden: Für die Reduktion muss der Interpreter drei separate Set-Comprehensions auswerten, was bedeutet, dass unter der Haube mehrfach über \texttt{Clauses} iteriert wird. Besonders teuer ist das ständige Erzeugen temporärer Objekte: Der Ausdruck \texttt{C - \{ lBar \}} zwingt Python dazu, in jedem Schleifendurchlauf ein neues Set für die Differenzbildung zu allokieren. Zudem generiert jede Comprehension eine eigene temporäre Mengen-Instanz, bevor der Vereinigungsoperator (\texttt{|}) diese Zwischenergebnisse in ein weiteres, komplett neues \texttt{set} zusammenkopiert. Dieser Overhead summiert sich bei tausenden Aufrufen in der Rekursion massiv auf.
 
-In TypeScript wird dieselbe algorithmische Idee deutlich imperativer abgebildet. Der Code greift auf die \texttt{recursive-set}-Bibliothek zurück, da TypeScript native Set-Comprehensions für tiefgreifende Wertvergleiche nicht unterstützt:
+
+In TypeScript wurde dieselbe algorithmische Idee durch den Basis-Promt Prompt zuerst deutlich imperativer abgebildet. Der Code greift auf die \texttt{recursive-set}-Bibliothek zurück, da TypeScript native Set-Comprehensions für tiefgreifende Wertvergleiche nicht unterstützt:
 
 \Needspace{22\baselineskip}
 \begin{minted}{typescript}
@@ -250,7 +252,25 @@ In TypeScript wird dieselbe algorithmische Idee deutlich imperativer abgebildet.
 \caption{Reduktionsschritt in TypeScript mit \texttt{RecursiveSet}}
 
 Der entscheidende Performance-Vorteil dieser textlastigeren Schreibweise liegt in der strikten Vermeidung unnötiger Allokationen. Anstatt temporäre Zwischenmengen zu erzeugen, wird initial genau eine einzige Zielmenge (\texttt{const result = new RecursiveSet<Clause>();}) allokiert, und es wird nur ein einziges Mal über \texttt{Clauses} iteriert. 
-Eine neue Klausel (\texttt{new RecursiveSet<Literal>()}) wird im Speicher ausschließlich dann instanziiert, wenn das Literal \texttt{lBar} tatsächlich entfernt werden muss (\texttt{if (hasLBar)}). Bleibt eine Klausel von der Reduktion unberührt (\texttt{else if (!hasL)}), wird lediglich ihre bestehende Speicherreferenz in das neue Set (\texttt{result.add(clause)}) übernommen wodurch ein teurer Kopiervorgang völlig entfällt.
+Eine neue Klausel (\texttt{new RecursiveSet<Literal>()}) wird im Speicher ausschließlich dann instanziiert, wenn das Literal \texttt{lBar} tatsächlich entfernt werden muss (\texttt{if (hasLBar)}). Bleibt eine Klausel von der Reduktion unberührt (\texttt{else if (!hasL)}), wird lediglich ihre bestehende Speicherreferenz in das neue Set (\texttt{result.add(clause)}) übernommen wodurch ein teurer Kopiervorgang völlig entfällt.\\ 
+
+Wenn man die KI jedoch dazu auffordert, deutlich deklarativeren Code zu generieren, ähnelt die Schreibweise und Länge des Codes der Python-Version aus \ref{pythonreduce}:
+
+\needspace{10\baselineskip}
+\begin{minted}{typescript}
+ function reduce(Clauses: Clauses, l: Literal): Clauses {
+     const lBar = complement(l);
+     const singletonLBar = single(lBar);
+     const result = Clauses.filterMap(
+         (clause) => !clause.has(l),
+         (clause) => clause.has(lBar) ? clause.difference(singletonLBar) : clause
+     );
+     result.add(new RecursiveSet<Literal>(l));
+     return result;
+}
+\end{minted}
+\caption{Reduktionsschritt in TypeScript mit \texttt{RecursiveSet}}
+
 
 Ein zentraler Beschleuniger in der TypeScript-Version ist dabei die \texttt{recursive-set}-Datenstruktur selbst. Sie implementiert Hash-Tabellen mit \href{https://en.wikipedia.org/wiki/Open_addressing}{Open Addressing} und \href{https://en.wikipedia.org/wiki/Linear_probing}{Linear Probing} sowie eine auf Performance ausgelegte Hash-Funktion. Grundlegende Operationen wie \texttt{add}/\texttt{has} sind damit amortisiert $\mathcal{O}(1)$. 
 
